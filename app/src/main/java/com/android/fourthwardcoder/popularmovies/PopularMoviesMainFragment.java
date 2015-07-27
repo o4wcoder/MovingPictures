@@ -87,7 +87,7 @@ public class PopularMoviesMainFragment extends Fragment {
 
     private class FetchPhotosTask extends AsyncTask<Void,Void,ArrayList<Movie>> {
 
-        private static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
+        private static final String PICASSO_API_KEY = "REMOVE PRIVATE KEY";
 
         private static final String BASE_MOVE_URL = "http://api.themoviedb.org/3/discover/movie";
         private static final String SORT_PARM = "sort_by";
