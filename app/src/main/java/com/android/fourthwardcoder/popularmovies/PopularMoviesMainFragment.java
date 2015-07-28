@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.util.Pair;
 
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +40,14 @@ public class PopularMoviesMainFragment extends Fragment {
 	/*                 Constants                      */
     /**************************************************/
     private static final String TAG = PopularMoviesMainFragment.class.getSimpleName();
+    public static final String EXTRA_MOVIE = "extra_movie";
+
+    private static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
+    private static final String BASE_MOVE_URL = "http://api.themoviedb.org/3/discover/movie";
+    private static final String BASE_GENRE_URL = "http://api.themoviedb.org/3/genre/movie/list";
+    private static final String SORT_PARM = "sort_by";
+    private static final String API_KEY_PARAM = "api_key";
+    private static final String sortOrder = "popularity.desc";
 
     /**************************************************/
 	/*                Local Data                      */
@@ -75,6 +84,7 @@ public class PopularMoviesMainFragment extends Fragment {
                 Movie movie = mMovieList.get(position);
                 //Start intent to bring up Details Activity
                 Intent i = new Intent(getActivity(),MovieDetailActivity.class);
+                i.putExtra(EXTRA_MOVIE, movie);
                 startActivity(i);
             }
         });
@@ -87,14 +97,6 @@ public class PopularMoviesMainFragment extends Fragment {
 
     private class FetchPhotosTask extends AsyncTask<Void,Void,ArrayList<Movie>> {
 
-        private static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
-
-        private static final String BASE_MOVE_URL = "http://api.themoviedb.org/3/discover/movie";
-        private static final String SORT_PARM = "sort_by";
-        private static final String API_KEY_PARAM = "api_key";
-
-        private static final String sortOrder = "popularity.desc";
-
         private String moviesJsonStr;
 
 
@@ -104,7 +106,11 @@ public class PopularMoviesMainFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
+
             try {
+
+                populateGenreTable();
+
                 Uri builtUri = Uri.parse(BASE_MOVE_URL).buildUpon()
                         .appendQueryParameter(SORT_PARM, sortOrder)
                         .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
@@ -167,6 +173,15 @@ public class PopularMoviesMainFragment extends Fragment {
 
         }
 
+        private void populateGenreTable() {
+
+            ArrayList<Pair> genreList;
+
+            //Get genres http://api.themoviedb.org/3/genre/movie/list?api_key=e80f27e43348054952d67e7d0353ac38
+
+
+
+        }
         private ArrayList<Movie> parseJsonMovies(String moviesJsonStr) {
 
             final String TAG_RESULTS = "results";
@@ -174,6 +189,14 @@ public class PopularMoviesMainFragment extends Fragment {
             final String TAG_TITLE = "title";
             final String TAG_OVERVIEW = "overview";
             final String TAG_POSTER_PATH = "poster_path";
+            final String TAG_BACKDROP_PATH = "backdrop_path";
+            final String TAG_RELEASE_DATE = "release_date";
+            final String TAG_RATING = "vote_average";
+
+            final String BASE_URL = "http://image.tmdb.org/t/p/";
+            final String IMAGE_185_SIZE = "w185/";
+            final String IMAGE_342_SIZE = "w342/";
+            final String IMAGE_500_SIZE = "w500/";
 
             ArrayList<Movie> movieList = null;
 
@@ -195,8 +218,12 @@ public class PopularMoviesMainFragment extends Fragment {
                     movie.setId(result.getInt(TAG_ID));
                     movie.setTitle(result.getString(TAG_TITLE));
                     movie.setOverview(result.getString(TAG_OVERVIEW));
-                    movie.setPosterPath(result.getString(TAG_POSTER_PATH));
+                    movie.setPosterPath(BASE_URL + IMAGE_185_SIZE + result.getString(TAG_POSTER_PATH));
+                    movie.setBackdropPath(BASE_URL + IMAGE_500_SIZE + result.getString(TAG_BACKDROP_PATH));
+                    movie.setReleaseDate(result.getString(TAG_RELEASE_DATE));
+                    movie.setRating(result.getInt(TAG_RATING));
 
+                    //Add movie to movie list array.
                     movieList.add(movie);
                 }
 
@@ -235,8 +262,7 @@ public class PopularMoviesMainFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            final String BASE_URL = "http://image.tmdb.org/t/p/";
-            final String IMAGE_SIZE = "w185/";
+
 
             if(convertView == null) {
                 convertView = getActivity().getLayoutInflater()
@@ -250,9 +276,8 @@ public class PopularMoviesMainFragment extends Fragment {
             //Get each Movie using the position in the ArrayAdapter
             Movie movie = getItem(position);
 
-            //Put together image URL and call Picasso to load it into the imageView
-            String strUrl = BASE_URL + IMAGE_SIZE + movie.getPosterPath();
-            Picasso.with(getActivity()).load(strUrl).into(imageView);
+            //Call Picasso to load it into the imageView
+            Picasso.with(getActivity()).load(movie.getPosterPath()).into(imageView);
 
             return convertView;
         }

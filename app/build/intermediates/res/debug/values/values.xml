@@ -46,6 +46,12 @@
     <color name="material_blue_grey_950">#ff21272b</color>
     <color name="material_deep_teal_200">#ff80cbc4</color>
     <color name="material_deep_teal_500">#ff009688</color>
+    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <color name="material_teal">#009688</color>
+    <color name="material_text_white">#ffffff</color>
+    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <eat-comment/>
     <color name="primary_dark_material_dark">#ff000000</color>
     <color name="primary_dark_material_light">#ff757575</color>
     <color name="primary_material_dark">#ff212121</color>
