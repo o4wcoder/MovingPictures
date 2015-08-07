@@ -454,7 +454,7 @@ int id end_padder 0x7f0d0067
 int id expand_activities_button 0x7f0d0027
 int id expanded_menu 0x7f0d0037
 int id fragment 0x7f0d004f
-int id genreTextView 0x7f0d0059
+int id genreTextView 0x7f0d0058
 int id gridView 0x7f0d0050
 int id home 0x7f0d0004
 int id homeAsUp 0x7f0d000d
@@ -474,14 +474,14 @@ int id multiply 0x7f0d001e
 int id never 0x7f0d0019
 int id none 0x7f0d000e
 int id normal 0x7f0d000a
-int id overviewTextView 0x7f0d0058
+int id overviewTextView 0x7f0d0057
 int id parentPanel 0x7f0d002d
 int id posterImageView 0x7f0d0052
 int id progress_circular 0x7f0d0005
 int id progress_horizontal 0x7f0d0006
 int id radio 0x7f0d003a
 int id ratingTextView 0x7f0d0056
-int id releaseDateTextView 0x7f0d0057
+int id releaseDateTextView 0x7f0d0059
 int id releaseYearTextView 0x7f0d0054
 int id screen 0x7f0d001f
 int id scrollView 0x7f0d0032

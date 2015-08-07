@@ -1573,7 +1573,7 @@ containing a value of this type.
         public static final int expand_activities_button=0x7f0d0027;
         public static final int expanded_menu=0x7f0d0037;
         public static final int fragment=0x7f0d004f;
-        public static final int genreTextView=0x7f0d0059;
+        public static final int genreTextView=0x7f0d0058;
         public static final int gridView=0x7f0d0050;
         public static final int home=0x7f0d0004;
         public static final int homeAsUp=0x7f0d000d;
@@ -1593,14 +1593,14 @@ containing a value of this type.
         public static final int never=0x7f0d0019;
         public static final int none=0x7f0d000e;
         public static final int normal=0x7f0d000a;
-        public static final int overviewTextView=0x7f0d0058;
+        public static final int overviewTextView=0x7f0d0057;
         public static final int parentPanel=0x7f0d002d;
         public static final int posterImageView=0x7f0d0052;
         public static final int progress_circular=0x7f0d0005;
         public static final int progress_horizontal=0x7f0d0006;
         public static final int radio=0x7f0d003a;
         public static final int ratingTextView=0x7f0d0056;
-        public static final int releaseDateTextView=0x7f0d0057;
+        public static final int releaseDateTextView=0x7f0d0059;
         public static final int releaseYearTextView=0x7f0d0054;
         public static final int screen=0x7f0d001f;
         public static final int scrollView=0x7f0d0032;
