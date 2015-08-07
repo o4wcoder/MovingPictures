@@ -1,19 +1,26 @@
 package com.android.fourthwardcoder.popularmovies;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.util.Pair;
 
 import com.squareup.picasso.Picasso;
 
@@ -40,20 +47,29 @@ public class PopularMoviesMainFragment extends Fragment {
 	/*                 Constants                      */
     /**************************************************/
     private static final String TAG = PopularMoviesMainFragment.class.getSimpleName();
-    public static final String EXTRA_MOVIE = "extra_movie";
+    public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
 
     private static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
     private static final String BASE_MOVE_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String BASE_GENRE_URL = "http://api.themoviedb.org/3/genre/movie/list";
+    private static final String BASE_CREDITS_URL = "http://api.themoviedb.org/3/movie/";
     private static final String SORT_PARM = "sort_by";
     private static final String API_KEY_PARAM = "api_key";
-    private static final String sortOrder = "popularity.desc";
 
+    private static final String PREF_SORT = "sort";
+    //Tag for the time Sort Dialog
+    private static final String DIALOG_SORT = "dialogSort";
+
+    //Constant for request code to Sort Dialog
+    public static final int REQUEST_SORT = 0;
     /**************************************************/
 	/*                Local Data                      */
     /**************************************************/
     GridView mGridView;
     ArrayList<Movie> mMovieList;
+    ArrayList<Pair<Integer,String>> mGenreList;
+    String mSortOrder;
+    SharedPreferences.Editor prefsEditor;
 
     public PopularMoviesMainFragment() {
     }
@@ -67,6 +83,16 @@ public class PopularMoviesMainFragment extends Fragment {
 
         //Set Option Menu
         setHasOptionsMenu(true);
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        prefsEditor = sharedPrefs.edit();
+
+        Resources res = getResources();
+        String[] sortList = res.getStringArray(R.array.sort_url_list);
+        mSortOrder = sharedPrefs.getString(PREF_SORT,sortList[0]);
+        Log.e(TAG,"onCreate with sort " + mSortOrder);
+
+
     }
 
     @Override
@@ -89,32 +115,97 @@ public class PopularMoviesMainFragment extends Fragment {
             }
         });
 
+
+
         if(mGridView != null)
-            new FetchPhotosTask().execute();
+            new FetchPhotosTask().execute(mSortOrder);
 
         return view;
     }
 
-    private class FetchPhotosTask extends AsyncTask<Void,Void,ArrayList<Movie>> {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+
+        //Pass the resource ID of the menu and populate the Menu
+        //instance with the items defined in the xml file
+        inflater.inflate(R.menu.menu_sort, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()) {
+            case R.id.menu_item_sort:
+                Log.e(TAG,"Got menu sort");
+                android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+                SortDialogFragment dialog = SortDialogFragment.newInstance(mSortOrder);
+                //Make PopularMoviesMainFragment the target fragment of the SortDialogFragment instance
+                dialog.setTargetFragment(PopularMoviesMainFragment.this, REQUEST_SORT);
+                dialog.show(fm, DIALOG_SORT);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //Get results from Dialog boxes and other Activities
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.e(TAG, "In onActivityResult with requestCode " + String.valueOf(requestCode));
+        if (resultCode != Activity.RESULT_OK)
+            return;
+
+        if (requestCode == REQUEST_SORT) {
+            mSortOrder = data.getStringExtra(SortDialogFragment.EXTRA_SORT);
+            prefsEditor.putString(PREF_SORT,mSortOrder);
+            prefsEditor.commit();
+            if(mGridView != null)
+                new FetchPhotosTask().execute(mSortOrder);
+
+        }
+    }
+    /******************************************************************************/
+    /*                             Inner Classes                                  */
+    /******************************************************************************/
+    private class FetchPhotosTask extends AsyncTask<String,Void,ArrayList<Movie>> {
 
         private String moviesJsonStr;
 
 
         @Override
-        protected ArrayList<Movie> doInBackground(Void... params) {
+        protected ArrayList<Movie> doInBackground(String... params) {
+
+
+            String sortOrder = params[0];
+            if(mGenreList == null) {
+                //Build URI String to query the databaes for the list of genres
+                Uri genreUri = Uri.parse(BASE_GENRE_URL).buildUpon()
+                        .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                        .build();
+                String genreJsonStr = queryMovieDatabase(genreUri);
+                parseJsonGenres(genreJsonStr);
+            }
+
+            //Build URI String to query the database for a list of movies
+            Uri movieUri = Uri.parse(BASE_MOVE_URL).buildUpon()
+                    .appendQueryParameter(SORT_PARM, sortOrder)
+                    .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                    .build();
+
+            return parseJsonMovies(queryMovieDatabase(movieUri));
+
+        }
+
+        private String queryMovieDatabase(Uri builtUri) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
 
             try {
-
-                populateGenreTable();
-
-                Uri builtUri = Uri.parse(BASE_MOVE_URL).buildUpon()
-                        .appendQueryParameter(SORT_PARM, sortOrder)
-                        .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
-                        .build();
 
                 Log.e(TAG, builtUri.toString());
 
@@ -168,17 +259,43 @@ public class PopularMoviesMainFragment extends Fragment {
                 }
 
                 //Return list of Movies
-                return parseJsonMovies(moviesJsonStr);
+                return moviesJsonStr;
             }
 
+
         }
-
-        private void populateGenreTable() {
-
+        private void parseJsonGenres(String genreJsonStr) {
+            final String TAG_GENRES = "genres";
+            final String TAG_ID = "id";
+            final String TAG_NAME = "name";
             ArrayList<Pair> genreList;
 
             //Get genres http://api.themoviedb.org/3/genre/movie/list?api_key=e80f27e43348054952d67e7d0353ac38
 
+            try {
+                JSONObject obj = new JSONObject(genreJsonStr);
+                JSONArray genreArray = obj.getJSONArray(TAG_GENRES);
+
+                //Initialize genre List to the size of the number of returned genres
+                if (genreArray != null) {
+                    mGenreList = new ArrayList<Pair<Integer, String>>(genreArray.length());
+                    for (int i = 0; i < genreArray.length(); i++) {
+                        int id = genreArray.getJSONObject(i).getInt(TAG_ID);
+                        String name = genreArray.getJSONObject(i).getString(TAG_NAME);
+
+                        //Store genre ID and name into a Pair
+                        Pair<Integer, String> genre = new Pair(id, name);
+
+                        //Put pair into genre list
+                        mGenreList.add(genre);
+                    }
+                }
+
+            }
+            catch(JSONException e) {
+                e.printStackTrace();
+
+            }
 
 
         }
@@ -192,6 +309,13 @@ public class PopularMoviesMainFragment extends Fragment {
             final String TAG_BACKDROP_PATH = "backdrop_path";
             final String TAG_RELEASE_DATE = "release_date";
             final String TAG_RATING = "vote_average";
+            final String TAG_GENRE_IDS = "genre_ids";
+            final String TAG_CREDITS = "credits";
+            final String TAG_CAST = "cast";
+            final String TAG_CREW = "crew";
+            final String TAG_JOB = "job";
+            final String TAG_JOB_DIRECTOR = "Director";
+            final String TAG_NAME = "name";
 
             final String BASE_URL = "http://image.tmdb.org/t/p/";
             final String IMAGE_185_SIZE = "w185/";
@@ -207,7 +331,7 @@ public class PopularMoviesMainFragment extends Fragment {
                 // f all movies
                 JSONArray resultsArray = obj.getJSONArray(TAG_RESULTS);
 
-                Log.e(TAG,"Results Array: " + resultsArray.get(0));
+                //Log.e(TAG,"Results Array: " + resultsArray.get(0));
 
                 movieList = new ArrayList<>(resultsArray.length());
 
@@ -221,7 +345,49 @@ public class PopularMoviesMainFragment extends Fragment {
                     movie.setPosterPath(BASE_URL + IMAGE_185_SIZE + result.getString(TAG_POSTER_PATH));
                     movie.setBackdropPath(BASE_URL + IMAGE_500_SIZE + result.getString(TAG_BACKDROP_PATH));
                     movie.setReleaseDate(result.getString(TAG_RELEASE_DATE));
-                    movie.setRating(result.getInt(TAG_RATING));
+                    movie.setRating(result.getDouble(TAG_RATING));
+
+                    //Get genre ids
+                    JSONArray genreArray = result.getJSONArray(TAG_GENRE_IDS);
+
+                    //Move genre ids from JSON Array into ArrayList
+                    ArrayList<Integer> genreList = new ArrayList<Integer>(genreArray.length());
+                    for(int j=0; j < genreArray.length(); j++) {
+                        //Log.e(TAG,"ID: " + genreArray.getInt(j));
+                        genreList.add(j,genreArray.getInt(j));
+                    }
+                    //Store genre list in movie object
+                    movie.setGenreList(genreList);
+
+                    //Log.e(TAG, getGenreString(genreList));
+                    movie.setGenreString(getGenreString(genreList));
+
+                    //Get Uri for credits of movie
+                    //Build URI String to query the databaes for the list of genres
+                    Uri creditUri = Uri.parse(BASE_CREDITS_URL).buildUpon()
+                            .appendPath(String.valueOf(movie.getId()))
+                            .appendPath(TAG_CREDITS)
+                            .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                            .build();
+
+                    String creditJsonStr = queryMovieDatabase(creditUri);
+
+                    JSONObject creditObj = new JSONObject(creditJsonStr);
+                    JSONArray crewArray = creditObj.getJSONArray(TAG_CREW);
+
+                    ArrayList<String> directorList = new ArrayList<String>();
+                    for(int k = 0; k < crewArray.length(); k++) {
+                        String job = crewArray.getJSONObject(k).getString(TAG_JOB);
+
+                        if(job.equals(TAG_JOB_DIRECTOR))
+                            directorList.add(crewArray.getJSONObject(k).getString(TAG_NAME));
+
+                        //Log.e(TAG,job);
+
+                    }
+                    //Add director list to movie
+                    movie.setDirectors(directorList);
+
 
                     //Add movie to movie list array.
                     movieList.add(movie);
@@ -236,6 +402,24 @@ public class PopularMoviesMainFragment extends Fragment {
             return movieList;
         }
 
+        private String getGenreString(ArrayList<Integer> idList) {
+
+            String genreStr = "";
+
+            for(int i=0; i < idList.size();i++) {
+                int id = idList.get(i);
+                for(int j=0; j < mGenreList.size(); j++) {
+                    Pair<Integer,String> genre = mGenreList.get(j);
+                    if(id == genre.first)
+                        genreStr += genre.second + ", ";
+                }
+            }
+
+            if(idList.size() > 0)
+                genreStr = genreStr.substring(0,genreStr.length() - 2);
+
+            return genreStr;
+        }
         @Override
         protected void onPostExecute(ArrayList<Movie> movieList) {
 
@@ -245,6 +429,8 @@ public class PopularMoviesMainFragment extends Fragment {
             if(getActivity() != null && mGridView != null) {
                 MovieImageAdapter adapter = new MovieImageAdapter(movieList);
                 mGridView.setAdapter(adapter);
+
+                Log.e(TAG,"Size of genre list is " + mGenreList.size());
             }
         }
     }

@@ -3,6 +3,8 @@ package com.android.fourthwardcoder.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by chare on 7/26/2015.
  */
@@ -14,7 +16,13 @@ public class Movie implements Parcelable {
     String posterPath;
     String backdropPath;
     String releaseDate;
-    int rating;
+    String releaseYear;
+    double rating;
+    ArrayList<Integer> genreList;
+    String genreString;
+    ArrayList<String> directors;
+    String directorString;
+    ArrayList<String> actors;
 
     public Movie() {
 
@@ -65,15 +73,72 @@ public class Movie implements Parcelable {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+
+        String[] dateArray = releaseDate.split("-");
+        releaseYear = dateArray[0];
     }
 
-    public int getRating() {
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
+
+    public ArrayList<Integer> getGenreList() {
+        return genreList;
+    }
+
+    public void setGenreList(ArrayList<Integer> genreList) {
+        this.genreList = genreList;
+    }
+
+    public String getGenreString() {
+        return genreString;
+    }
+
+    public void setGenreString(String genreString) {
+        this.genreString = genreString;
+    }
+
+    public ArrayList<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(ArrayList<String> directors) {
+        this.directors = directors;
+
+        String strDirs = "";
+        //Set up display string of directors
+        for(int i = 0; i< directors.size(); i++) {
+            strDirs += directors.get(i) + ", ";
+        }
+
+        if(directors.size() > 0)
+            this.directorString = strDirs.substring(0,strDirs.length() - 2);
+    }
+
+    public ArrayList<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(ArrayList<String> actors) {
+        this.actors = actors;
+    }
+
+    public String getDirectorString() {
+        return directorString;
+    }
+
+    public void setDirectorString(String directorString) {
+        this.directorString = directorString;
+    }
+
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
@@ -81,7 +146,28 @@ public class Movie implements Parcelable {
         posterPath = in.readString();
         backdropPath = in.readString();
         releaseDate = in.readString();
-        rating = in.readInt();
+        releaseYear = in.readString();
+        rating = in.readDouble();
+        directorString = in.readString();
+        if (in.readByte() == 0x01) {
+            genreList = new ArrayList<Integer>();
+            in.readList(genreList, Integer.class.getClassLoader());
+        } else {
+            genreList = null;
+        }
+        genreString = in.readString();
+        if (in.readByte() == 0x01) {
+            directors = new ArrayList<String>();
+            in.readList(directors, String.class.getClassLoader());
+        } else {
+            directors = null;
+        }
+        if (in.readByte() == 0x01) {
+            actors = new ArrayList<String>();
+            in.readList(actors, String.class.getClassLoader());
+        } else {
+            actors = null;
+        }
     }
 
     @Override
@@ -97,7 +183,28 @@ public class Movie implements Parcelable {
         dest.writeString(posterPath);
         dest.writeString(backdropPath);
         dest.writeString(releaseDate);
-        dest.writeInt(rating);
+        dest.writeString(releaseYear);
+        dest.writeDouble(rating);
+        dest.writeString(directorString);
+        if (genreList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(genreList);
+        }
+        dest.writeString(genreString);
+        if (directors == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(directors);
+        }
+        if (actors == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(actors);
+        }
     }
 
     @SuppressWarnings("unused")

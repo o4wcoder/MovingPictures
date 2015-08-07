@@ -2,6 +2,8 @@ package com.android.fourthwardcoder.popularmovies;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,19 +36,45 @@ public class MovieDetailActivityFragment extends Fragment {
         Movie movie = getActivity().getIntent().getParcelableExtra(PopularMoviesMainFragment.EXTRA_MOVIE);
         Log.e(TAG, "Got Movie in Detail" + movie.getTitle());
 
-        Log.e(TAG,"Backdrop: " + movie.getBackdropPath());
+        Log.e(TAG, "Backdrop: " + movie.getBackdropPath());
+        Log.e(TAG, "Movie Rating " + movie.getRating());
 
         getActivity().setTitle(movie.getTitle());
 
         ImageView backdropImageView = (ImageView)view.findViewById(R.id.backdropImageView);
         Picasso.with(getActivity()).load(movie.getBackdropPath()).into(backdropImageView);
 
+        ImageView posterImageView = (ImageView)view.findViewById(R.id.posterImageView);
+        Picasso.with(getActivity()).load(movie.getPosterPath()).into(posterImageView);
 
-        TextView overviewTextView = (TextView)view.findViewById(R.id.overviewTextView);
-        overviewTextView.setText(movie.getOverview());
+        TextView titleTextView = (TextView)view.findViewById(R.id.titleTextView);
+        titleTextView.setText(movie.getTitle());
+
+        TextView releaseYearTextView = (TextView)view.findViewById(R.id.releaseYearTextView);
+        releaseYearTextView.setText(movie.getReleaseYear());
+
+        TextView ratingTextView = (TextView)view.findViewById(R.id.ratingTextView);
+        ratingTextView.setText(String.valueOf(movie.getRating())+ "/10");
+
+        TextView directorTextView = (TextView)view.findViewById(R.id.directorTextView);
+        Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
+                movie.getDirectorString());
+        directorTextView.setText(director);
 
         TextView releaseDateTextView = (TextView)view.findViewById(R.id.releaseDateTextView);
-        releaseDateTextView.setText(movie.getReleaseDate());
+        Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
+                movie.getReleaseDate());
+        releaseDateTextView.setText(releaseDate);
+
+        TextView overviewTextView = (TextView)view.findViewById(R.id.overviewTextView);
+        Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
+                movie.getOverview());
+        overviewTextView.setText(synopsis);
+
+        TextView genreTextView = (TextView)view.findViewById(R.id.genreTextView);
+        Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
+                movie.getGenreString());
+        genreTextView.setText(genre);
 
         return view;
     }

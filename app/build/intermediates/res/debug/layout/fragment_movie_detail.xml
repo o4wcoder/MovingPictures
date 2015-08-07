@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.android.fourthwardcoder.popularmovies.MovieDetailActivityFragment"
     android:layout_width="fill_parent"
-    android:layout_height="match_parent">
+    android:layout_height="fill_parent"
+    android:background="#e6e6e6">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -18,32 +19,112 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true" />
 
-
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:padding="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/posterImageView"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_weight="2" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/releaseDateTextView" />
+                android:id="@+id/titleTextView"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/releaseYearTextView" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/directorTextView"
+                android:padding="2dp" />
+
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:padding="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp">
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="New Text"
-            android:id="@+id/overviewTextView" />
+            android:id="@+id/ratingTextView"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:padding="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp">
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/releaseDateTextView"
+                android:padding="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/overviewTextView"
+            android:padding="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/genreTextView"
+            android:padding="2dp"/>
+
     </LinearLayout>
 
-</LinearLayout>
+    </LinearLayout>
 </ScrollView><!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/fragment_movie_detail.xml -->

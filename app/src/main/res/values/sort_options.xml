@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "sort_list">
+        <item>Most Popular</item>
+        <item>Release Date</item>
+        <item>Highest Rated</item>
+        <item>Revenue</item>
+    </string-array>
+
+    <string-array name = "sort_url_list" translatable="false">
+        <item>popularity.desc</item>
+        <item>release_date.desc</item>
+        <item>vote_average.desc</item>
+        <item>revenue.desc</item>
+    </string-array>
+
+</resources>
