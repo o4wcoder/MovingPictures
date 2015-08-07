@@ -54,12 +54,17 @@ public class MovieDetailActivityFragment extends Fragment {
         releaseYearTextView.setText(movie.getReleaseYear());
 
         TextView ratingTextView = (TextView)view.findViewById(R.id.ratingTextView);
-        ratingTextView.setText(String.valueOf(movie.getRating())+ "/10");
+        ratingTextView.setText(String.valueOf(movie.getRating()) + "/10");
 
         TextView directorTextView = (TextView)view.findViewById(R.id.directorTextView);
         Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
                 movie.getDirectorString());
         directorTextView.setText(director);
+
+        TextView castTextView = (TextView)view.findViewById(R.id.castTextView);
+        Spanned cast = Html.fromHtml("<b>" + getString(R.string.cast) + "</b>" + " " +
+                movie.getActorsString());
+        castTextView.setText(cast);
 
         TextView releaseDateTextView = (TextView)view.findViewById(R.id.releaseDateTextView);
         Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +

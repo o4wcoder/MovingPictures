@@ -6,7 +6,7 @@
     <string name="dialog_sort">Sort By</string>
     <string name="title_activity_movie_detail">MovieDetail</string>
     <string name="director">DIRECTOR:</string>
-    <string name="cast">CAST</string>
+    <string name="cast">CAST:</string>
     <string name="rated">RATED:</string>
     <string name="release_date">RELEASE DATE: </string>
     <string name="synopsis">SYNOPSIS: </string>

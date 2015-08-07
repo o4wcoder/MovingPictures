@@ -49,7 +49,7 @@ public class PopularMoviesMainFragment extends Fragment {
     private static final String TAG = PopularMoviesMainFragment.class.getSimpleName();
     public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
 
-    private static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
+    private static final String PICASSO_API_KEY = APIKeys.PICASSO_API_KEY;
     private static final String BASE_MOVE_URL = "http://api.themoviedb.org/3/discover/movie";
     private static final String BASE_GENRE_URL = "http://api.themoviedb.org/3/genre/movie/list";
     private static final String BASE_CREDITS_URL = "http://api.themoviedb.org/3/movie/";
@@ -371,23 +371,37 @@ public class PopularMoviesMainFragment extends Fragment {
                             .build();
 
                     String creditJsonStr = queryMovieDatabase(creditUri);
-
+                   // Log.e(TAG,"Credits: " + creditJsonStr);
                     JSONObject creditObj = new JSONObject(creditJsonStr);
+
+                    //Pull out Crew information
                     JSONArray crewArray = creditObj.getJSONArray(TAG_CREW);
 
                     ArrayList<String> directorList = new ArrayList<String>();
-                    for(int k = 0; k < crewArray.length(); k++) {
-                        String job = crewArray.getJSONObject(k).getString(TAG_JOB);
+                    for(int j = 0; j < crewArray.length(); j++) {
+                        String job = crewArray.getJSONObject(j).getString(TAG_JOB);
 
+                        //Find director
                         if(job.equals(TAG_JOB_DIRECTOR))
-                            directorList.add(crewArray.getJSONObject(k).getString(TAG_NAME));
-
-                        //Log.e(TAG,job);
+                            directorList.add(crewArray.getJSONObject(j).getString(TAG_NAME));
 
                     }
                     //Add director list to movie
                     movie.setDirectors(directorList);
 
+                    //Pull out Cast Information
+                    JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
+                    ArrayList<String> actorList = new ArrayList<String>();
+
+                    for(int j = 0; j < castArray.length(); j++) {
+                        String name = castArray.getJSONObject(j).getString(TAG_NAME);
+
+                        actorList.add(name);
+
+                    }
+
+                    //Add cast list to movie
+                    movie.setActors(actorList);
 
                     //Add movie to movie list array.
                     movieList.add(movie);

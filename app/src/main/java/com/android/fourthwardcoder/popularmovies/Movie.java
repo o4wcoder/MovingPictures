@@ -23,7 +23,7 @@ public class Movie implements Parcelable {
     ArrayList<String> directors;
     String directorString;
     ArrayList<String> actors;
-
+    String actorsString;
     public Movie() {
 
     }
@@ -129,6 +129,15 @@ public class Movie implements Parcelable {
 
     public void setActors(ArrayList<String> actors) {
         this.actors = actors;
+
+        String strActors = "";
+        //Set up display string for actors. Just display the first 3 top billed
+        for(int i = 0; i < 2; i++) {
+            strActors += actors.get(i) + ", ";
+        }
+
+        if(actors.size() > 0)
+            this.actorsString = strActors.substring(0,strActors.length() - 2);
     }
 
     public String getDirectorString() {
@@ -137,6 +146,10 @@ public class Movie implements Parcelable {
 
     public void setDirectorString(String directorString) {
         this.directorString = directorString;
+    }
+
+    public String getActorsString() {
+        return actorsString;
     }
 
     protected Movie(Parcel in) {
@@ -149,6 +162,7 @@ public class Movie implements Parcelable {
         releaseYear = in.readString();
         rating = in.readDouble();
         directorString = in.readString();
+        actorsString = in.readString();
         if (in.readByte() == 0x01) {
             genreList = new ArrayList<Integer>();
             in.readList(genreList, Integer.class.getClassLoader());
@@ -186,6 +200,7 @@ public class Movie implements Parcelable {
         dest.writeString(releaseYear);
         dest.writeDouble(rating);
         dest.writeString(directorString);
+        dest.writeString(actorsString);
         if (genreList == null) {
             dest.writeByte((byte) (0x00));
         } else {

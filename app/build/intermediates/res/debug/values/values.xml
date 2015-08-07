@@ -221,7 +221,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_sort">SORT</string>
     <string name="app_name">PopularMovies</string>
-    <string name="cast">CAST</string>
+    <string name="cast">CAST:</string>
     <string name="dialog_sort">Sort By</string>
     <string name="director">DIRECTOR:</string>
     <string name="genre">GENRE: </string>
