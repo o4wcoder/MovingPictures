@@ -225,7 +225,6 @@
     <string name="dialog_sort">Sort By</string>
     <string name="director">DIRECTOR:</string>
     <string name="genre">GENRE: </string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_world">Hello world!</string>
     <string name="rated">RATED:</string>
     <string name="release_date">RELEASE DATE: </string>
@@ -236,6 +235,7 @@
     <eat-comment/>
     <string name="synopsis">SYNOPSIS: </string>
     <string name="title_activity_movie_detail">MovieDetail</string>
+    <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>

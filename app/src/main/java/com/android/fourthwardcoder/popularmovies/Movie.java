@@ -10,6 +10,14 @@ import java.util.ArrayList;
  */
 public class Movie implements Parcelable {
 
+    /******************************************************/
+    /*                   Constants                        */
+    /******************************************************/
+    private static final int NUM_CAST_DISPLAY = 3;
+
+    /******************************************************/
+    /*                   Local Data                       */
+    /******************************************************/
     int id;
     String title;
     String overview;
@@ -17,6 +25,7 @@ public class Movie implements Parcelable {
     String backdropPath;
     String releaseDate;
     String releaseYear;
+    String runtime;
     double rating;
     ArrayList<Integer> genreList;
     String genreString;
@@ -131,8 +140,14 @@ public class Movie implements Parcelable {
         this.actors = actors;
 
         String strActors = "";
+
+        //We want to show at least 3 actors, but some movies have less
+        int numActors = NUM_CAST_DISPLAY;
+        if(actors.size() < NUM_CAST_DISPLAY)
+           numActors = actors.size();
+
         //Set up display string for actors. Just display the first 3 top billed
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < numActors; i++) {
             strActors += actors.get(i) + ", ";
         }
 
@@ -152,6 +167,14 @@ public class Movie implements Parcelable {
         return actorsString;
     }
 
+    public String getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
@@ -163,6 +186,7 @@ public class Movie implements Parcelable {
         rating = in.readDouble();
         directorString = in.readString();
         actorsString = in.readString();
+        runtime = in.readString();
         if (in.readByte() == 0x01) {
             genreList = new ArrayList<Integer>();
             in.readList(genreList, Integer.class.getClassLoader());
@@ -201,6 +225,7 @@ public class Movie implements Parcelable {
         dest.writeDouble(rating);
         dest.writeString(directorString);
         dest.writeString(actorsString);
+        dest.writeString(runtime);
         if (genreList == null) {
             dest.writeByte((byte) (0x00));
         } else {

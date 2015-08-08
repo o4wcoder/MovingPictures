@@ -53,6 +53,9 @@ public class MovieDetailActivityFragment extends Fragment {
         TextView releaseYearTextView = (TextView)view.findViewById(R.id.releaseYearTextView);
         releaseYearTextView.setText(movie.getReleaseYear());
 
+        TextView runtimeTextView = (TextView)view.findViewById(R.id.runtimeTextView);
+        runtimeTextView.setText(movie.getRuntime() + " min");
+
         TextView ratingTextView = (TextView)view.findViewById(R.id.ratingTextView);
         ratingTextView.setText(String.valueOf(movie.getRating()) + "/10");
 
