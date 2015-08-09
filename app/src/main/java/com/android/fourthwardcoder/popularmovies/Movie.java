@@ -27,7 +27,7 @@ public class Movie implements Parcelable {
     String releaseYear;
     String runtime;
     double rating;
-    ArrayList<Integer> genreList;
+    ArrayList<String> genreList;
     String genreString;
     ArrayList<String> directors;
     String directorString;
@@ -99,12 +99,20 @@ public class Movie implements Parcelable {
         this.rating = rating;
     }
 
-    public ArrayList<Integer> getGenreList() {
+    public ArrayList<String> getGenreList() {
         return genreList;
     }
 
-    public void setGenreList(ArrayList<Integer> genreList) {
+    public void setGenreList(ArrayList<String> genreList) {
         this.genreList = genreList;
+
+        String strGenres = "";
+        for(int i = 0; i<genreList.size(); i++) {
+            strGenres += genreList.get(i) + ", ";
+        }
+
+        if(genreList.size() > 0)
+           this.genreString = strGenres.substring(0,strGenres.length() - 2);
     }
 
     public String getGenreString() {
@@ -188,7 +196,7 @@ public class Movie implements Parcelable {
         actorsString = in.readString();
         runtime = in.readString();
         if (in.readByte() == 0x01) {
-            genreList = new ArrayList<Integer>();
+            genreList = new ArrayList<String>();
             in.readList(genreList, Integer.class.getClassLoader());
         } else {
             genreList = null;

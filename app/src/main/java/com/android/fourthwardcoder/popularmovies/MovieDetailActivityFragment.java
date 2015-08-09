@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +33,6 @@ public class MovieDetailActivityFragment extends Fragment {
 
         //Get Movie passed from Main Activity
         Movie movie = getActivity().getIntent().getParcelableExtra(PopularMoviesMainFragment.EXTRA_MOVIE);
-        Log.e(TAG, "Got Movie in Detail" + movie.getTitle());
-
-        Log.e(TAG, "Backdrop: " + movie.getBackdropPath());
-        Log.e(TAG, "Movie Rating " + movie.getRating());
 
         getActivity().setTitle(movie.getTitle());
 

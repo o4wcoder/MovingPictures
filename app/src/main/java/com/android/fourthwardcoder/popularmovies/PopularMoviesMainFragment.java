@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,7 +67,7 @@ public class PopularMoviesMainFragment extends Fragment {
     /**************************************************/
     GridView mGridView;
     ArrayList<Movie> mMovieList;
-    ArrayList<Pair<Integer,String>> mGenreList;
+    //ArrayList<Pair<Integer,String>> mGenreList;
     String mSortOrder;
     SharedPreferences.Editor prefsEditor;
 
@@ -190,23 +189,6 @@ public class PopularMoviesMainFragment extends Fragment {
             //We only pass one param for the sort order, so get the first one.
             String sortOrder = params[0];
 
-
-            if(mGenreList == null) {
-                //Build URI String to query the databaes for the list of genres
-                Uri genreUri = Uri.parse(BASE_GENRE_URL).buildUpon()
-                        .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
-                        .build();
-                String genreJsonStr = queryMovieDatabase(genreUri);
-
-                //Error in pulling genres, return null
-                if(genreJsonStr == null) {
-                    Log.e(TAG,"Got null genre Json Str");
-                    return null;
-                }
-
-                parseJsonGenres(genreJsonStr);
-            }
-
             //Build URI String to query the database for a list of movies
             Uri movieUri = Uri.parse(BASE_DISCOVER_URL).buildUpon()
                     .appendQueryParameter(SORT_PARM, sortOrder)
@@ -269,8 +251,6 @@ public class PopularMoviesMainFragment extends Fragment {
                 }
                 moviesJsonStr = buffer.toString();
 
-                Log.e(TAG, moviesJsonStr);
-
             }
             catch(IOException e) {
                 Log.e(TAG, e.getMessage());
@@ -296,42 +276,6 @@ public class PopularMoviesMainFragment extends Fragment {
         }
 
         /**
-         * parseJsonGenres()
-         * @param genreJsonStr
-         */
-        private void parseJsonGenres(String genreJsonStr) {
-            final String TAG_GENRES = "genres";
-            final String TAG_ID = "id";
-            final String TAG_NAME = "name";
-            ArrayList<Pair> genreList;
-
-
-            try {
-                JSONObject obj = new JSONObject(genreJsonStr);
-                JSONArray genreArray = obj.getJSONArray(TAG_GENRES);
-
-                //Initialize genre List to the size of the number of returned genres
-                if (genreArray != null) {
-                    mGenreList = new ArrayList<Pair<Integer, String>>(genreArray.length());
-                    for (int i = 0; i < genreArray.length(); i++) {
-                        int id = genreArray.getJSONObject(i).getInt(TAG_ID);
-                        String name = genreArray.getJSONObject(i).getString(TAG_NAME);
-
-                        //Store genre ID and name into a Pair
-                        Pair<Integer, String> genre = new Pair(id, name);
-
-                        //Put pair into genre list
-                        mGenreList.add(genre);
-                    }
-                }
-
-            }
-            catch(JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        /**
          *
          * @param moviesJsonStr
          * @return
@@ -354,6 +298,7 @@ public class PopularMoviesMainFragment extends Fragment {
             final String TAG_JOB_DIRECTOR = "Director";
             final String TAG_NAME = "name";
             final String TAG_RUNTIME = "runtime";
+            final String TAG_GENRES = "genres";
 
             final String BASE_URL = "http://image.tmdb.org/t/p/";
             final String IMAGE_185_SIZE = "w185/";
@@ -385,21 +330,6 @@ public class PopularMoviesMainFragment extends Fragment {
                     movie.setReleaseDate(result.getString(TAG_RELEASE_DATE));
                     movie.setRating(result.getDouble(TAG_RATING));
 
-                    //Get genre ids
-                    JSONArray genreArray = result.getJSONArray(TAG_GENRE_IDS);
-
-                    //Move genre ids from JSON Array into ArrayList
-                    ArrayList<Integer> genreList = new ArrayList<Integer>(genreArray.length());
-                    for(int j=0; j < genreArray.length(); j++) {
-                        //Log.e(TAG,"ID: " + genreArray.getInt(j));
-                        genreList.add(j,genreArray.getInt(j));
-                    }
-                    //Store genre list in movie object
-                    movie.setGenreList(genreList);
-
-                    //Log.e(TAG, getGenreString(genreList));
-                    movie.setGenreString(getGenreString(genreList));
-
 
                     //Get Uri for basic movie info
                     //Build URI String to query the databaes for the list of genres
@@ -410,10 +340,19 @@ public class PopularMoviesMainFragment extends Fragment {
 
                     String movieJsonStr = queryMovieDatabase(movieUri);
                     if(movieJsonStr != null) {
-                        Log.e(TAG, "Movie: " + movieJsonStr);
+                        //Log.e(TAG, "Movie: " + movieJsonStr);
 
                         JSONObject movieObj = new JSONObject(movieJsonStr);
                         movie.setRuntime(movieObj.getString(TAG_RUNTIME));
+                        JSONArray genreArray = movieObj.getJSONArray(TAG_GENRES);
+
+                        ArrayList<String> genreList = new ArrayList<String>();
+                        for(int j = 0; j<genreArray.length();j++) {
+                            String genre = genreArray.getJSONObject(j).getString(TAG_NAME);
+                            genreList.add(genre);
+                        }
+
+                        movie.setGenreList(genreList);
                     }
                     //Get Uri for credits of movie
                     //Build URI String to query the databaes for the list of genres
@@ -473,26 +412,6 @@ public class PopularMoviesMainFragment extends Fragment {
 
             return movieList;
         }
-
-        private String getGenreString(ArrayList<Integer> idList) {
-
-            String genreStr = "";
-
-            for(int i=0; i < idList.size();i++) {
-                int id = idList.get(i);
-                for(int j=0; j < mGenreList.size(); j++) {
-                    Pair<Integer,String> genre = mGenreList.get(j);
-                    if(id == genre.first)
-                        genreStr += genre.second + ", ";
-                }
-            }
-
-            if(idList.size() > 0)
-                genreStr = genreStr.substring(0,genreStr.length() - 2);
-
-            return genreStr;
-        }
-
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movieList) {
