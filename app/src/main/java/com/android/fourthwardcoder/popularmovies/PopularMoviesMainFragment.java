@@ -1,6 +1,7 @@
 package com.android.fourthwardcoder.popularmovies;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -34,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 
@@ -51,9 +53,12 @@ public class PopularMoviesMainFragment extends Fragment {
 
     private static final String PICASSO_API_KEY = APIKeys.PICASSO_API_KEY;
     private static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/3/discover/movie";
-    private static final String BASE_GENRE_URL = "http://api.themoviedb.org/3/genre/movie/list";
     private static final String BASE_MOVIE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String UPCOMING_PATH = "upcoming";
+    private static final String NOW_PLAYING = "now_playing";
+    private static final String POPULAR_PATH = "popular";
     private static final String SORT_PARM = "sort_by";
+    private static final String CERT_COUNTRY="certification_country";
     private static final String API_KEY_PARAM = "api_key";
 
     private static final String PREF_SORT = "sort";
@@ -62,13 +67,17 @@ public class PopularMoviesMainFragment extends Fragment {
 
     //Constant for request code to Sort Dialog
     public static final int REQUEST_SORT = 0;
+    private static final int DEFAULT_SORT = 0;
+
+    private static final String MOVIE_LIST_KEY = "movieList";
+
     /**************************************************/
 	/*                Local Data                      */
     /**************************************************/
     GridView mGridView;
-    ArrayList<Movie> mMovieList;
+    ArrayList<Movie> mMovieList = null;
     //ArrayList<Pair<Integer,String>> mGenreList;
-    String mSortOrder;
+    int mSortOrder;
     SharedPreferences.Editor prefsEditor;
 
     public PopularMoviesMainFragment() {
@@ -79,11 +88,23 @@ public class PopularMoviesMainFragment extends Fragment {
     /**************************************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
+        /*
+        if(savedInstanceState != null) {
+            Log.e(TAG,"Got something in saved instance!");
+        }
+        else
+            Log.e(TAG,"Nothing in saved state");
+        */
         //Retain fragment across Activity re-creation
         setRetainInstance(true);
 
+        if(mMovieList == null)
+            Log.e(TAG,"Movie list is null in onCreate");
+        else
+            Log.e(TAG,"Movie list is NOT null in onCreate");
         //Set Option Menu
         setHasOptionsMenu(true);
 
@@ -93,12 +114,12 @@ public class PopularMoviesMainFragment extends Fragment {
         prefsEditor = sharedPrefs.edit();
 
         //Get list of sort types from array resource
-        Resources res = getResources();
-        String[] sortList = res.getStringArray(R.array.sort_url_list);
+       // Resources res = getResources();
+        //String[] sortList = res.getStringArray(R.array.sort_url_list);
 
         //Get stored sort preference from shared resources. If non exists set it to sort by
         //popularity.
-        mSortOrder = sharedPrefs.getString(PREF_SORT,sortList[0]);
+        mSortOrder = sharedPrefs.getInt(PREF_SORT, DEFAULT_SORT);
     }
 
     @Override
@@ -120,14 +141,43 @@ public class PopularMoviesMainFragment extends Fragment {
                 startActivity(i);
             }
         });
-        //If there is a gridview then start up thread to pull in movie data. Send in sort
-        //type.
-        if(mGridView != null)
-            new FetchPhotosTask().execute(mSortOrder);
 
+
+
+        if(mMovieList == null)
+            Log.e(TAG,"onCreateView movieList is null");
+        else
+        Log.e(TAG,"onCreateView movieList is NOT null");
+
+        //Make sure we have a gridview
+        if(mGridView != null) {
+
+            //We don't have any movies, got fetch them
+            if (mMovieList == null)
+                //Start up thread to pull in movie data. Send in sort
+                //type.
+                new FetchPhotosTask().execute(mSortOrder);
+            else {
+                //Hit this when we retained our instance of the fragment on a rotation.
+                //Just apply the current list of movies
+                Log.e(TAG,"Apply current movie list");
+                MovieImageAdapter adapter = new MovieImageAdapter(mMovieList);
+                mGridView.setAdapter(adapter);
+            }
+        }
         return view;
     }
 
+            /*
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+
+        Log.e(TAG,"In onSaveInstanceState and saving movieList");
+        savedInstanceState.putParcelableArrayList(MOVIE_LIST_KEY, mMovieList);
+        super.onSaveInstanceState(savedInstanceState);
+
+    }
+    */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
@@ -164,8 +214,8 @@ public class PopularMoviesMainFragment extends Fragment {
 
         if (requestCode == REQUEST_SORT) {
             //Get change in sort from dialog and store it in Shared Preferences
-            mSortOrder = data.getStringExtra(SortDialogFragment.EXTRA_SORT);
-            prefsEditor.putString(PREF_SORT,mSortOrder);
+            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT,DEFAULT_SORT);
+            prefsEditor.putInt(PREF_SORT, mSortOrder);
             prefsEditor.commit();
 
             //Fetch new set of movies based on sort order
@@ -181,20 +231,67 @@ public class PopularMoviesMainFragment extends Fragment {
      * Class FetchPhotosTask
      *
      */
-    private class FetchPhotosTask extends AsyncTask<String,Void,ArrayList<Movie>> {
+    private class FetchPhotosTask extends AsyncTask<Integer,Void,ArrayList<Movie>> {
+
+        private ProgressDialog progressDialog;
 
         @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
+        protected void onPreExecute() {
 
+            progressDialog = ProgressDialog.show(getActivity(),"",getString(R.string.progress_message),true);
+        }
+
+        @Override
+        protected ArrayList<Movie> doInBackground(Integer... params) {
+
+            Uri movieUri = null;
             //We only pass one param for the sort order, so get the first one.
-            String sortOrder = params[0];
+            int sortPos = params[0];
+            Resources res = getResources();
+            String[] sortList = res.getStringArray(R.array.sort_url_list);
+            String sortOrder = sortList[sortPos];
 
-            //Build URI String to query the database for a list of movies
-            Uri movieUri = Uri.parse(BASE_DISCOVER_URL).buildUpon()
-                    .appendQueryParameter(SORT_PARM, sortOrder)
-                    .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
-                    .build();
+            switch(sortPos) {
+                case 0:
+                    //Build URI String to query the database for a list of popular movies
+                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                            .appendPath(POPULAR_PATH)
+                            .appendQueryParameter(CERT_COUNTRY,"US") //Set country to US just to return good results on sorting
+                            .appendQueryParameter(SORT_PARM, sortOrder)
+                            .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                            .build();
+                    break;
+                case 1:
+                    //Build URI String to query the database for a list of upcoming movies
+                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                            .appendPath(UPCOMING_PATH)
+                            .appendQueryParameter(CERT_COUNTRY, "US") //Set country to US just to return good results on sorting
+                            .appendQueryParameter(SORT_PARM, sortOrder)
+                            .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                            .build();
+                    break;
+                case 2:
+                    //Build URI String to query the database for a list of now playing movies
+                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                            .appendPath(NOW_PLAYING)
+                            .appendQueryParameter(CERT_COUNTRY, "US") //Set country to US just to return good results on sorting
+                            .appendQueryParameter(SORT_PARM, sortOrder)
+                            .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                            .build();
+                    break;
+                case 3:
+                    //Build URI String to query the database for the list of top grossing movies
+                    movieUri = Uri.parse(BASE_DISCOVER_URL).buildUpon()
+                            .appendQueryParameter(CERT_COUNTRY, "US") //Set country to US just to return good results on sorting
+                            .appendQueryParameter(SORT_PARM, sortOrder)
+                            .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
+                            .build();
+                    break;
 
+            }
+
+
+            //Log.e(TAG,movieUri.toString());
             String movieJsonStr = queryMovieDatabase(movieUri);
 
             //Error pulling movies, return null
@@ -219,7 +316,7 @@ public class PopularMoviesMainFragment extends Fragment {
 
             try {
 
-                Log.e(TAG, builtUri.toString());
+                //Log.e(TAG, builtUri.toString());
 
                 URL url = new URL(builtUri.toString());
 
@@ -299,6 +396,7 @@ public class PopularMoviesMainFragment extends Fragment {
             final String TAG_NAME = "name";
             final String TAG_RUNTIME = "runtime";
             final String TAG_GENRES = "genres";
+            final String TAG_REVENUE = "revenue";
 
             final String BASE_URL = "http://image.tmdb.org/t/p/";
             final String IMAGE_185_SIZE = "w185/";
@@ -332,7 +430,7 @@ public class PopularMoviesMainFragment extends Fragment {
 
 
                     //Get Uri for basic movie info
-                    //Build URI String to query the databaes for the list of genres
+                    //Build URI String to query the databaes for a specific movie
                     Uri movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
                             .appendPath(String.valueOf(movie.getId()))
                             .appendQueryParameter(API_KEY_PARAM, PICASSO_API_KEY)
@@ -353,6 +451,9 @@ public class PopularMoviesMainFragment extends Fragment {
                         }
 
                         movie.setGenreList(genreList);
+
+                        int iRevenue = movieObj.getInt(TAG_REVENUE);
+                        movie.setRevenue(NumberFormat.getIntegerInstance().format(iRevenue));
                     }
                     //Get Uri for credits of movie
                     //Build URI String to query the databaes for the list of genres
@@ -416,6 +517,7 @@ public class PopularMoviesMainFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Movie> movieList) {
 
+            progressDialog.dismiss();
             if(getActivity() != null && mGridView != null) {
 
                 if(movieList != null) {

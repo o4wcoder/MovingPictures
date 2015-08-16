@@ -20,12 +20,12 @@ public class SortDialogFragment extends DialogFragment {
     public static final String EXTRA_SORT = "com.android.fourthwardcoder.popularmovies.extra_sort";
 
 
-    String mSortOrder;
+    int mSortOrder;
 
-    public static SortDialogFragment newInstance(String sortOrder) {
+    public static SortDialogFragment newInstance(int sortOrder) {
         // Required empty public constructor
         Bundle args = new Bundle();
-        args.putString(EXTRA_SORT,sortOrder);
+        args.putInt(EXTRA_SORT,sortOrder);
         Log.e(TAG,"SorDialogFragment with sort " + sortOrder);
 
         SortDialogFragment fragment = new SortDialogFragment();
@@ -39,54 +39,15 @@ public class SortDialogFragment extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        mSortOrder = (int)getArguments().getInt(EXTRA_SORT);
 
-        mSortOrder = (String)getArguments().getString(EXTRA_SORT);
-
-        /*
-        //Create a Calendar to get the time
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(mTime);
-
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-*/
         View v = getActivity().getLayoutInflater()
                 .inflate(R.layout.dialog_sort, null);
-
-       /*
-        TimePicker timePicker = (TimePicker)v.findViewById(R.id.dialog_time_timePicker);
-        timePicker.setCurrentHour(hour);
-        timePicker.setCurrentMinute(min);
-        timePicker.setIs24HourView(false);
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-
-            @Override
-            public void onTimeChanged(TimePicker view, int hour, int min) {
-
-                //Log.d(TAG,"Got Hour " + hour);
-                //retrieving the original date from the mTime value with a calendar
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(mTime);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE,min);
-
-                //Translating hourOfDay & minute into a Date object using a calendar, date keeps
-                //the same
-                mTime = calendar.getTime();
-                //Log.d(TAG,"Hour in data object " + mTime.getHours());
-
-
-                //Update arguments to preserve selected value on rotation
-                getArguments().putSerializable(EXTRA_TIME, mTime);
-            }
-
-        });
-        */
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setTitle(R.string.dialog_sort)
-                .setSingleChoiceItems(R.array.sort_list, getSortPosition(), new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(R.array.sort_list, mSortOrder, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -94,7 +55,7 @@ public class SortDialogFragment extends DialogFragment {
                         Resources res = getResources();
                         String[] sortList = res.getStringArray(R.array.sort_url_list);
 
-                        mSortOrder = sortList[which];
+                        mSortOrder = which;
 
                         sendResult(Activity.RESULT_OK);
                         dialog.dismiss();
@@ -135,6 +96,7 @@ public class SortDialogFragment extends DialogFragment {
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
     }
 
+    /*
     private int getSortPosition() {
 
         Resources res = getResources();
@@ -149,5 +111,5 @@ public class SortDialogFragment extends DialogFragment {
         //could not find the sort order, return 0 "popularity"
         return 0;
     }
-
+*/
 }

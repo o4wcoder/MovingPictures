@@ -79,6 +79,10 @@ public class MovieDetailActivityFragment extends Fragment {
                 movie.getGenreString());
         genreTextView.setText(genre);
 
+        TextView revenueTextView = (TextView)view.findViewById(R.id.revenueTextView);
+        Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
+                movie.getRevenue());
+        revenueTextView.setText(revenue);
         return view;
     }
 }

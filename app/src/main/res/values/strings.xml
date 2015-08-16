@@ -8,8 +8,10 @@
     <string name="director">DIRECTOR:</string>
     <string name="cast">CAST:</string>
     <string name="rated">RATED:</string>
-    <string name="release_date">RELEASE DATE: </string>
-    <string name="synopsis">SYNOPSIS: </string>
-    <string name="genre">GENRE: </string>
+    <string name="release_date">RELEASE DATE:</string>
+    <string name="synopsis">SYNOPSIS:</string>
+    <string name="genre">GENRE:</string>
+    <string name="revenue">REVENUE:</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
+    <string name="progress_message">Downloading Movies...</string>
 </resources>
