@@ -13,32 +13,40 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 
-
+/**
+ * Class SortDialogFragment
+ *
+ * Author: Chris Hare
+ * Created: 8/6/2015
+ *
+ * Dialog Fragment used for selecting the sort order of the movies.
+ */
 public class SortDialogFragment extends DialogFragment {
 
+    //Log tag from debugging
     private static final String TAG = SortDialogFragment.class.getSimpleName();
-    public static final String EXTRA_SORT = "com.android.fourthwardcoder.popularmovies.extra_sort";
 
+    //Extra for passing the sort order
+    public static final String EXTRA_SORT = "com.android.fourthwardcoder.popularmovies.extra_sort";
 
     int mSortOrder;
 
     public static SortDialogFragment newInstance(int sortOrder) {
-        // Required empty public constructor
+        //Store sortOder as extra to pass to the dialog
         Bundle args = new Bundle();
         args.putInt(EXTRA_SORT,sortOrder);
-        Log.e(TAG,"SorDialogFragment with sort " + sortOrder);
 
+        //Start new fragment dialog and pass sortOrder
         SortDialogFragment fragment = new SortDialogFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-
-
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        //Get sort order that was passed as an extra
         mSortOrder = (int)getArguments().getInt(EXTRA_SORT);
 
         View v = getActivity().getLayoutInflater()
@@ -90,26 +98,10 @@ public class SortDialogFragment extends DialogFragment {
         i.putExtra(EXTRA_SORT,mSortOrder );
 
         //Send result to PopularMoviesMain Fragment
-        //Request code to tell the target who is returning hte result
+        //Request code to tell the target who is returning the result
         //result code to determine what action to take
         //An intent that can have extra data
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
     }
 
-    /*
-    private int getSortPosition() {
-
-        Resources res = getResources();
-        String[] sortList = res.getStringArray(R.array.sort_url_list);
-
-        for(int i = 0; i < sortList.length; i++) {
-            Log.e(TAG,"Sort list at " + i + " " + sortList[i]);
-            if(sortList[i].equals(mSortOrder))
-                return i;
-        }
-
-        //could not find the sort order, return 0 "popularity"
-        return 0;
-    }
-*/
 }

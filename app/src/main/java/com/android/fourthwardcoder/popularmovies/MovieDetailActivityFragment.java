@@ -14,7 +14,11 @@ import com.squareup.picasso.Picasso;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class MovieDetailActivityFragment
+ * Author: Chris Hare
+ * Created: 7/26/2015
+ *
+ * Fragment to show the details of a particular movie
  */
 public class MovieDetailActivityFragment extends Fragment {
 
@@ -23,6 +27,9 @@ public class MovieDetailActivityFragment extends Fragment {
     /*****************************************************************/
     private static final String TAG = MovieDetailActivityFragment.class.getSimpleName();
 
+    /*****************************************************************/
+    /*                       Constructor                             */
+    /*****************************************************************/
     public MovieDetailActivityFragment() {
     }
 
@@ -34,14 +41,17 @@ public class MovieDetailActivityFragment extends Fragment {
         //Get Movie passed from Main Activity
         Movie movie = getActivity().getIntent().getParcelableExtra(PopularMoviesMainFragment.EXTRA_MOVIE);
 
+        //Set title of Movie on Action Bar
         getActivity().setTitle(movie.getTitle());
 
+        //Set image views
         ImageView backdropImageView = (ImageView)view.findViewById(R.id.backdropImageView);
         Picasso.with(getActivity()).load(movie.getBackdropPath()).into(backdropImageView);
 
         ImageView posterImageView = (ImageView)view.findViewById(R.id.posterImageView);
         Picasso.with(getActivity()).load(movie.getPosterPath()).into(posterImageView);
 
+        //Set textviews with Movie details
         TextView titleTextView = (TextView)view.findViewById(R.id.titleTextView);
         titleTextView.setText(movie.getTitle());
 

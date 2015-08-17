@@ -5,7 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+/**
+ * Class PopularMoviesMainActivity
+ * Author: Chris Hare
+ * Created: 7/25/2015
+ *
+ * Main Activity of the PopularMovies App
+ */
 public class PopularMoviesMainActivity extends AppCompatActivity {
 
     @Override

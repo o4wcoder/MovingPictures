@@ -1,9 +1,14 @@
 package com.android.fourthwardcoder.popularmovies;
 
 /**
- * Created by chare on 8/7/2015.
+ * Interface APIKeys
+ * Author: Chris Hare
+ * Created 8/7/2015.
+ *
+ * This interface is used to define API Keys used whithin the APP. It is added to the .gitignore
+ * file and is not pushed to GitHub.
  */
 public interface APIKeys {
 
-    public static final String PICASSO_API_KEY = "e80f27e43348054952d67e7d0353ac38";
+    public static final String MOVIE_DB_API_KEY = "e80f27e43348054952d67e7d0353ac38";
 }

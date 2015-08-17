@@ -1,12 +1,18 @@
 package com.android.fourthwardcoder.popularmovies;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
-public class MovieDetailActivity extends ActionBarActivity {
+/**
+ * Class MovieDetailActivity
+ * Author: Chris Hare
+ * Created: 7/26/2015
+ *
+ * Activity to show the details of a particular movie
+ */
+public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

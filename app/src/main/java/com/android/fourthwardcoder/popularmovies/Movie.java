@@ -6,13 +6,18 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 7/26/2015.
+ * Class Movie
+ * Author:  Chris Hare
+ * Created: 7/26/2015
+ *
+ * Class to hold Movie details. Implements Parcelable to be passed between activities.
  */
 public class Movie implements Parcelable {
 
     /******************************************************/
     /*                   Constants                        */
     /******************************************************/
+    //Number of cast memembers to be displayed on the Details Activity
     private static final int NUM_CAST_DISPLAY = 3;
 
     /******************************************************/
@@ -35,9 +40,17 @@ public class Movie implements Parcelable {
     String directorString;
     ArrayList<String> actors;
     String actorsString;
+
+    /**************************************************************/
+    /*                      Constructors                          */
+    /**************************************************************/
     public Movie() {
 
     }
+
+    /**************************************************************/
+    /*                   Public Getter/Setters                    */
+    /**************************************************************/
     public int getId() {
         return id;
     }
@@ -194,6 +207,9 @@ public class Movie implements Parcelable {
         this.revenue = "$" + revenue;
     }
 
+    /**************************************************************/
+    /*                      Parcelable Section                    */
+    /**************************************************************/
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
