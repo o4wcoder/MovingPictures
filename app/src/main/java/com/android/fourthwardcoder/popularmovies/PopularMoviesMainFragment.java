@@ -57,7 +57,7 @@ public class PopularMoviesMainFragment extends Fragment {
     //Extra for passing the Movie object to the movies detail activity
     public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
 
-    //API Key for the Movies DB API
+    //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
     private static final String MOVIE_DB_API_KEY = APIKeys.MOVIE_DB_API_KEY;
 
     //Full URLs for the movie DB
