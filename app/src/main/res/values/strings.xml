@@ -14,4 +14,6 @@
     <string name="revenue">REVENUE:</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <string name="progress_message">Downloading Movies...</string>
+    <string name="title_activity_actor_detail">Actor Details</string>
+    <string name="title_activity_movie_reviews">Movie Reviews</string>
 </resources>

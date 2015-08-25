@@ -33,6 +33,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.popularmovies.PopularMoviesMainActivity" />
         </activity>
+        <activity
+            android:name="com.android.fourthwardcoder.popularmovies.ActorDetailActivity"
+            android:label="@string/title_activity_actor_detail" >
+        </activity>
+        <activity
+            android:name="com.android.fourthwardcoder.popularmovies.MovieReviewsActivity"
+            android:label="@string/title_activity_movie_reviews" >
+        </activity>
     </application>
 
 </manifest>

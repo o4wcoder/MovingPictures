@@ -236,7 +236,9 @@
     <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="synopsis">SYNOPSIS:</string>
+    <string name="title_activity_actor_detail">Actor Details</string>
     <string name="title_activity_movie_detail">MovieDetail</string>
+    <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
