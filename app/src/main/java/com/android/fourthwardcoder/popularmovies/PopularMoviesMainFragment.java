@@ -29,12 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
@@ -61,8 +55,7 @@ public class PopularMoviesMainFragment extends Fragment {
     private static final String MOVIE_DB_API_KEY = APIKeys.MOVIE_DB_API_KEY;
 
     //Full URLs for the movie DB
-    private static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/3/discover/movie";
-    private static final String BASE_MOVIE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/" + DBUtil.NUM_QUERY_PAGES + "/discover/movie";
 
     //Extra append paths for the movie URI
     private static final String UPCOMING_PATH = "upcoming";
@@ -72,7 +65,6 @@ public class PopularMoviesMainFragment extends Fragment {
     //Extra append params for the movie URI
     private static final String SORT_PARAM = "sort_by";
     //private static final String CERT_COUNTRY_PARAM = "certification_country";
-    private static final String API_KEY_PARAM = "api_key";
 
     //Shared Preference for storing sort type
     private static final String PREF_SORT = "sort";
@@ -145,7 +137,7 @@ public class PopularMoviesMainFragment extends Fragment {
         //Make sure we have a gridview
         if(mGridView != null) {
 
-            //We don't have any movies, got fetch them
+            //We don't have any movies, go fetch them
             if (mMovieList == null)
                 //Start up thread to pull in movie data. Send in sort
                 //type.
@@ -250,28 +242,28 @@ public class PopularMoviesMainFragment extends Fragment {
                 //Sort by Popularity
                 case 0:
                     //Build URI String to query the database for a list of popular movies
-                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(POPULAR_PATH)
                             .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
                     break;
                 //Sort by Upcoming
                 case 1:
                     //Build URI String to query the database for a list of upcoming movies
-                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(UPCOMING_PATH)
                             .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
                     break;
                 //Sort by Now Playing
                 case 2:
                     //Build URI String to query the database for a list of now playing movies
-                    movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(NOW_PLAYING)
                             .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
                     break;
                 //Sort by All Time Top Grossing
@@ -279,7 +271,7 @@ public class PopularMoviesMainFragment extends Fragment {
                     //Build URI String to query the database for the list of top grossing movies
                     movieUri = Uri.parse(BASE_DISCOVER_URL).buildUpon()
                             .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
                     break;
             }
@@ -287,7 +279,7 @@ public class PopularMoviesMainFragment extends Fragment {
 
             //Log.e(TAG,movieUri.toString());
             //Get full Json result from querying the Movie DB
-            String movieJsonStr = queryMovieDatabase(movieUri);
+            String movieJsonStr = DBUtil.queryMovieDatabase(movieUri);
 
             //Error pulling movies, return null
             if(movieJsonStr == null)
@@ -298,76 +290,6 @@ public class PopularMoviesMainFragment extends Fragment {
 
         }
 
-        /**
-         * Takes the URI passed in and fetches the data from the movie DB. Returns that data
-         * as a JSON String
-         *
-         * @param builtUri URI string use to poll data from movie database
-         * @return         JSONString of movie data from the query
-         */
-        private String queryMovieDatabase(Uri builtUri) {
-
-            String moviesJsonStr = null;
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            try {
-
-                //Log.e(TAG, builtUri.toString());
-
-                URL url = new URL(builtUri.toString());
-
-                // Create the request to OpenWeatherMap, and open the connection
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    return null;
-                }
-                moviesJsonStr = buffer.toString();
-
-            }
-            catch(IOException e) {
-                Log.e(TAG, e.getMessage());
-                return null;
-            }
-            finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(TAG, "Error closing stream", e);
-                    }
-                }
-
-                //Return list of Movies
-                return moviesJsonStr;
-            }
-
-
-        }
 
         /**
          * Parses the JSON String returned from the query to the Movie DB. Pulls data out for
@@ -438,13 +360,13 @@ public class PopularMoviesMainFragment extends Fragment {
 
                     //Get Uri for basic movie info
                     //Build URI String to query the databaes for a specific movie
-                    Uri movieUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                    Uri movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(String.valueOf(movie.getId()))
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
 
                     //Get additional information on that movie
-                    String movieJsonStr = queryMovieDatabase(movieUri);
+                    String movieJsonStr = DBUtil.queryMovieDatabase(movieUri);
                     if(movieJsonStr != null) {
                         //Log.e(TAG, "Movie: " + movieJsonStr);
 
@@ -466,13 +388,13 @@ public class PopularMoviesMainFragment extends Fragment {
                     }
                     //Get Uri for credits of movie
                     //Build URI String to query the databaes for the list of credits
-                    Uri creditUri = Uri.parse(BASE_MOVIE_URL).buildUpon()
+                    Uri creditUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(String.valueOf(movie.getId()))
                             .appendPath(TAG_CREDITS)
-                            .appendQueryParameter(API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
                             .build();
 
-                    String creditJsonStr = queryMovieDatabase(creditUri);
+                    String creditJsonStr = DBUtil.queryMovieDatabase(creditUri);
 
                     if(creditJsonStr != null) {
 
@@ -556,12 +478,12 @@ public class PopularMoviesMainFragment extends Fragment {
      *
      * ArrayAdapter used for the GridView that displays the movie posters on the main activity
      */
-    private class MovieImageAdapter extends ArrayAdapter<Movie> {
+    public class MovieImageAdapter extends ArrayAdapter<Movie> {
+
 
         public MovieImageAdapter(ArrayList<Movie> movies) {
             super(getActivity(),0,movies);
 
-            //Store Global List of movies
             mMovieList = movies;
         }
 
@@ -586,5 +508,6 @@ public class PopularMoviesMainFragment extends Fragment {
             return convertView;
         }
     }
+
 
 }

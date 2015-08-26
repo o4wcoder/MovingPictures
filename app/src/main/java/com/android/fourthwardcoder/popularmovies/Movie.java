@@ -17,7 +17,7 @@ public class Movie implements Parcelable {
     /******************************************************/
     /*                   Constants                        */
     /******************************************************/
-    //Number of cast memembers to be displayed on the Details Activity
+    //Number of cast members to be displayed on the Details Activity
     private static final int NUM_CAST_DISPLAY = 3;
 
     /******************************************************/

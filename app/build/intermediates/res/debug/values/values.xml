@@ -240,6 +240,7 @@
     <string name="title_activity_movie_detail">MovieDetail</string>
     <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
+    <string name="user_reviews">User Reviews</string>
     <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>

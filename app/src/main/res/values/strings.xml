@@ -16,4 +16,5 @@
     <string name="progress_message">Downloading Movies...</string>
     <string name="title_activity_actor_detail">Actor Details</string>
     <string name="title_activity_movie_reviews">Movie Reviews</string>
+    <string name="user_reviews">User Reviews</string>
 </resources>
