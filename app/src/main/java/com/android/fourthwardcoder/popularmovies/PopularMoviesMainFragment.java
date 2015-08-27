@@ -302,7 +302,6 @@ public class PopularMoviesMainFragment extends Fragment {
         private ArrayList<Movie> parseJsonMovies(String moviesJsonStr) {
 
             //JSON Result TAGs
-            final String TAG_RESULTS = "results";
             final String TAG_ID = "id";
             final String TAG_TITLE = "title";
             final String TAG_OVERVIEW = "overview";
@@ -335,7 +334,7 @@ public class PopularMoviesMainFragment extends Fragment {
                 JSONObject obj = new JSONObject(moviesJsonStr);
 
                 //Get JSONArray List of all movies
-                JSONArray resultsArray = obj.getJSONArray(TAG_RESULTS);
+                JSONArray resultsArray = obj.getJSONArray(DBUtil.TAG_RESULTS);
 
                 //Log.e(TAG,"Results Array: " + resultsArray.get(0));
 

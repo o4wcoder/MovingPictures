@@ -5,16 +5,19 @@ package com.android.fourthwardcoder.popularmovies;
  */
 public class Review {
 
-    int id;
     String author;
     String content;
 
-    public int getId() {
-        return id;
+    public Review() {
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public String toString() {
+
+        return "REVIEW:" + "\n" +
+                author + "\n" +
+                content + "\n";
     }
 
     public String getAuthor() {

@@ -25,6 +25,12 @@ public class DBUtil {
     public static final String BASE_MOVIE_URL = "http://api.themoviedb.org/"+ NUM_QUERY_PAGES +"/movie/";
 
     public static final String API_KEY_PARAM = "api_key";
+
+    //JSON TAGS
+    public static final String TAG_RESULTS = "results";
+    public static final String TAG_ID = "id";
+    public static final String TAG_AUTHOR = "author";
+    public static final String TAG_CONTENT = "content";
     /**
      * Takes the URI passed in and fetches the data from the movie DB. Returns that data
      * as a JSON String

@@ -9,6 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -71,12 +76,53 @@ public class MovieReviewsActivityFragment extends Fragment {
             Log.e(TAG,reviewsUri.toString());
             String reviewsJsonStr = DBUtil.queryMovieDatabase(reviewsUri);
 
-            if(reviewsJsonStr != null)
-               Log.e(TAG,"REview: " + reviewsJsonStr);
-            return null;
+            if(reviewsJsonStr == null)
+                return null;
+
+            Log.e(TAG, "REview: " + reviewsJsonStr);
+
+            //List of Reviews that get parsed from Movie DB JSON return
+            ArrayList<Review> reviewList = null;
+
+            try {
+                JSONObject obj = new JSONObject(reviewsJsonStr);
+                JSONArray resultsArray = obj.getJSONArray(DBUtil.TAG_RESULTS);
+
+                reviewList = new ArrayList<>(resultsArray.length());
+
+                for(int i = 0; i< resultsArray.length(); i++) {
+
+                    JSONObject result = resultsArray.getJSONObject(i);
+                    Review review = new Review();;
+                    review.setAuthor(result.getString(DBUtil.TAG_AUTHOR));
+                    review.setContent(result.getString(DBUtil.TAG_CONTENT));
+
+                    Log.e(TAG, review.toString());
+                    reviewList.add(review);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG,"Caught JSON exception " + e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
+
+
+            return reviewList;
         }
 
+        @Override
+        protected void onPostExecute(ArrayList<Review> movieList) {
 
+            ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(),movieList);
+            mListView.setAdapter(adapter);
+        }
 
+    }
+
+    //Class to hold different views of the listview. This helps
+    //it run smoothly when scrolling
+    private static class ViewHolder {
+
+        public TextView textView;
     }
 }
