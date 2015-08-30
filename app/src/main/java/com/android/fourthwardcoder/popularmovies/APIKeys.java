@@ -10,5 +10,5 @@ package com.android.fourthwardcoder.popularmovies;
  */
 public interface APIKeys {
 
-    public static final String MOVIE_DB_API_KEY = "e80f27e43348054952d67e7d0353ac38";
+    public static final String MOVIE_DB = "e80f27e43348054952d67e7d0353ac38";
 }

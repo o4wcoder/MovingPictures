@@ -1,0 +1,75 @@
+package com.android.fourthwardcoder.popularmovies;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+/**
+ * Created by chare on 8/27/2015.
+ */
+public class MovieImageAdapter extends ArrayAdapter<Movie>{
+
+    /****************************************************************/
+    /*                       Constants                              */
+    /****************************************************************/
+    private static final String TAG = MovieImageAdapter.class.getSimpleName();
+    /****************************************************************/
+    /*                       Local Data                             */
+    /****************************************************************/
+    Context mContext;
+
+    public MovieImageAdapter(Context context,ArrayList<Movie> movies) {
+        super(context,0,movies);
+
+        Log.e(TAG,"In MovieImage Adapter with movie list size " + movies.size());
+        Log.e(TAG, "Context " + context.toString());
+        mContext = context;
+        //mMovieList = movies;
+    }
+
+    //Override the getView to return an ImageView
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        ViewHolder holder = null;
+
+        if (convertView == null) {
+            holder = new ViewHolder();
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            convertView = inflater.inflate(R.layout.movie_image, parent, false);
+
+            //Get imageView
+            holder.imageView = (ImageView) convertView.findViewById(R.id.movie_imageView);
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder)convertView.getTag();
+        }
+
+        //Get each Movie using the position in the ArrayAdapter
+        Movie movie = getItem(position);
+
+        //Call Picasso to load it into the imageView
+        Picasso.with(mContext).load(movie.getPosterPath()).into(holder.imageView);
+
+        return convertView;
+    }
+
+    /**********************************************************************/
+    /*                          Inner Classes                             */
+    /**********************************************************************/
+    private static class ViewHolder {
+
+        ImageView imageView;
+    }
+}

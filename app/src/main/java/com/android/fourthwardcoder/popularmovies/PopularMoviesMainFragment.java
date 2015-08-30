@@ -18,12 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,21 +46,6 @@ public class PopularMoviesMainFragment extends Fragment {
 
     //Extra for passing the Movie object to the movies detail activity
     public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
-
-    //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
-    private static final String MOVIE_DB_API_KEY = APIKeys.MOVIE_DB_API_KEY;
-
-    //Full URLs for the movie DB
-    private static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/" + DBUtil.NUM_QUERY_PAGES + "/discover/movie";
-
-    //Extra append paths for the movie URI
-    private static final String UPCOMING_PATH = "upcoming";
-    private static final String NOW_PLAYING = "now_playing";
-    private static final String POPULAR_PATH = "popular";
-
-    //Extra append params for the movie URI
-    private static final String SORT_PARAM = "sort_by";
-    //private static final String CERT_COUNTRY_PARAM = "certification_country";
 
     //Shared Preference for storing sort type
     private static final String PREF_SORT = "sort";
@@ -146,7 +127,7 @@ public class PopularMoviesMainFragment extends Fragment {
                 //Hit this when we retained our instance of the fragment on a rotation.
                 //Just apply the current list of movies
                 Log.e(TAG,"Apply current movie list");
-                MovieImageAdapter adapter = new MovieImageAdapter(mMovieList);
+                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),mMovieList);
                 mGridView.setAdapter(adapter);
             }
         }
@@ -243,35 +224,35 @@ public class PopularMoviesMainFragment extends Fragment {
                 case 0:
                     //Build URI String to query the database for a list of popular movies
                     movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
-                            .appendPath(POPULAR_PATH)
-                            .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendPath(DBUtil.PATH_POPULAR)
+                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by Upcoming
                 case 1:
                     //Build URI String to query the database for a list of upcoming movies
                     movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
-                            .appendPath(UPCOMING_PATH)
-                            .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendPath(DBUtil.PATH_UPCOMING)
+                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by Now Playing
                 case 2:
                     //Build URI String to query the database for a list of now playing movies
                     movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
-                            .appendPath(NOW_PLAYING)
-                            .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendPath(DBUtil.PATH_NOW_PLAYING)
+                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by All Time Top Grossing
                 case 3:
                     //Build URI String to query the database for the list of top grossing movies
-                    movieUri = Uri.parse(BASE_DISCOVER_URL).buildUpon()
-                            .appendQueryParameter(SORT_PARAM, sortOrder)
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                    movieUri = Uri.parse(DBUtil.BASE_DISCOVER_URL).buildUpon()
+                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
                     break;
             }
@@ -301,27 +282,6 @@ public class PopularMoviesMainFragment extends Fragment {
          */
         private ArrayList<Movie> parseJsonMovies(String moviesJsonStr) {
 
-            //JSON Result TAGs
-            final String TAG_ID = "id";
-            final String TAG_TITLE = "title";
-            final String TAG_OVERVIEW = "overview";
-            final String TAG_POSTER_PATH = "poster_path";
-            final String TAG_BACKDROP_PATH = "backdrop_path";
-            final String TAG_RELEASE_DATE = "release_date";
-            final String TAG_RATING = "vote_average";
-            final String TAG_CREDITS = "credits";
-            final String TAG_CAST = "cast";
-            final String TAG_CREW = "crew";
-            final String TAG_JOB = "job";
-            final String TAG_JOB_DIRECTOR = "Director";
-            final String TAG_NAME = "name";
-            final String TAG_RUNTIME = "runtime";
-            final String TAG_GENRES = "genres";
-            final String TAG_REVENUE = "revenue";
-
-            //Base URL for movie images
-            final String BASE_URL = "http://image.tmdb.org/t/p/";
-
             //Movie image sizes
             final String IMAGE_185_SIZE = "w185/";
             final String IMAGE_342_SIZE = "w342/";
@@ -348,20 +308,20 @@ public class PopularMoviesMainFragment extends Fragment {
                     //that movie.
                     JSONObject result = resultsArray.getJSONObject(i);
                     Movie movie = new Movie();
-                    movie.setId(result.getInt(TAG_ID));
-                    movie.setTitle(result.getString(TAG_TITLE));
-                    movie.setOverview(result.getString(TAG_OVERVIEW));
-                    movie.setPosterPath(BASE_URL + IMAGE_185_SIZE + result.getString(TAG_POSTER_PATH));
-                    movie.setBackdropPath(BASE_URL + IMAGE_500_SIZE + result.getString(TAG_BACKDROP_PATH));
-                    movie.setReleaseDate(result.getString(TAG_RELEASE_DATE));
-                    movie.setRating(result.getDouble(TAG_RATING));
+                    movie.setId(result.getInt(DBUtil.TAG_ID));
+                    movie.setTitle(result.getString(DBUtil.TAG_TITLE));
+                    movie.setOverview(result.getString(DBUtil.TAG_OVERVIEW));
+                    movie.setPosterPath(DBUtil.BASE_MOVIE_IMAGE_URL + IMAGE_185_SIZE + result.getString(DBUtil.TAG_POSTER_PATH));
+                    movie.setBackdropPath(DBUtil.BASE_MOVIE_IMAGE_URL + IMAGE_500_SIZE + result.getString(DBUtil.TAG_BACKDROP_PATH));
+                    movie.setReleaseDate(result.getString(DBUtil.TAG_RELEASE_DATE));
+                    movie.setRating(result.getDouble(DBUtil.TAG_RATING));
 
 
                     //Get Uri for basic movie info
                     //Build URI String to query the databaes for a specific movie
                     Uri movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(String.valueOf(movie.getId()))
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
 
                     //Get additional information on that movie
@@ -370,27 +330,27 @@ public class PopularMoviesMainFragment extends Fragment {
                         //Log.e(TAG, "Movie: " + movieJsonStr);
 
                         JSONObject movieObj = new JSONObject(movieJsonStr);
-                        movie.setRuntime(movieObj.getString(TAG_RUNTIME));
-                        JSONArray genreArray = movieObj.getJSONArray(TAG_GENRES);
+                        movie.setRuntime(movieObj.getString(DBUtil.TAG_RUNTIME));
+                        JSONArray genreArray = movieObj.getJSONArray(DBUtil.TAG_GENRES);
 
                         //Get genres of the movie
                         ArrayList<String> genreList = new ArrayList<String>();
                         for(int j = 0; j<genreArray.length();j++) {
-                            String genre = genreArray.getJSONObject(j).getString(TAG_NAME);
+                            String genre = genreArray.getJSONObject(j).getString(DBUtil.TAG_NAME);
                             genreList.add(genre);
                         }
 
                         movie.setGenreList(genreList);
 
-                        int iRevenue = movieObj.getInt(TAG_REVENUE);
+                        int iRevenue = movieObj.getInt(DBUtil.TAG_REVENUE);
                         movie.setRevenue(NumberFormat.getIntegerInstance().format(iRevenue));
                     }
                     //Get Uri for credits of movie
                     //Build URI String to query the databaes for the list of credits
                     Uri creditUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                             .appendPath(String.valueOf(movie.getId()))
-                            .appendPath(TAG_CREDITS)
-                            .appendQueryParameter(DBUtil.API_KEY_PARAM, MOVIE_DB_API_KEY)
+                            .appendPath(DBUtil.TAG_CREDITS)
+                            .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
 
                     String creditJsonStr = DBUtil.queryMovieDatabase(creditUri);
@@ -401,15 +361,15 @@ public class PopularMoviesMainFragment extends Fragment {
                         JSONObject creditObj = new JSONObject(creditJsonStr);
 
                         //Pull out Crew information
-                        JSONArray crewArray = creditObj.getJSONArray(TAG_CREW);
+                        JSONArray crewArray = creditObj.getJSONArray(DBUtil.TAG_CREW);
 
                         ArrayList<String> directorList = new ArrayList<String>();
                         for (int j = 0; j < crewArray.length(); j++) {
-                            String job = crewArray.getJSONObject(j).getString(TAG_JOB);
+                            String job = crewArray.getJSONObject(j).getString(DBUtil.TAG_JOB);
 
                             //Find director
-                            if (job.equals(TAG_JOB_DIRECTOR))
-                                directorList.add(crewArray.getJSONObject(j).getString(TAG_NAME));
+                            if (job.equals(DBUtil.TAG_JOB_DIRECTOR))
+                                directorList.add(crewArray.getJSONObject(j).getString(DBUtil.TAG_NAME));
 
                         }
                         //Add director list to movie
@@ -417,20 +377,24 @@ public class PopularMoviesMainFragment extends Fragment {
                             movie.setDirectors(directorList);
 
                         //Pull out Cast Information
-                        JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
-                        ArrayList<String> actorList = new ArrayList<String>();
-
+                        JSONArray castArray = creditObj.getJSONArray(DBUtil.TAG_CAST);
+                        ArrayList<Integer> actorIdList = new ArrayList<Integer>();
+                        ArrayList<String> actorNameList = new ArrayList<String>();
                         //Pull out actors of the movie
                         for (int j = 0; j < castArray.length(); j++) {
-                            String name = castArray.getJSONObject(j).getString(TAG_NAME);
+                            int id = castArray.getJSONObject(j).getInt(DBUtil.TAG_ID);
+                            String name = castArray.getJSONObject(j).getString(DBUtil.TAG_NAME);
 
-                            actorList.add(name);
-
+                            actorIdList.add(id);
+                            actorNameList.add(name);
                         }
-
+                        Log.e(TAG,"ID list size: " + actorIdList.size() + " name list size: " + actorNameList.size());
                         //Add cast list to movie
-                        if (actorList.size() > 0)
-                            movie.setActors(actorList);
+                        if ((actorIdList.size() > 0) && (actorNameList.size() > 0))
+                            Log.e(TAG,"Setting actor lists to movie object");
+                            movie.setActorIds(actorIdList);
+                            movie.setActorNames(actorNameList);
+
                     }
                     //Add movie to movie list array.
                     movieList.add(movie);
@@ -456,7 +420,10 @@ public class PopularMoviesMainFragment extends Fragment {
                 //If we've got movies in the list, then send them to the adapter fro the
                 //GridView
                 if(movieList != null) {
-                    MovieImageAdapter adapter = new MovieImageAdapter(movieList);
+
+                    //Store global copy
+                    mMovieList = movieList;
+                    MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
                     mGridView.setAdapter(adapter);
                 }
                 else {
@@ -477,36 +444,36 @@ public class PopularMoviesMainFragment extends Fragment {
      *
      * ArrayAdapter used for the GridView that displays the movie posters on the main activity
      */
-    public class MovieImageAdapter extends ArrayAdapter<Movie> {
-
-
-        public MovieImageAdapter(ArrayList<Movie> movies) {
-            super(getActivity(),0,movies);
-
-            mMovieList = movies;
-        }
-
-        //Override the getView to return an ImageView
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if(convertView == null) {
-                convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.movie_image, parent, false);
-            }
-
-            //Get imageView
-            ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_imageView);
-
-            //Get each Movie using the position in the ArrayAdapter
-            Movie movie = getItem(position);
-
-            //Call Picasso to load it into the imageView
-            Picasso.with(getActivity()).load(movie.getPosterPath()).into(imageView);
-
-            return convertView;
-        }
-    }
+//    public class MovieImageAdapter extends ArrayAdapter<Movie> {
+//
+//
+//        public MovieImageAdapter(ArrayList<Movie> movies) {
+//            super(getActivity(),0,movies);
+//
+//            mMovieList = movies;
+//        }
+//
+//        //Override the getView to return an ImageView
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//
+//            if(convertView == null) {
+//                convertView = getActivity().getLayoutInflater()
+//                        .inflate(R.layout.movie_image, parent, false);
+//            }
+//
+//            //Get imageView
+//            ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_imageView);
+//
+//            //Get each Movie using the position in the ArrayAdapter
+//            Movie movie = getItem(position);
+//
+//            //Call Picasso to load it into the imageView
+//            Picasso.with(getActivity()).load(movie.getPosterPath()).into(imageView);
+//
+//            return convertView;
+//        }
+//    }
 
 
 }

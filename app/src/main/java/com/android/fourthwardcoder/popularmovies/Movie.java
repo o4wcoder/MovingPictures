@@ -18,7 +18,7 @@ public class Movie implements Parcelable {
     /*                   Constants                        */
     /******************************************************/
     //Number of cast members to be displayed on the Details Activity
-    private static final int NUM_CAST_DISPLAY = 3;
+    public static final int NUM_CAST_DISPLAY = 3;
 
     /******************************************************/
     /*                   Local Data                       */
@@ -38,7 +38,8 @@ public class Movie implements Parcelable {
     String genreString;
     ArrayList<String> directors;
     String directorString;
-    ArrayList<String> actors;
+    ArrayList<Integer> actorIds;
+    ArrayList<String> actorNames;
     String actorsString;
 
     /**************************************************************/
@@ -155,26 +156,36 @@ public class Movie implements Parcelable {
             this.directorString = strDirs.substring(0,strDirs.length() - 2);
     }
 
-    public ArrayList<String> getActors() {
-        return actors;
+    public ArrayList<Integer> getActorIds() {
+        return actorIds;
     }
 
-    public void setActors(ArrayList<String> actors) {
-        this.actors = actors;
+    public ArrayList<String> getActorNames() {
+        return actorNames;
+    }
+
+    public void setActorIds(ArrayList<Integer> actorIds) {
+        this.actorIds = actorIds;
+    }
+
+
+    public void setActorNames(ArrayList<String> actorNames) {
+
+        this.actorNames = actorNames;
 
         String strActors = "";
 
         //We want to show at least 3 actors, but some movies have less
         int numActors = NUM_CAST_DISPLAY;
-        if(actors.size() < NUM_CAST_DISPLAY)
-           numActors = actors.size();
+        if(actorNames.size() < NUM_CAST_DISPLAY)
+           numActors = actorNames.size();
 
         //Set up display string for actors. Just display the first 3 top billed
         for(int i = 0; i < numActors; i++) {
-            strActors += actors.get(i) + ", ";
+            strActors += actorNames.get(i) + ", ";
         }
 
-        if(actors.size() > 0)
+        if(actorNames.size() > 0)
             this.actorsString = strActors.substring(0,strActors.length() - 2);
     }
 
@@ -238,10 +249,16 @@ public class Movie implements Parcelable {
             directors = null;
         }
         if (in.readByte() == 0x01) {
-            actors = new ArrayList<String>();
-            in.readList(actors, String.class.getClassLoader());
+            actorIds = new ArrayList<Integer>();
+            in.readList(actorIds, String.class.getClassLoader());
         } else {
-            actors = null;
+            actorIds = null;
+        }
+        if (in.readByte() == 0x01) {
+            actorNames = new ArrayList<String>();
+            in.readList(actorNames, String.class.getClassLoader());
+        } else {
+            actorNames = null;
         }
     }
 
@@ -277,11 +294,17 @@ public class Movie implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(directors);
         }
-        if (actors == null) {
+        if (actorIds == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(actors);
+            dest.writeList(actorIds);
+        }
+        if (actorNames == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(actorNames);
         }
     }
 

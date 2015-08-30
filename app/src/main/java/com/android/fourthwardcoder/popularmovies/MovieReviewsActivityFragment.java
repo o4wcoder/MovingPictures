@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +27,7 @@ public class MovieReviewsActivityFragment extends Fragment {
     /***********************************************************************/
      private static final String TAG = MovieReviewsActivityFragment.class.getSimpleName();
 
-    private static final String TAG_REVIEWS = "reviews";
+
     /***********************************************************************/
     /*                          Local Data                                 */
     /***********************************************************************/
@@ -63,14 +62,13 @@ public class MovieReviewsActivityFragment extends Fragment {
         @Override
         protected ArrayList<Review> doInBackground(Integer... params) {
 
-
+            //Get ID of movie
             int movieId = params[0];
-
 
             Uri reviewsUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
                     .appendPath(String.valueOf(movieId))
-                    .appendPath(TAG_REVIEWS)
-                    .appendQueryParameter(DBUtil.API_KEY_PARAM, APIKeys.MOVIE_DB_API_KEY)
+                    .appendPath(DBUtil.PATH_REVIEWS)
+                    .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                     .build();
 
             Log.e(TAG,reviewsUri.toString());
@@ -106,7 +104,6 @@ public class MovieReviewsActivityFragment extends Fragment {
                 return null;
             }
 
-
             return reviewList;
         }
 
@@ -117,12 +114,5 @@ public class MovieReviewsActivityFragment extends Fragment {
             mListView.setAdapter(adapter);
         }
 
-    }
-
-    //Class to hold different views of the listview. This helps
-    //it run smoothly when scrolling
-    private static class ViewHolder {
-
-        public TextView textView;
     }
 }

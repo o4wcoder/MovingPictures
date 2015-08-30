@@ -1,5 +1,7 @@
 package com.android.fourthwardcoder.popularmovies;
 
+import java.util.ArrayList;
+
 /**
  * Created by chare on 8/24/2015.
  */
@@ -13,6 +15,7 @@ public class Actor {
     int id;
     String birthPlace;
     String profileImagePath;
+    ArrayList<String> photos;
 
     public String getName() {
         return name;
@@ -76,5 +79,13 @@ public class Actor {
 
     public void setProfileImagePath(String profileImagePath) {
         this.profileImagePath = profileImagePath;
+    }
+
+    public ArrayList<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
     }
 }

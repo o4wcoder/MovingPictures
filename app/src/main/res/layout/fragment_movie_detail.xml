@@ -163,8 +163,25 @@
                 android:id="@+id/reviewsTextView"
                 android:gravity="left"
                 android:textSize="20dp"
-                android:textStyle="bold"
                 android:textColor="@color/link_text_material_light" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:padding="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp">
+
+
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/videosListView" />
         </LinearLayout>
     </LinearLayout>
 
