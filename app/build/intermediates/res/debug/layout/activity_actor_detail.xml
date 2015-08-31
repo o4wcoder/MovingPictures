@@ -1,6 +1,6 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="com.android.fourthwardcoder.popularmovies.ActorDetailActivityFragment"
-    tools:layout="@layout/fragment_actor_detail" android:layout_width="match_parent"
+    android:name="com.android.fourthwardcoder.popularmovies.PersonDetailActivityFragment"
+    tools:layout="@layout/fragment_person_detail" android:layout_width="match_parent"
     android:layout_height="match_parent" />
 <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_actor_detail.xml -->

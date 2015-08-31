@@ -223,7 +223,8 @@ public class PopularMoviesMainFragment extends Fragment {
                 //Sort by Popularity
                 case 0:
                     //Build URI String to query the database for a list of popular movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(DBUtil.PATH_MOVIE)
                             .appendPath(DBUtil.PATH_POPULAR)
                             .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
                             .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
@@ -232,7 +233,8 @@ public class PopularMoviesMainFragment extends Fragment {
                 //Sort by Upcoming
                 case 1:
                     //Build URI String to query the database for a list of upcoming movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(DBUtil.PATH_MOVIE)
                             .appendPath(DBUtil.PATH_UPCOMING)
                             .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
                             .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
@@ -241,7 +243,8 @@ public class PopularMoviesMainFragment extends Fragment {
                 //Sort by Now Playing
                 case 2:
                     //Build URI String to query the database for a list of now playing movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(DBUtil.PATH_MOVIE)
                             .appendPath(DBUtil.PATH_NOW_PLAYING)
                             .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
                             .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
@@ -282,11 +285,6 @@ public class PopularMoviesMainFragment extends Fragment {
          */
         private ArrayList<Movie> parseJsonMovies(String moviesJsonStr) {
 
-            //Movie image sizes
-            final String IMAGE_185_SIZE = "w185/";
-            final String IMAGE_342_SIZE = "w342/";
-            final String IMAGE_500_SIZE = "w500/";
-
             //List of Movies that get parsed Movie DB JSON return
             ArrayList<Movie> movieList = null;
 
@@ -311,15 +309,16 @@ public class PopularMoviesMainFragment extends Fragment {
                     movie.setId(result.getInt(DBUtil.TAG_ID));
                     movie.setTitle(result.getString(DBUtil.TAG_TITLE));
                     movie.setOverview(result.getString(DBUtil.TAG_OVERVIEW));
-                    movie.setPosterPath(DBUtil.BASE_MOVIE_IMAGE_URL + IMAGE_185_SIZE + result.getString(DBUtil.TAG_POSTER_PATH));
-                    movie.setBackdropPath(DBUtil.BASE_MOVIE_IMAGE_URL + IMAGE_500_SIZE + result.getString(DBUtil.TAG_BACKDROP_PATH));
+                    movie.setPosterPath(DBUtil.BASE_MOVIE_IMAGE_URL + DBUtil.IMAGE_185_SIZE + result.getString(DBUtil.TAG_POSTER_PATH));
+                    movie.setBackdropPath(DBUtil.BASE_MOVIE_IMAGE_URL + DBUtil.IMAGE_500_SIZE + result.getString(DBUtil.TAG_BACKDROP_PATH));
                     movie.setReleaseDate(result.getString(DBUtil.TAG_RELEASE_DATE));
                     movie.setRating(result.getDouble(DBUtil.TAG_RATING));
 
 
                     //Get Uri for basic movie info
                     //Build URI String to query the databaes for a specific movie
-                    Uri movieUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+                    Uri movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(DBUtil.PATH_MOVIE)
                             .appendPath(String.valueOf(movie.getId()))
                             .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
                             .build();
@@ -347,7 +346,8 @@ public class PopularMoviesMainFragment extends Fragment {
                     }
                     //Get Uri for credits of movie
                     //Build URI String to query the databaes for the list of credits
-                    Uri creditUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+                    Uri creditUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(DBUtil.PATH_MOVIE)
                             .appendPath(String.valueOf(movie.getId()))
                             .appendPath(DBUtil.TAG_CREDITS)
                             .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)

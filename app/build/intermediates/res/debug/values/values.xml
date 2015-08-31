@@ -227,7 +227,10 @@
     <string name="action_sort">SORT</string>
     <string name="app_name">PopularMovies</string>
     <string name="author">AUTHOR:</string>
+    <string name="biography">Biography</string>
+    <string name="born">BORN:</string>
     <string name="cast">CAST:</string>
+    <string name="death">DEATH:</string>
     <string name="dialog_sort">Sort By</string>
     <string name="director">DIRECTOR:</string>
     <string name="genre">GENRE:</string>
@@ -1502,4 +1505,12 @@
     <style name="Widget.AppCompat.TextView.SpinnerItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="RtlOverlay.Widget.AppCompat.Toolbar.Button.Navigation"/>
+    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="linkTextView">
+        <item name="android:gravity">left</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/link_text_material_light</item>
+    </style>
 </resources>

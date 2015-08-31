@@ -65,7 +65,8 @@ public class MovieReviewsActivityFragment extends Fragment {
             //Get ID of movie
             int movieId = params[0];
 
-            Uri reviewsUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+            Uri reviewsUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                    .appendPath(DBUtil.PATH_MOVIE)
                     .appendPath(String.valueOf(movieId))
                     .appendPath(DBUtil.PATH_REVIEWS)
                     .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)

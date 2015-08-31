@@ -51,6 +51,7 @@
                 android:text="New Text"
                 android:id="@+id/titleTextView"
                 android:textSize="20dp"
+                android:padding="2dp"
                 android:textAlignment="center"
                 android:textStyle="bold" />
 
@@ -59,12 +60,14 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
+                android:padding="2dp"
                 android:id="@+id/releaseYearTextView" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Text"
+                android:padding="2dp"
                 android:id="@+id/runtimeTextView" />
 
             <TextView
@@ -161,9 +164,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_reviews"
                 android:id="@+id/reviewsTextView"
-                android:gravity="left"
-                android:textSize="20dp"
-                android:textColor="@color/link_text_material_light" />
+                style="@style/linkTextView" />
         </LinearLayout>
 
         <LinearLayout

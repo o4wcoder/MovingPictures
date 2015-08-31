@@ -43,7 +43,7 @@ public class MovieDetailActivityFragment extends Fragment {
     /*****************************************************************/
     private static final String TAG = MovieDetailActivityFragment.class.getSimpleName();
     public static final String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
-    public static final String EXTRA_ACTOR_ID = "com.android.fourthwardcoder.popularmovies.extra_actor_id";
+    public static final String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";
 
     /*****************************************************************/
     /*                        Local Data                             */
@@ -211,15 +211,15 @@ public class MovieDetailActivityFragment extends Fragment {
 
                 Log.e(TAG,"Got actor 3 " + mMovie.getActorNames().get(2));
                 Log.e(TAG,"With ID " + mMovie.getActorIds().get(2));
-                startActorDetailActivity(mMovie.getActorIds().get(3));
+                startActorDetailActivity(mMovie.getActorIds().get(2));
             }
         };
 
         if(mMovie.getActorNames() == null)
-            Log.e(TAG,"Actor list null!!!");
+            Log.e(TAG,"Person list null!!!");
 
         if(mMovie.getActorIds() == null)
-            Log.e(TAG,"Actor id list null!!!");
+            Log.e(TAG,"Person id list null!!!");
 
         int span1Start = 6;
         int span1End = span1Start + mMovie.getActorNames().get(0).length();
@@ -238,8 +238,8 @@ public class MovieDetailActivityFragment extends Fragment {
 
     private void startActorDetailActivity(int id) {
 
-        Intent i = new Intent(getActivity(),ActorDetailActivity.class);
-        i.putExtra(EXTRA_ACTOR_ID,id);
+        Intent i = new Intent(getActivity(),PersonDetailActivity.class);
+        i.putExtra(EXTRA_PERSON_ID,id);
         startActivity(i);
     }
     private class FetchVideosTask extends AsyncTask<Integer,Void,ArrayList<Video>> {
@@ -251,7 +251,8 @@ public class MovieDetailActivityFragment extends Fragment {
             //Get ID of movie
             int movieId = params[0];
 
-            Uri videosUri = Uri.parse(DBUtil.BASE_MOVIE_URL).buildUpon()
+            Uri videosUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
+                    .appendPath(DBUtil.PATH_MOVIE)
                     .appendPath(String.valueOf(movieId))
                     .appendPath(DBUtil.PATH_VIDEOS)
                     .appendQueryParameter(DBUtil.PARM_API_KEY, DBUtil.API_KEY_MOVIE_DB)

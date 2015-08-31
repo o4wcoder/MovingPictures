@@ -26,14 +26,20 @@ public class DBUtil {
     //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
     public static final String API_KEY_MOVIE_DB = APIKeys.MOVIE_DB;
     //Base URLs
-    public static final String BASE_MOVIE_URL = "http://api.themoviedb.org/"+ NUM_QUERY_PAGES +"/movie/";
+    public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/"+ NUM_QUERY_PAGES;
     //Full URLs for the movie DB
     public static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES + "/discover/movie";
     //Base URL for movie images
     public static final String BASE_MOVIE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     public static final String BASE_YOUTUBE_URL = "https://www.youtube.com/";
 
+    //Movie image sizes
+    public static final String IMAGE_185_SIZE = "w185/";
+    public static final String IMAGE_342_SIZE = "w342/";
+    public static final String IMAGE_500_SIZE = "w500/";
+
     //Extra append paths for the movie URI
+    public static final String PATH_MOVIE = "movie";
     public static final String PATH_UPCOMING = "upcoming";
     public static final String PATH_NOW_PLAYING = "now_playing";
     public static final String PATH_POPULAR = "popular";
@@ -76,6 +82,13 @@ public class DBUtil {
     public static final String TAG_SIZE = "size";
     public static final String TAG_TYPE = "type";
     public static final String TAG_KEY = "key";
+    public static final String TAG_PROFILE_PATH = "profile_path";
+    public static final String TAG_PLACE_OF_BIRTH = "place_of_birth";
+    public static final String TAG_HOMEPAGE = "homepage";
+    public static final String TAG_DEATHDAY = "deathday";
+    public static final String TAG_BIRTHDAY = "birthday";
+    public static final String TAG_BIOGRAPHY = "biography";
+
 
     /**
      * Takes the URI passed in and fetches the data from the movie DB. Returns that data

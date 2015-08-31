@@ -18,6 +18,9 @@
     <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="user_reviews">User Reviews</string>
     <string name="author">AUTHOR:</string>
+    <string name="born">BORN:</string>
+    <string name="death">DEATH:</string>
+    <string name="biography">Biography</string>
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>
     <string name="secondary_text_alpha_dark">.54</string>

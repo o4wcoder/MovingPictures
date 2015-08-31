@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="11"
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,7 +34,7 @@
                 android:value="com.android.fourthwardcoder.popularmovies.PopularMoviesMainActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.popularmovies.ActorDetailActivity"
+            android:name="com.android.fourthwardcoder.popularmovies.PersonDetailActivity"
             android:label="@string/title_activity_actor_detail" >
         </activity>
         <activity

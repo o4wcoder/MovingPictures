@@ -62,7 +62,7 @@ ADDED from AndroidManifest.xml:26:13
 		ADDED from AndroidManifest.xml:27:17
 	android:value
 		ADDED from AndroidManifest.xml:28:17
-activity#com.android.fourthwardcoder.popularmovies.ActorDetailActivity
+activity#com.android.fourthwardcoder.popularmovies.PersonDetailActivity
 ADDED from AndroidManifest.xml:30:9
 	android:label
 		ADDED from AndroidManifest.xml:32:13
