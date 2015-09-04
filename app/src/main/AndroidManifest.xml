@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".PopularMoviesMainActivity"
+            android:name=".activities.PopularMoviesMainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -20,20 +20,64 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailActivity"
+            android:name=".activities.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".PopularMoviesMainActivity" >
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.PopularMoviesMainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.popularmovies.PopularMoviesMainActivity" />
+                android:value=".activities.PopularMoviesMainActivity" />
+>
         </activity>
         <activity
-            android:name=".PersonDetailActivity"
-            android:label="@string/title_activity_actor_detail" >
+            android:name=".activities.PersonDetailActivity"
+            android:label="@string/title_activity_actor_detail"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.MovieDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name=".MovieReviewsActivity"
-            android:label="@string/title_activity_movie_reviews" >
+            android:name=".activities.MovieReviewsActivity"
+            android:label="@string/title_activity_movie_reviews"
+            android:parentActivityName=".activities.MovieDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailActivity" />
+        </activity>
+        <activity
+            android:name=".activities.PersonFilmographyActivity"
+            android:label="@string/title_activity_filmography"
+            android:parentActivityName=".activities.PersonDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.PersonDetailActivity" />
+        </activity>
+        <activity
+            android:name=".activities.PersonPhotosActivity"
+            android:label="@string/title_activity_person_photos"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.PersonDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.PersonDetailActivity" />
+        </activity>
+        <activity
+            android:name=".activities.PersonPhotoPagerActivity"
+            android:label="@string/title_activity_person_single_photo"
+            android:parentActivityName=".activities.PersonPhotosActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.PersonPhotosActivity" />
+        </activity>
+        <activity
+            android:name=".activities.MovieCastActivity"
+            android:label="@string/title_activity_movie_cast"
+            android:parentActivityName=".activities.MovieDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity" />
         </activity>
     </application>
 

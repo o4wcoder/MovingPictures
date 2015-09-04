@@ -1,23 +1,38 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.android.fourthwardcoder.popularmovies.MovieDetailActivityFragment"
+    tools:context="com.android.fourthwardcoder.popularmovies.fragments.MovieDetailActivityFragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#e6e6e6">
 
+
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
 
-
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent" android:layout_height="match_parent">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/backdropImageView"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@android:drawable/btn_star"
+            android:layout_alignRight="@+id/backdropImageView"
+            android:layout_alignBottom="@+id/backdropImageView"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:id="@+id/favoritesToggleButton" />
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -185,6 +200,7 @@
                 android:id="@+id/videosListView" />
         </LinearLayout>
     </LinearLayout>
+
 
 
 </ScrollView><!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/fragment_movie_detail.xml -->

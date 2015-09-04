@@ -1,0 +1,6 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+    android:name="com.android.fourthwardcoder.popularmovies.fragments.PersonPhotosActivityFragment"
+    tools:layout="@layout/fragment_simple_listview" android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+<!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_person_photos.xml -->

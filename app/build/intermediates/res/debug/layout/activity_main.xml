@@ -1,6 +1,6 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/movieDialogFragment"
-    android:name="com.android.fourthwardcoder.popularmovies.PopularMoviesMainFragment"
+    android:name="com.android.fourthwardcoder.popularmovies.fragments.PopularMoviesMainFragment"
     tools:layout="@layout/fragment_main" android:layout_width="match_parent"
     android:layout_height="match_parent" />
 <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_main.xml -->

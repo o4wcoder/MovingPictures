@@ -1,7 +1,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.android.fourthwardcoder.popularmovies.PersonDetailActivityFragment"
+    tools:context="com.android.fourthwardcoder.popularmovies.fragments.PersonDetailActivityFragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#e6e6e6">
@@ -88,11 +88,65 @@
                 android:id="@+id/biographyTextView"
                 style="@style/linkTextView"/>
 
+            <com.ms.square.android.expandabletextview.ExpandableTextView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/biographyContentExpandableTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                expandableTextView:maxCollapsedLines="4"
+                expandableTextView:animDuration="300">
+
+                <TextView
+                    android:id="@id/expandable_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp" />
+                <ImageButton
+                    android:id="@id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_gravity="right|bottom"
+                    android:background="@android:color/transparent"/>
+            </com.ms.square.android.expandabletextview.ExpandableTextView>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffffff"
+            android:padding="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp">
+
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/biographyContentTextView" />
+                android:text="@string/filmography"
+                android:id="@+id/filmographyTextView"
+                style="@style/linkTextView"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffffff"
+            android:padding="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/photos"
+                android:id="@+id/photosTextView"
+                style="@style/linkTextView"/>
         </LinearLayout>
 </LinearLayout>
 

@@ -13,7 +13,9 @@
     <string name="genre">GENRE:</string>
     <string name="revenue">REVENUE:</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
-    <string name="progress_message">Downloading Movies...</string>
+    <string name="progress_downloading_movies">Downloading Movies...</string>
+    <string name="progress_downloading_details">Downloading Details...</string>
+    <string name="progress_downloading_photos">Downloading Photos...</string>
     <string name="title_activity_actor_detail">Actor Details</string>
     <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="user_reviews">User Reviews</string>
@@ -21,7 +23,25 @@
     <string name="born">BORN:</string>
     <string name="death">DEATH:</string>
     <string name="biography">Biography</string>
+    <string name="filmography">Filmography</string>
+    <string name="photos">Photos</string>
+    <string name="no_reviews">NO Reviews</string>
+    <string name="added">Added</string>
+    <string name="removed">Removed</string>
+    <string name="to_favorites">to favorites</string>
+    <string name="from_favorites">from favorites</string>
+    <string name="more">More</string>
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>
     <string name="secondary_text_alpha_dark">.54</string>
+
+    <string name="title_activity_filmography">Filmography</string>
+    <string name="title_activity_person_photos">Photos</string>
+    <string name="title_activity_person_single_photo">Photo</string>
+    <!-- Sort Order params -->
+    <string name="sort_popularity">popularity.desc</string>
+    <string name="sort_release_date">release_date.desc</string>
+    <string name="sort_revenue">revenue.desc</string>
+    <string name="title_activity_movie_cast">Cast</string>
+
 </resources>

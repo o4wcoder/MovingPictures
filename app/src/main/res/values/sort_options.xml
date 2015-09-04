@@ -8,10 +8,10 @@
     </string-array>
 
     <string-array name = "sort_url_list" translatable="false">
-        <item>popularity.desc</item>
-        <item>release_date.desc</item>
-        <item>popularity.desc</item>
-        <item>revenue.desc</item>
+        <item>@string/sort_popularity</item>
+        <item>@string/sort_release_date</item>
+        <item>@string/sort_popularity</item>
+        <item>@string/sort_revenue</item>
     </string-array>
 
 </resources>
