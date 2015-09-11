@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +47,6 @@ public class PersonFilmographyActivityFragment extends Fragment implements Const
         final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
 
         mListView = (ListView)view.findViewById(R.id.listView);
-
-        Log.e(TAG, "got person id " + personId);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
