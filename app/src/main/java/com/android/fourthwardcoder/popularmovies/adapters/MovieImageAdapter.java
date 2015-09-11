@@ -15,6 +15,11 @@ import java.util.ArrayList;
 
 /**
  * Created by chare on 8/27/2015.
+ *
+ * Class MovieImageAdapter
+ *
+ * ArrayAdapter used for the GridView that displays the movie posters on the main activity
+ *
  */
 public class MovieImageAdapter extends ArrayAdapter<SimpleMovie>{
 

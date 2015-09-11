@@ -307,41 +307,8 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
         }
     }
 
-    /**
-     * Class MovieImageAdapter
-     *
-     * ArrayAdapter used for the GridView that displays the movie posters on the main activity
-     */
-//    public class MovieImageAdapter extends ArrayAdapter<Movie> {
-//
-//
-//        public MovieImageAdapter(ArrayList<Movie> movies) {
-//            super(getActivity(),0,movies);
-//
-//            mMovieList = movies;
-//        }
-//
-//        //Override the getView to return an ImageView
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//
-//            if(convertView == null) {
-//                convertView = getActivity().getLayoutInflater()
-//                        .inflate(R.layout.movie_image, parent, false);
-//            }
-//
-//            //Get imageView
-//            ImageView imageView = (ImageView)convertView.findViewById(R.id.movie_imageView);
-//
-//            //Get each Movie using the position in the ArrayAdapter
-//            Movie movie = getItem(position);
-//
-//            //Call Picasso to load it into the imageView
-//            Picasso.with(getActivity()).load(movie.getPosterPath()).into(imageView);
-//
-//            return convertView;
-//        }
-//    }
+
+
 
 
 }
