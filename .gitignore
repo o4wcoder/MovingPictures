@@ -5,4 +5,4 @@
 .DS_Store
 /build
 /captures
-app/src/main/java/com/android/fourthwardcoder/popularmovies/APIKeys.java
+app/src/main/java/com/android/fourthwardcoder/popularmovies/interfaces/APIKeys.java
