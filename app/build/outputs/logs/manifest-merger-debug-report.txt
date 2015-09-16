@@ -117,6 +117,12 @@ ADDED from AndroidManifest.xml:74:9
 		ADDED from AndroidManifest.xml:77:13
 	android:name
 		ADDED from AndroidManifest.xml:75:13
+activity#com.android.fourthwardcoder.popularmovies.activities.SettingsActivity
+ADDED from AndroidManifest.xml:82:9
+	android:label
+		ADDED from AndroidManifest.xml:84:13
+	android:name
+		ADDED from AndroidManifest.xml:83:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:22.2.0:20:5

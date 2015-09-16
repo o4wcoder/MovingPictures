@@ -21,12 +21,11 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
-import com.android.fourthwardcoder.popularmovies.adapters.MovieImageAdapter;
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.adapters.MovieImageAdapter;
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
-import com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity;
 
 import java.util.ArrayList;
 
@@ -109,9 +108,10 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                 //Get selected movie from the GridView
                 SimpleMovie movie = mMovieList.get(position);
                 //Start intent to bring up Details Activity
-                Intent i = new Intent(getActivity(),MovieDetailActivity.class);
-                i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-                startActivity(i);
+               // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
+                //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
+                //startActivity(i);
+                ((Callback) getActivity()).onItemSelected(movie.getId());
             }
         });
 
@@ -223,54 +223,60 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                 //Sort by Popularity
                 case 0:
                     //Build URI String to query the database for a list of popular movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(DBUtil.PATH_MOVIE)
-                            .appendPath(DBUtil.PATH_POPULAR)
-                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(MovieDbAPI.PATH_MOVIE)
+                            .appendPath(MovieDbAPI.PATH_POPULAR)
+                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by Upcoming
                 case 1:
                     //Build URI String to query the database for a list of upcoming movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(DBUtil.PATH_MOVIE)
-                            .appendPath(DBUtil.PATH_UPCOMING)
-                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(MovieDbAPI.PATH_MOVIE)
+                            .appendPath(MovieDbAPI.PATH_UPCOMING)
+                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by Now Playing
                 case 2:
                     //Build URI String to query the database for a list of now playing movies
-                    movieUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(DBUtil.PATH_MOVIE)
-                            .appendPath(DBUtil.PATH_NOW_PLAYING)
-                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                            .appendPath(MovieDbAPI.PATH_MOVIE)
+                            .appendPath(MovieDbAPI.PATH_NOW_PLAYING)
+                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                             .build();
                     break;
                 //Sort by All Time Top Grossing
                 case 3:
                     //Build URI String to query the database for the list of top grossing movies
-                    movieUri = Uri.parse(DBUtil.BASE_DISCOVER_URL).buildUpon()
-                            .appendQueryParameter(DBUtil.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    movieUri = Uri.parse(MovieDbAPI.BASE_DISCOVER_URL).buildUpon()
+                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                             .build();
+                    break;
+                //Sort by Favorites
+                case 4:
+
                     break;
             }
 
 
             //Log.e(TAG,movieUri.toString());
             //Get full Json result from querying the Movie DB
-            String movieJsonStr = DBUtil.queryMovieDatabase(movieUri);
+//            String movieJsonStr = MovieDbAPI.queryMovieDatabase(movieUri);
+//
+//            //Error pulling movies, return null
+//            if(movieJsonStr == null)
+//                return null;
+//
+//            //Part data and return list of movies
+//            return MovieDbAPI.parseJsonMovieList(movieJsonStr);
 
-            //Error pulling movies, return null
-            if(movieJsonStr == null)
-                return null;
-
-            //Part data and return list of movies
-            return DBUtil.parseJsonMovieList(movieJsonStr);
+            return MovieDbAPI.getMovieList(getActivity(), movieUri);
 
         }
 
@@ -305,6 +311,18 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
 
             }
         }
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(int movieId);
     }
 
 

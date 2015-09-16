@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.models.Review;
 import com.android.fourthwardcoder.popularmovies.adapters.ReviewsListAdapter;
@@ -72,15 +72,15 @@ public class MovieReviewsActivityFragment extends Fragment implements Constants 
             //Get ID of movie
             int movieId = params[0];
 
-            Uri reviewsUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
-                    .appendPath(DBUtil.PATH_MOVIE)
+            Uri reviewsUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                    .appendPath(MovieDbAPI.PATH_MOVIE)
                     .appendPath(String.valueOf(movieId))
-                    .appendPath(DBUtil.PATH_REVIEWS)
-                    .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    .appendPath(MovieDbAPI.PATH_REVIEWS)
+                    .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                     .build();
 
             Log.e(TAG,reviewsUri.toString());
-            String reviewsJsonStr = DBUtil.queryMovieDatabase(reviewsUri);
+            String reviewsJsonStr = MovieDbAPI.queryMovieDatabase(reviewsUri);
 
             if(reviewsJsonStr == null)
                 return null;
@@ -92,7 +92,7 @@ public class MovieReviewsActivityFragment extends Fragment implements Constants 
 
             try {
                 JSONObject obj = new JSONObject(reviewsJsonStr);
-                JSONArray resultsArray = obj.getJSONArray(DBUtil.TAG_RESULTS);
+                JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
 
                 reviewList = new ArrayList<>(resultsArray.length());
 
@@ -100,8 +100,8 @@ public class MovieReviewsActivityFragment extends Fragment implements Constants 
 
                     JSONObject result = resultsArray.getJSONObject(i);
                     Review review = new Review();;
-                    review.setAuthor(result.getString(DBUtil.TAG_AUTHOR));
-                    review.setContent(result.getString(DBUtil.TAG_CONTENT));
+                    review.setAuthor(result.getString(MovieDbAPI.TAG_AUTHOR));
+                    review.setContent(result.getString(MovieDbAPI.TAG_CONTENT));
 
                     Log.e(TAG, review.toString());
                     reviewList.add(review);

@@ -25,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.activities.MovieCastActivity;
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.models.Video;
@@ -93,7 +93,11 @@ public class MovieDetailActivityFragment extends Fragment implements Constants {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         //Get Movie passed from Main Activity
-        mMovieId = getActivity().getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
+        Bundle arguments = getArguments();
+        if(arguments != null) {
+            mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+        }
+        //mMovieId = getActivity().getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
 
         //Set image views
         mBackdropImageView = (ImageView)view.findViewById(R.id.backdropImageView);
@@ -155,9 +159,9 @@ public class MovieDetailActivityFragment extends Fragment implements Constants {
 
                 Video video = (Video)mVideoListAdapter.getItem(position);
 
-                Uri youtubeUri = Uri.parse(DBUtil.BASE_YOUTUBE_URL).buildUpon()
-                        .appendPath(DBUtil.PATH_WATCH)
-                        .appendQueryParameter(DBUtil.PARAM_V,video.getKey())
+                Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
+                        .appendPath(MovieDbAPI.PATH_WATCH)
+                        .appendQueryParameter(MovieDbAPI.PARAM_V,video.getKey())
                         .build();
 
                 Log.e(TAG,"Youtube path: " + youtubeUri.toString());
@@ -290,7 +294,7 @@ public class MovieDetailActivityFragment extends Fragment implements Constants {
             int movieId = params[0];
 
             //Query and build Movie Object
-            return DBUtil.getMovie(movieId);
+            return MovieDbAPI.getMovie(movieId);
         }
 
         @Override

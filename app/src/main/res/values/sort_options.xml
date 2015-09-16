@@ -5,6 +5,7 @@
         <item>Upcoming</item>
         <item>Now Playing</item>
         <item>Top Grossing</item>
+        <item>Favorites</item>
     </string-array>
 
     <string-array name = "sort_url_list" translatable="false">

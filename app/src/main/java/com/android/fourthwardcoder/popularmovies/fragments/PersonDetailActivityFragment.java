@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
 import com.android.fourthwardcoder.popularmovies.models.Person;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyActivity;
@@ -132,7 +132,7 @@ public class PersonDetailActivityFragment extends Fragment implements Constants 
             //Get ID of movie
             int personId = params[0];
 
-            return DBUtil.getPerson(personId);
+            return MovieDbAPI.getPerson(personId);
         }
 
         @Override

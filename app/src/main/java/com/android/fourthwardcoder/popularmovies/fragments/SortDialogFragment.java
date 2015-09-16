@@ -63,7 +63,7 @@ public class SortDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         Log.e(TAG, "Got dialog sort item " + which);
                         Resources res = getResources();
-                        String[] sortList = res.getStringArray(R.array.sort_url_list);
+                        //String[] sortList = res.getStringArray(R.array.sort_url_list);
 
                         mSortOrder = which;
 

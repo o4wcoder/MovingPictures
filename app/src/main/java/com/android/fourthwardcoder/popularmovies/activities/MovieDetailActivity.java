@@ -3,10 +3,13 @@ package com.android.fourthwardcoder.popularmovies.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailActivityFragment;
+import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 import java.util.Stack;
 
@@ -17,7 +20,7 @@ import java.util.Stack;
  *
  * Activity to show the details of a particular movie
  */
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements Constants{
 
     final static String TAG = MovieDetailActivity.class.getSimpleName();
 
@@ -26,14 +29,30 @@ public class MovieDetailActivity extends AppCompatActivity {
     /**********************************************************************/
     //Stack to hold parent of activiy to aid in Up navigation to different parents
     public static Stack<Class<?>> parents = new Stack<Class<?>>();
+    //Class mParent;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e(TAG,"In onCreate");
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 
         setContentView(R.layout.activity_movie_detail);
+
+        if(savedInstanceState == null) {
+
+            Bundle arguments = new Bundle();
+            int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
+
+            Log.e(TAG,"onCreate got movie ID "  + movieId);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container,new MovieDetailActivityFragment())
+                    .commit();
+        }
+        else {
+            Log.e(TAG,"onCreate saved instance state NOT null!");
+        }
     }
 
 

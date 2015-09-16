@@ -13,7 +13,7 @@ import android.widget.ListView;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.popularmovies.adapters.CreditListAdapter;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
 
@@ -73,7 +73,7 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
 
             int movieId = params[0];
 
-            return DBUtil.getCastList(movieId);
+            return MovieDbAPI.getCastList(movieId);
         }
 
         @Override

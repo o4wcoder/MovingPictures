@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
 import com.android.fourthwardcoder.popularmovies.adapters.PersonImageAdapter;
 import com.android.fourthwardcoder.popularmovies.models.PersonPhoto;
 import com.android.fourthwardcoder.popularmovies.R;
@@ -114,16 +114,16 @@ public class PersonPhotosActivityFragment extends Fragment implements Constants 
             //Get ID of movie
             int personId = params[0];
 
-            Uri personPhotosUri = Uri.parse(DBUtil.BASE_MOVIE_DB_URL).buildUpon()
-                    .appendPath(DBUtil.PATH_PERSON)
+            Uri personPhotosUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                    .appendPath(MovieDbAPI.PATH_PERSON)
                     .appendPath(String.valueOf(personId))
-                    .appendPath(DBUtil.PATH_IMAGES)
-                    .appendQueryParameter(DBUtil.PARAM_API_KEY, DBUtil.API_KEY_MOVIE_DB)
+                    .appendPath(MovieDbAPI.PATH_IMAGES)
+                    .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                     .build();
 
             //Log.e(TAG, "Phot URI: " + personPhotosUri);
 
-            String personPhotosJSONStr = DBUtil.queryMovieDatabase(personPhotosUri);
+            String personPhotosJSONStr = MovieDbAPI.queryMovieDatabase(personPhotosUri);
             Log.e(TAG,personPhotosJSONStr);
 
             ArrayList<PersonPhoto> photoList = null;
@@ -131,7 +131,7 @@ public class PersonPhotosActivityFragment extends Fragment implements Constants 
             try {
                 JSONObject obj = new JSONObject(personPhotosJSONStr);
 
-                JSONArray profilesArray = obj.getJSONArray(DBUtil.TAG_PROFILES);
+                JSONArray profilesArray = obj.getJSONArray(MovieDbAPI.TAG_PROFILES);
 
                 photoList = new ArrayList<>(profilesArray.length());
 
@@ -141,11 +141,11 @@ public class PersonPhotosActivityFragment extends Fragment implements Constants 
 
                     PersonPhoto personPhoto = new PersonPhoto(personId);
 
-                    personPhoto.setThumbnailImagePath(DBUtil.BASE_MOVIE_IMAGE_URL +
-                            DBUtil.IMAGE_185_SIZE + photoProfile.getString(DBUtil.TAG_FILE_PATH));
+                    personPhoto.setThumbnailImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL +
+                            MovieDbAPI.getPosterSize(getActivity()) + photoProfile.getString(MovieDbAPI.TAG_FILE_PATH));
 
-                    personPhoto.setFullImagePath(DBUtil.BASE_MOVIE_IMAGE_URL +
-                            DBUtil.IMAGE_500_SIZE + photoProfile.getString(DBUtil.TAG_FILE_PATH));
+                    personPhoto.setFullImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL +
+                            MovieDbAPI.IMAGE_500_SIZE + photoProfile.getString(MovieDbAPI.TAG_FILE_PATH));
 
                     Log.e(TAG,personPhoto.getThumbnailImagePath());
                     photoList.add(personPhoto);

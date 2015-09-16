@@ -13,7 +13,7 @@ import android.widget.ListView;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.popularmovies.adapters.CreditListAdapter;
-import com.android.fourthwardcoder.popularmovies.helpers.DBUtil;
+import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
 
@@ -77,7 +77,7 @@ public class PersonFilmographyActivityFragment extends Fragment implements Const
             //Get ID of person
             int personId = params[0];
 
-            return DBUtil.getPersonCreditList(personId);
+            return MovieDbAPI.getPersonCreditList(personId);
         }
 
         @Override
