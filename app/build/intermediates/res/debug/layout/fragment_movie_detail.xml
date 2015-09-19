@@ -1,7 +1,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.android.fourthwardcoder.popularmovies.fragments.MovieDetailActivityFragment"
+    tools:context="com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#e6e6e6">
@@ -15,7 +15,8 @@
         android:focusableInTouchMode="true">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent" android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +64,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:id="@+id/titleTextView"
                 android:textSize="20dp"
                 android:padding="2dp"
@@ -74,28 +74,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
                 android:padding="2dp"
                 android:id="@+id/releaseYearTextView" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:padding="2dp"
                 android:id="@+id/runtimeTextView" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:id="@+id/directorTextView"
                 android:padding="2dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:id="@+id/castTextView"
                 android:padding="2dp" />
 
@@ -116,7 +112,6 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/ratingTextView"
             android:gravity="center"
             android:textSize="30dp"
@@ -137,28 +132,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/overviewTextView"
             android:padding="2dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/genreTextView"
             android:padding="2dp"/>
 
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
                 android:id="@+id/releaseDateTextView"
                 android:padding="2dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Text"
             android:id="@+id/revenueTextView"
             android:padding="2dp" />
     </LinearLayout>

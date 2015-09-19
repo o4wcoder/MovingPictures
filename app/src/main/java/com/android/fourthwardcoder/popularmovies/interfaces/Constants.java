@@ -1,11 +1,15 @@
 package com.android.fourthwardcoder.popularmovies.interfaces;
 
 /**
- * Created by chare on 9/2/2015.
+ * Interface Constants
+ * Author: Chris Hare
+ * Created: 9/2/2015.
+ *
+ * Interface to hold constant defines shared by all classes.
  */
 public interface Constants {
 
-    //Extra for passing the Movie object to the movies detail activity
+    //Extras for intents
     public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
     public static final String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
     public static final String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";

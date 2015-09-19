@@ -4,7 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by chare on 9/1/2015.
+ * Class PersonPhoto
+ * Author: Chris Hare
+ * Created: 9/1/2015
+ *
+ * Class to hold the details of a person's pictures
  */
 public class PersonPhoto implements Parcelable {
 

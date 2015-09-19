@@ -1,7 +1,11 @@
 package com.android.fourthwardcoder.popularmovies.models;
 
 /**
- * Created by chare on 8/28/2015.
+ * Class Video
+ * Author: Chris Hare
+ * Created: 8/28/2015.
+ *
+ * Class to hold the details of videos/trailers of a movie
  */
 public class Video {
 

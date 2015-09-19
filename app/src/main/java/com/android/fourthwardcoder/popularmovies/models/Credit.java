@@ -1,7 +1,11 @@
 package com.android.fourthwardcoder.popularmovies.models;
 
 /**
- * Created by chare on 9/2/2015.
+ * Class Credit
+ * Author: Chris Hare
+ * Created: 9/2/2015.
+ *
+ * Class to hold a person's movie credit details
  */
 public class Credit implements Comparable{
 

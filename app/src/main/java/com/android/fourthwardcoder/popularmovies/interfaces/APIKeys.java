@@ -5,7 +5,7 @@ package com.android.fourthwardcoder.popularmovies.interfaces;
  * Author: Chris Hare
  * Created 8/7/2015.
  *
- * This interface is used to define API Keys used whithin the APP. It is added to the .gitignore
+ * This interface is used to define API Keys used within the APP. It is added to the .gitignore
  * file and is not pushed to GitHub.
  */
 public interface APIKeys {

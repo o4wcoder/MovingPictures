@@ -191,7 +191,7 @@ public class MovieDbAPI {
     }
 
     /**
-     *
+     * Get list of movies. Uri is required as the sort parameter
      * @param context   Context of calling Activity
      * @param movieUri  URI string use to poll data from movie database
      * @return          ArralyList of Simple Movies
@@ -209,9 +209,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * Get single movie
+     * @param id Movie id
+     * @return   Movie object
      */
     public static Movie getMovie(int id) {
 
@@ -225,9 +225,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * Get single person
+     * @param id Person id
+     * @return   Person object
      */
     public static Person getPerson(int id) {
 
@@ -241,9 +241,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param movieId
-     * @return
+     * Get list of videos from a Movie
+     * @param movieId Movie id
+     * @return        ArrayList of Videos
      */
     public static ArrayList<Video> getVideoList(int movieId) {
 
@@ -257,9 +257,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param movieId
-     * @return
+     * Get list of cast from a Movie
+     * @param movieId Movie id
+     * @return        ArrayList of credits
      */
     public static ArrayList<Credit> getCastList(int movieId) {
 
@@ -274,9 +274,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param personId
-     * @return
+     * Get list of credits of a person
+     * @param personId Person id
+     * @return         ArrayList of credits of a person
      */
     public static ArrayList<Credit> getPersonCreditList(int personId) {
 
@@ -290,9 +290,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param context
-     * @return
+     * Get screen size of the device
+     * @param context Context of calling activity
+     * @return        screen size
      */
     public static int getScreenSize(Context context) {
         int screenLayout = context.getResources().getConfiguration().screenLayout;
@@ -302,9 +302,9 @@ public class MovieDbAPI {
     }
 
     /**
-     *
-     * @param context
-     * @return
+     * Get poster resolution of poster depending on screen size
+     * @param context Context of calling activity
+     * @return        Poster size to be polled from Movie DB
      */
     public static String getPosterSize(Context context) {
 

@@ -79,8 +79,8 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
         super.onCreate(savedInstanceState);
 
         //Retain fragment across Activity re-creation
-        setRetainInstance(true);
-
+       // setRetainInstance(true);
+        Log.e(TAG,"onCreate");
         //Set Option Menu
         setHasOptionsMenu(true);
 
@@ -97,6 +97,7 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e(TAG,"onCreateView");
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         //Get main Gridview and set up click listener
@@ -129,6 +130,7 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                 Log.e(TAG,"Apply current movie list");
                 MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),mMovieList);
                 mGridView.setAdapter(adapter);
+
             }
         }
         return view;
@@ -264,24 +266,8 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                     break;
             }
 
-
-            //Log.e(TAG,movieUri.toString());
-            //Get full Json result from querying the Movie DB
-//            String movieJsonStr = MovieDbAPI.queryMovieDatabase(movieUri);
-//
-//            //Error pulling movies, return null
-//            if(movieJsonStr == null)
-//                return null;
-//
-//            //Part data and return list of movies
-//            return MovieDbAPI.parseJsonMovieList(movieJsonStr);
-
             return MovieDbAPI.getMovieList(getActivity(), movieUri);
-
         }
-
-
-
 
         @Override
         protected void onPostExecute(ArrayList<SimpleMovie> movieList) {
@@ -299,6 +285,10 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                     mMovieList = movieList;
                     MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
                     mGridView.setAdapter(adapter);
+
+
+                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
+
                 }
                 else {
 
@@ -323,6 +313,8 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
          * DetailFragmentCallback for when an item has been selected.
          */
         public void onItemSelected(int movieId);
+
+        public void onLoadFinished(int movieId);
     }
 
 

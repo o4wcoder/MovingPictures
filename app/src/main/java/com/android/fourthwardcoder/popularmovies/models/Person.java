@@ -3,7 +3,11 @@ package com.android.fourthwardcoder.popularmovies.models;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 8/24/2015.
+ * Class Person
+ * Author: Chris Hare
+ * Created: 8/24/2015.
+ *
+ * Class to hold a movie cast members details
  */
 public class Person {
 

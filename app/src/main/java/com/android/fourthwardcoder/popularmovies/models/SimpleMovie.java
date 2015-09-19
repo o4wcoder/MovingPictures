@@ -1,7 +1,11 @@
 package com.android.fourthwardcoder.popularmovies.models;
 
 /**
- * Created by chare on 9/3/2015.
+ * Class SimpleMovie
+ * Author: Chris Hare
+ * Created: 9/3/2015.
+ *
+ * Class to hold simple movie details used for the Filmography list.
  */
 public class SimpleMovie {
 

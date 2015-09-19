@@ -1781,14 +1781,9 @@ containing a value of this type.
     }
     public static final class menu {
         public static final int menu_actor_detail=0x7f0f0000;
-        public static final int menu_filmography=0x7f0f0001;
-        public static final int menu_main=0x7f0f0002;
-        public static final int menu_movie_cast=0x7f0f0003;
-        public static final int menu_movie_detail=0x7f0f0004;
-        public static final int menu_movie_reviews=0x7f0f0005;
-        public static final int menu_person_photos=0x7f0f0006;
-        public static final int menu_person_single_photo=0x7f0f0007;
-        public static final int menu_sort=0x7f0f0008;
+        public static final int menu_main=0x7f0f0001;
+        public static final int menu_movie_detail=0x7f0f0002;
+        public static final int menu_sort=0x7f0f0003;
     }
     public static final class mipmap {
         public static final int ic_launcher=0x7f030000;

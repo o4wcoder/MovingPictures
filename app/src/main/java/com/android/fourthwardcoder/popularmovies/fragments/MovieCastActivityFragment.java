@@ -27,7 +27,7 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
     /********************************************************************/
     /*                         Constants                                */
     /********************************************************************/
-    private static final String TAG = PersonFilmographyActivityFragment.class.getSimpleName();
+    private static final String TAG = PersonFilmographyFragment.class.getSimpleName();
 
     /********************************************************************/
     /*                         Local Data                               */

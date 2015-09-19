@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
-import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailActivityFragment;
+import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.popularmovies.fragments.PopularMoviesMainFragment;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
@@ -39,9 +39,13 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar();
 
-        if(findViewById(R.id.movie_detail_container) != null) {
+
+        Log.e(TAG, "onCreate");
+
+
+            if((findViewById(R.id.movie_detail_container) != null)) {
+            Log.e(TAG, "onCreate two pane");
 
             //The detail container view will be present only in the large-screen layouts
             //(res/layout-sw600dp). If this view is present, then the activity should
@@ -51,13 +55,37 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment transaction.
             if (savedInstanceState == null) {
-
+                Log.e(TAG, "onCreate movie detail container");
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container,new MovieDetailActivityFragment(),
-                                DETAILFRAGMENT_TAG).commit();
+                        .replace(R.id.movie_detail_container, new MovieDetailFragment(),
+                                DETAILFRAGMENT_TAG)
+                        .commit();
             }
         }
-        else {
+        else{
+//            Log.e(TAG, "Two pane is false");
+//            FragmentManager fm = getSupportFragmentManager();
+//            Fragment fr = fm.findFragmentByTag(DETAILFRAGMENT_TAG);
+//
+//            List<Fragment> fragList = fm.getFragments();
+//
+//            for (int i = 0; i < fragList.size(); i++)
+//                Log.e(TAG, "fragment= " + fragList.get(i).getClass().getSimpleName());
+//
+//            if (fr != null) {
+//
+//                //fm.beginTransaction().remove(fr).commit();
+//                //fm.beginTransaction().replace(R.id.movie_detail_container, null);
+//
+//                Log.e(TAG, "After frag delete.");
+//                fragList = fm.getFragments();
+//
+//                for (int i = 0; i < fragList.size(); i++)
+//                    Log.e(TAG, "fragment= " + fragList.get(i).getClass().getSimpleName());
+//            } else
+//                Log.e(TAG, "Fragment was null");
+
+
             mTwoPane = false;
         }
 
@@ -86,6 +114,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onItemSelected(int movieId) {
 
@@ -98,7 +127,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             Bundle args = new Bundle();
             args.putInt(EXTRA_MOVIE_ID, movieId);
 
-            MovieDetailActivityFragment fragment = new MovieDetailActivityFragment();
+            MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction()
@@ -110,6 +139,26 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             Intent i = new Intent(this,MovieDetailActivity.class);
             i.putExtra(EXTRA_MOVIE_ID, movieId);
             startActivity(i);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(int movieId) {
+
+        if (mTwoPane) {
+            Log.e(TAG,"onLoadFinished Got two pane");
+            //In two-pane mode, show the detail view in this activity by
+            //adding or replacing the detail fragment using a fragment
+            //transaction
+            Bundle args = new Bundle();
+            args.putInt(EXTRA_MOVIE_ID, movieId);
+
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
         }
     }
 }

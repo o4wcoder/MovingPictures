@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
-import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailActivityFragment;
+import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 import java.util.Stack;
@@ -44,10 +44,14 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants{
 
             Bundle arguments = new Bundle();
             int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
+            arguments.putInt(EXTRA_MOVIE_ID,movieId);
+
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
 
             Log.e(TAG,"onCreate got movie ID "  + movieId);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container,new MovieDetailActivityFragment())
+                    .add(R.id.movie_detail_container,fragment)
                     .commit();
         }
         else {
