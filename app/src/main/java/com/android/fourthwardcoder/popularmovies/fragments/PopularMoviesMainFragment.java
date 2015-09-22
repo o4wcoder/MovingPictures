@@ -5,11 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.adapters.MovieImageAdapter;
+import com.android.fourthwardcoder.popularmovies.data.MovieContract;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
@@ -36,7 +41,7 @@ import java.util.ArrayList;
  *
  * Main Fragment of the Popular Movies App
  */
-public class PopularMoviesMainFragment extends Fragment implements Constants {
+public class PopularMoviesMainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Constants {
 
 
     /**************************************************/
@@ -57,6 +62,9 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
     //Default sort type
     private static final int DEFAULT_SORT = 0;
 
+    //ID for Movie Favorites Loader
+    private static final int MOVIE_FAVORITES_LOADER = 0;
+
 
     /**************************************************/
 	/*                Local Data                      */
@@ -69,6 +77,7 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
 
     public PopularMoviesMainFragment() {
     }
+
 
     /**************************************************/
     /*               Override Methods                 */
@@ -181,6 +190,29 @@ public class PopularMoviesMainFragment extends Fragment implements Constants {
                 new FetchPhotosTask().execute(mSortOrder);
 
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri movieFavoritesUri = MovieContract.MovieEntry.buildMovieUri();
+
+        return new CursorLoader(getActivity(),
+                movieFavoritesUri,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
     /*****************************************************/
     /*                Inner Classes                      */

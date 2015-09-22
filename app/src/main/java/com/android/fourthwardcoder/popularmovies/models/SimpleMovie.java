@@ -1,5 +1,7 @@
 package com.android.fourthwardcoder.popularmovies.models;
 
+import android.content.ContentValues;
+
 /**
  * Class SimpleMovie
  * Author: Chris Hare
@@ -33,4 +35,6 @@ public class SimpleMovie {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
+
+
 }

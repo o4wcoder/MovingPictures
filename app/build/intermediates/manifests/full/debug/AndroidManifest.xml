@@ -89,6 +89,10 @@
             android:name="com.android.fourthwardcoder.popularmovies.activities.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+
+        <provider
+            android:name="com.android.fourthwardcoder.popularmovies.data.MovieProvider"
+            android:authorities="com.android.fourthwardcoder.popularmovies" />
     </application>
 
 </manifest>

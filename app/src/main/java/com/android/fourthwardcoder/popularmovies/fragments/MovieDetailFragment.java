@@ -1,11 +1,16 @@
 package com.android.fourthwardcoder.popularmovies.fragments;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.activities.MovieCastActivity;
+import com.android.fourthwardcoder.popularmovies.data.MovieContract;
+import com.android.fourthwardcoder.popularmovies.data.MovieDbHelper;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
@@ -85,7 +92,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         Log.e(TAG,"onCreate");
         super.onCreate(savedInstanceState);
         //retain the instance on rotation
-        setRetainInstance(true);
+        //setRetainInstance(true);
 
     }
     @Override
@@ -117,11 +124,13 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                         toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.to_favorites);
+                        addMovieToFavoritesDb();
 
                     }
                     else {
                         toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.from_favorites);
+                        removeMovieFromDb();
                     }
                     Toast toast = Toast.makeText(getActivity().getApplicationContext(),
                             toastStr, Toast.LENGTH_SHORT);
@@ -179,6 +188,70 @@ public class MovieDetailFragment extends Fragment implements Constants {
         }
 
         return view;
+    }
+
+    private void addMovieToFavoritesDb(){
+
+//        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//
+//        ContentValues values = new ContentValues();
+//        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
+//
+//        long movieRow = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,values);
+//
+//        Log.e(TAG, "Insert row " + movieRow);
+//
+//        db.close();
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
+
+        Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
+        Log.e(TAG, "Inserted inti Uri " + inserted.toString());
+
+        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+
+        cursor.moveToFirst();
+        while(cursor.moveToNext())
+           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
+
+
+    }
+
+
+    private void removeMovieFromDb() {
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
+        String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
+        String[] selectionArgs = new String[1];
+                selectionArgs[0] = String.valueOf(mMovieId);
+        int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,selection,selectionArgs);
+        Log.e(TAG,"Deleted Row " + deletedRow);
+
+        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+        cursor.moveToFirst();
+        while(cursor.moveToNext())
+            Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
+    }
+
+    private boolean checkIfFavorite() {
+
+        return true;
+    }
+    public Cursor getMovieDbCursor(SQLiteDatabase db) {
+
+        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, //TAble to Query
+        null, //all columns
+        null, //Columns for the "where" clause
+        null, //Values for the "where" clause
+        null, //columns for the group by
+        null, //columns to filter by group
+        null //sort order
+        );
+
+        return cursor;
     }
     public void getListViewSize(ListView myListView) {
         ListAdapter myListAdapter = myListView.getAdapter();

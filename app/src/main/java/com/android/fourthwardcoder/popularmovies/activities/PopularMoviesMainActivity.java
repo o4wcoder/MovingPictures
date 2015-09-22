@@ -30,6 +30,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
 
+
     /*************************************************************/
     /*                       Local Data                          */
     /*************************************************************/

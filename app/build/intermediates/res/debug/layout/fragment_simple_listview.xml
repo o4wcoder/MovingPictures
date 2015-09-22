@@ -6,7 +6,7 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 android:paddingBottom="@dimen/activity_vertical_margin"
-tools:context="com.android.fourthwardcoder.popularmovies.fragments.PersonPhotosActivityFragment">
+tools:context="com.android.fourthwardcoder.popularmovies.fragments.PersonPhotosFragment">
 
 <ListView
     android:layout_width="fill_parent"
@@ -14,4 +14,4 @@ tools:context="com.android.fourthwardcoder.popularmovies.fragments.PersonPhotosA
     android:id="@+id/listView" />
 
 </LinearLayout>
-<!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/fragment_simple_listview.xml -->
+<!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/fragment_simple_listview.xml -->

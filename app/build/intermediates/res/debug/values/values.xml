@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
@@ -28,7 +28,7 @@
         <item>360</item>
         <item>-1</item>
     </string-array>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/sort_options.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/sort_options.xml -->
     <eat-comment/>
     <string-array name="sort_list">
         <item>Most Popular</item>
@@ -43,7 +43,7 @@
         <item>@string/sort_popularity</item>
         <item>@string/sort_revenue</item>
     </string-array>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <attr format="reference" name="drawerArrowStyle"/>
     <attr format="dimension" name="height"/>
@@ -84,21 +84,21 @@
     <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light</color>
     <color name="link_text_material_dark">@color/material_deep_teal_200</color>
     <color name="link_text_material_light">@color/material_deep_teal_500</color>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/colors.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="materialBlue500_linkColor">#2196F3</color>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <color name="material_blue_grey_800">#ff37474f</color>
     <color name="material_blue_grey_900">#ff263238</color>
     <color name="material_blue_grey_950">#ff21272b</color>
     <color name="material_deep_teal_200">#ff80cbc4</color>
     <color name="material_deep_teal_500">#ff009688</color>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <color name="material_teal">#009688</color>
     <color name="material_text_white">#ffffff</color>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <color name="primary_dark_material_dark">#ff000000</color>
     <color name="primary_dark_material_light">#ff757575</color>
@@ -204,11 +204,11 @@
     <dimen name="abc_text_size_subtitle_material_toolbar">16dp</dimen>
     <dimen name="abc_text_size_title_material">20sp</dimen>
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/dimens.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <item name="dialog_fixed_height_major" type="dimen">80%</item>
     <item name="dialog_fixed_height_minor" type="dimen">100%</item>
@@ -224,11 +224,11 @@
     <item name="action_bar_spinner" type="id"/>
     <item name="action_menu_divider" type="id"/>
     <item name="action_menu_presenter" type="id"/>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.ms-square/expandableTextView/0.1.4/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.ms-square/expandableTextView/0.1.4/res/values/values.xml -->
     <eat-comment/>
     <item name="expand_collapse" type="id"/>
     <item name="expandable_text" type="id"/>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <item name="home" type="id"/>
     <item name="progress_circular" type="id"/>
@@ -257,7 +257,7 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="action_settings">Settings</string>
     <string name="action_sort">SORT</string>
@@ -277,7 +277,7 @@
     <string name="more">More</string>
     <string name="no_reviews">NO Reviews</string>
     <string name="photos">Photos</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
@@ -295,7 +295,7 @@
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string name="pref_title_system_sync_settings">System sync settings</string>
     <string name="pref_title_vibrate">Vibrate</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="primary_text_alpha_dark">.87</string>
     <string name="progress_downloading_details">Downloading Details...</string>
@@ -309,10 +309,10 @@
     <string name="sort_popularity">popularity.desc</string>
     <string name="sort_release_date">release_date.desc</string>
     <string name="sort_revenue">revenue.desc</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="synopsis">SYNOPSIS:</string>
     <string name="title_activity_actor_detail">Actor Details</string>
@@ -322,26 +322,26 @@
     <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="title_activity_person_photos">Photos</string>
     <string name="title_activity_person_single_photo">Photo</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string name="title_activity_settings">Settings</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="to_favorites">to favorites</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <string name="user_reviews">User Reviews</string>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>
     <style name="Animation.AppCompat.DropDownUp" parent="Base.Animation.AppCompat.DropDownUp"/>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/res/values/values.xml -->
     <eat-comment/>
     <style name="Base.AlertDialog.AppCompat" parent="android:Widget">
         <item name="android:layout">@layout/abc_alert_dialog_material</item>
@@ -1583,7 +1583,7 @@
     <style name="Widget.AppCompat.TextView.SpinnerItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="RtlOverlay.Widget.AppCompat.Toolbar.Button.Navigation"/>
-    <!-- From: file:/C:/Users/chare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="linkTextView">
         <item name="android:gravity">left</item>

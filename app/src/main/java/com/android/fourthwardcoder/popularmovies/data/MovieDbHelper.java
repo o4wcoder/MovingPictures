@@ -28,13 +28,18 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the movie entry associated with this movie data
-                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, ";
+                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
+
+                " UNIQUE (" + MovieEntry.COLUMN_MOVIE_ID + ", " +
+                MovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        //!!! May need to use ALTER TABLE here.
         db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
     }
 }
