@@ -170,7 +170,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/user_reviews"
                 android:id="@+id/reviewsTextView"
-                style="@style/linkTextView" />
+                style="@style/headerLinkTextView" />
         </LinearLayout>
 
         <LinearLayout

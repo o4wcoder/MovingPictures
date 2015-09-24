@@ -479,7 +479,10 @@ public class MovieDbAPI {
             person.setDeathday(obj.getString(MovieDbAPI.TAG_DEATHDAY));
             person.setBirthPlace(obj.getString(MovieDbAPI.TAG_PLACE_OF_BIRTH));
             person.setProfileImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + obj.getString(MovieDbAPI.TAG_PROFILE_PATH));
-            person.setHomepage(obj.getString(MovieDbAPI.TAG_HOMEPAGE));
+
+            String strPage = obj.getString(MovieDbAPI.TAG_HOMEPAGE);
+            strPage = strPage.replace("http://","");
+            person.setHomepage(strPage);
 
 
 

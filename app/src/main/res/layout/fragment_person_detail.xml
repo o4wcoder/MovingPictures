@@ -67,6 +67,12 @@
                 android:text="Death Date"
                 android:id="@+id/deathDateTextView"
                 android:padding="2dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/webPageTextView"
+                android:padding="2dp"
+                android:textColor="@color/link_text_material_light"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -86,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/biography"
                 android:id="@+id/biographyTextView"
-                style="@style/linkTextView"/>
+                style="@style/headerTextView"/>
 
             <com.ms.square.android.expandabletextview.ExpandableTextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -128,8 +134,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/filmography"
                 android:id="@+id/filmographyTextView"
-                style="@style/linkTextView"/>
+                style="@style/headerLinkTextView"/>
         </LinearLayout>
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -146,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/photos"
                 android:id="@+id/photosTextView"
-                style="@style/linkTextView"/>
+                style="@style/headerLinkTextView"/>
         </LinearLayout>
 </LinearLayout>
 

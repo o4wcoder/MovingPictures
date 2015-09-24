@@ -12,7 +12,7 @@ import com.android.fourthwardcoder.popularmovies.data.MovieContract.MovieEntry;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
 
-    private static final  int DATABASE_VERSION = 1;
+    private static final  int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -29,6 +29,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
                 // the ID of the movie entry associated with this movie data
                 MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
+                MovieEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL, " +
 
                 " UNIQUE (" + MovieEntry.COLUMN_MOVIE_ID + ", " +
                 MovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";

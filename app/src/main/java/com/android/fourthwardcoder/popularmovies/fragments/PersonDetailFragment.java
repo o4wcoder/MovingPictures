@@ -1,11 +1,15 @@
 package com.android.fourthwardcoder.popularmovies.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +51,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mDeathDateTextView;
     TextView mBiographyTextView;
     ExpandableTextView mBiographyContentTextView;
+    TextView mWebpageTextView;
     TextView mFilmographyTextView;
     TextView mPhotosTextView;
 
@@ -86,6 +91,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
         //Person Biography Content
         mBiographyContentTextView = (ExpandableTextView)view.findViewById(R.id.biographyContentExpandableTextView);
 
+        mWebpageTextView = (TextView)view.findViewById(R.id.webPageTextView);
         //Person Filmography
         mFilmographyTextView = (TextView)view.findViewById(R.id.filmographyTextView);
         mFilmographyTextView.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +147,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 //Format birthday into form Jan 1, 2016
                 String strBirthDay;
                 try {
-                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(person.getBirthday());
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(mPerson.getBirthday());
                     strBirthDay = new SimpleDateFormat("MMM d, yyyy").format(date);
                 }
                 catch(ParseException pe) {
@@ -152,18 +158,32 @@ public class PersonDetailFragment extends Fragment implements Constants {
                         strBirthDay);
 
                 mBornDateTextView.setText(bornDate);
-                mBornPlaceTextView.setText(person.getBirthPlace());
+                mBornPlaceTextView.setText(mPerson.getBirthPlace());
 
-                if (!(person.getDeathday()).equals("")) {
+                if (!(mPerson.getDeathday()).equals("")) {
                     Spanned deathDate = Html.fromHtml("<b>" + getString(R.string.death) + "</b>" + " " +
-                            person.getDeathday());
+                            mPerson.getDeathday());
                     mDeathDateTextView.setText(deathDate);
                 } else {
                     mDeathDateTextView.setVisibility(View.INVISIBLE);
                 }
 
 
-                mBiographyContentTextView.setText(person.getBiography());
+                mBiographyContentTextView.setText(mPerson.getBiography());
+
+                SpannableString pageSS = new SpannableString(mPerson.getHomepage());
+
+                ClickableSpan span = new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
+                        startActivity(i);
+                    }
+                };
+
+                pageSS.setSpan(span,0,mPerson.getHomepage().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                mWebpageTextView.setText(pageSS);
+                mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
 
             }
 

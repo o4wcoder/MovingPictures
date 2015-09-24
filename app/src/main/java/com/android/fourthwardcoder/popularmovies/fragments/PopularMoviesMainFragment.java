@@ -75,6 +75,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
 
+    Loader<Cursor> mDbLoader;
+
     public PopularMoviesMainFragment() {
     }
 
@@ -88,7 +90,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         super.onCreate(savedInstanceState);
 
         //Retain fragment across Activity re-creation
-       // setRetainInstance(true);
+        setRetainInstance(true);
         Log.e(TAG,"onCreate");
         //Set Option Menu
         setHasOptionsMenu(true);
@@ -131,8 +133,15 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             //We don't have any movies, go fetch them
             if (mMovieList == null)
                 //Start up thread to pull in movie data. Send in sort
-                //type.
-                new FetchPhotosTask().execute(mSortOrder);
+                //type. If we are pulling favorites (4) then use a cursorLoader. Otherwise
+                //use AsynTAsk
+               if(mSortOrder == 4) {
+                //Get Favorites
+                   getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER,null,this);
+               }
+               else {
+                   new FetchPhotosTask().execute(mSortOrder);
+               }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
                 //Just apply the current list of movies
@@ -187,14 +196,22 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
             //Fetch new set of movies based on sort order
             if(mGridView != null)
-                new FetchPhotosTask().execute(mSortOrder);
-
+                if(mSortOrder == 4) {
+                    //Get Favorites
+                    Log.e(TAG,"CAlling init LOader");
+                    getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
+                    Log.e(TAG,"initLoader called");
+                }
+                else {
+                    new FetchPhotosTask().execute(mSortOrder);
+                }
         }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        Log.e(TAG,"Inside onCreateLoader");
         Uri movieFavoritesUri = MovieContract.MovieEntry.buildMovieUri();
 
         return new CursorLoader(getActivity(),
@@ -206,13 +223,64 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    //    cursor.moveToFirst();
+      //  while(cursor.moveToNext())
+        //   Log.e(TAG,"Loaded Favorite movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
+
+        Log.e(TAG,"inside onLoadFinished");
+        setMovieAdapter(convertCursorToSimpleMovieList(cursor));
+
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private ArrayList<SimpleMovie> convertCursorToSimpleMovieList(Cursor cursor) {
+
+        ArrayList<SimpleMovie> movieList = new ArrayList<>(cursor.getCount());
+
+        while(cursor.moveToNext()) {
+            SimpleMovie movie = new SimpleMovie(cursor.getInt(MovieContract.COL_MOVIE_ID),cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
+            Log.e(TAG,"Created simple movie " + movie.getId());
+            movieList.add(movie);
+        }
+
+        return movieList;
+
+    }
+
+    private void setMovieAdapter(ArrayList<SimpleMovie> movieList) {
+
+        if(getActivity() != null && mGridView != null) {
+
+            //If we've got movies in the list, then send them to the adapter from the
+            //GridView
+            if(movieList != null) {
+
+                //Store global copy
+                mMovieList = movieList;
+                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
+                mGridView.setAdapter(adapter);
+
+
+                ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
+
+            }
+            else {
+
+                //If we get here, then the movieList was empty and something went wrong.
+                //Most likely a network connection problem
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
+
+        }
     }
     /*****************************************************/
     /*                Inner Classes                      */
@@ -292,10 +360,6 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                             .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                             .build();
                     break;
-                //Sort by Favorites
-                case 4:
-
-                    break;
             }
 
             return MovieDbAPI.getMovieList(getActivity(), movieUri);
@@ -307,31 +371,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            if(getActivity() != null && mGridView != null) {
+            setMovieAdapter(movieList);
 
-                //If we've got movies in the list, then send them to the adapter from the
-                //GridView
-                if(movieList != null) {
-
-                    //Store global copy
-                    mMovieList = movieList;
-                    MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
-                    mGridView.setAdapter(adapter);
-
-
-                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
-
-                }
-                else {
-
-                    //If we get here, then the movieList was empty and something went wrong.
-                    //Most likely a network connection problem
-                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                    connectToast.show();
-                }
-
-            }
         }
     }
 

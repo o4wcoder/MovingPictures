@@ -33,6 +33,7 @@ public class Movie implements Parcelable {
     String runtime;
     double rating;
     String revenue;
+    boolean favorite;
 
     ArrayList<String> genreList;
     String genreString;
@@ -227,6 +228,14 @@ public class Movie implements Parcelable {
         this.videoList = videoList;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     /**************************************************************/
     /*                      Parcelable Section                    */
     /**************************************************************/
@@ -243,6 +252,7 @@ public class Movie implements Parcelable {
         actorsString = in.readString();
         runtime = in.readString();
         revenue = in.readString();
+        favorite = in.readByte() != 0x00;
 
         if (in.readByte() == 0x01) {
             genreList = new ArrayList<String>();
@@ -290,6 +300,8 @@ public class Movie implements Parcelable {
         dest.writeString(actorsString);
         dest.writeString(runtime);
         dest.writeString(revenue);
+        dest.writeByte((byte) (favorite ? 0x01 : 0x00));
+
         if (genreList == null) {
             dest.writeByte((byte) (0x00));
         } else {

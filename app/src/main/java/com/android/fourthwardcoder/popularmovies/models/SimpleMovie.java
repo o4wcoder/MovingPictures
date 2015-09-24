@@ -13,6 +13,7 @@ public class SimpleMovie {
 
     int id;
     String posterPath;
+    boolean favorite;
 
     public SimpleMovie(int id, String posterPath) {
         this.id = id;
@@ -36,5 +37,11 @@ public class SimpleMovie {
         this.posterPath = posterPath;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
 
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
 }

@@ -139,6 +139,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
+        if(checkIfFavorite())
+            mFavoritesToggleButton.setChecked(true);
+        else
+            mFavoritesToggleButton.setChecked(false);
+
         //Set textviews with Movie details
         mTitleTextView = (TextView)view.findViewById(R.id.titleTextView);
         mReleaseYearTextView = (TextView)view.findViewById(R.id.releaseYearTextView);
@@ -192,20 +197,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     private void addMovieToFavoritesDb(){
 
-//        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
-//
-//        long movieRow = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,values);
-//
-//        Log.e(TAG, "Insert row " + movieRow);
-//
-//        db.close();
-
         ContentValues movieValues = new ContentValues();
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,mMovie.getPosterPath());
 
         Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
         Log.e(TAG, "Inserted inti Uri " + inserted.toString());
@@ -214,30 +208,46 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         cursor.moveToFirst();
         while(cursor.moveToNext())
-           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
+           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID) + " poster: " + cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
 
-
+         cursor.close();
     }
 
 
     private void removeMovieFromDb() {
 
-        ContentValues movieValues = new ContentValues();
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
         String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = new String[1];
                 selectionArgs[0] = String.valueOf(mMovieId);
         int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,selection,selectionArgs);
         Log.e(TAG,"Deleted Row " + deletedRow);
 
-        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
-        cursor.moveToFirst();
-        while(cursor.moveToNext())
-            Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
     }
 
     private boolean checkIfFavorite() {
 
+        String[] projection =
+                {
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID
+                };
+        String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
+        String[] selectionArgs = new String[1];
+        selectionArgs[0] = String.valueOf(mMovieId);
+
+        Cursor cursor = getActivity().getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null);
+
+        if(cursor != null) {
+
+            if(cursor.getCount() < 1)
+                return false;
+            else
+                return true;
+        }
         return true;
     }
     public Cursor getMovieDbCursor(SQLiteDatabase db) {
@@ -328,6 +338,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             Log.e(TAG,"Person id list null!!!");
 
         int span1Start = 6;
+
         int span1End = span1Start + mMovie.getActorNames().get(0).length();
         int span2Start = span1End + 2;
         int span2End = span2Start + mMovie.getActorNames().get(1).length();

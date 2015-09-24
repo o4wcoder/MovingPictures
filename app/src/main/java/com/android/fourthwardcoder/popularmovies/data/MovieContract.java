@@ -17,6 +17,7 @@ public class MovieContract  {
 
     public static final int COL_MOVIE = 0;
     public static final int COL_MOVIE_ID = 1;
+    public static final int COL_MOVIE_POSTER_PATH = 2;
 
     //Content provider authority for Movie DB
     public static final String CONTENT_AUTHORITY = "com.android.fourthwardcoder.popularmovies";
@@ -46,6 +47,7 @@ public class MovieContract  {
         public static final String TABLE_NAME = "movie";
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_MOVIE_POSTER_PATH = "movie_poster_path";
 
         public static Uri buildMovieUri() {
             return CONTENT_URI;
