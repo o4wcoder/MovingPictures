@@ -21,7 +21,7 @@ import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Person;
 import com.android.fourthwardcoder.popularmovies.R;
-import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyActivity;
+import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity;
 import com.android.fourthwardcoder.popularmovies.activities.PersonPhotosActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
@@ -98,7 +98,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(getActivity(),PersonFilmographyActivity.class);
+                Intent i = new Intent(getActivity(),PersonFilmographyTabActivity.class);
                 i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID,personId);
                 startActivity(i)
 ;            }

@@ -47,7 +47,7 @@
                 android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name=".activities.PersonFilmographyActivity"
+            android:name=".activities.PersonFilmographyTabActivity"
             android:label="@string/title_activity_filmography"
             android:parentActivityName=".activities.PersonDetailActivity" >
             <meta-data

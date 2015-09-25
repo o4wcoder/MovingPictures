@@ -1,6 +1,8 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:name="com.android.fourthwardcoder.popularmovies.fragments.PersonFilmographyFragment"
-    tools:layout="@layout/fragment_person_photos" android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    tools:layout="@layout/fragment_person_photos"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_container"/>
 <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_filmography.xml -->

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,21 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     /********************************************************************/
     ListView mListView;
     CreditListAdapter mAdapter;
+    FilmographyTabName mTabType;
 
     public PersonFilmographyFragment() {
     }
 
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+
+        Bundle bundle = getArguments();
+        int i = bundle.getInt(EXTRA_FILMOGRAPHY_TAB);
+        mTabType = FilmographyTabName.values()[i];
+
+        Log.e(TAG, "In filmography fragment with tab " + mTabType);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,7 +89,8 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
             //Get ID of person
             int personId = params[0];
 
-            return MovieDbAPI.getPersonCreditList(personId);
+
+            return MovieDbAPI.getPersonCreditList(personId,mTabType);
         }
 
         @Override

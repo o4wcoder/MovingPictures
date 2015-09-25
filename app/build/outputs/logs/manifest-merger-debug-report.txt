@@ -19,10 +19,14 @@ ADDED from AndroidManifest.xml:5:5
 		ADDED from AndroidManifest.xml:5:22
 application
 ADDED from AndroidManifest.xml:7:5
-MERGED from com.android.support:appcompat-v7:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
-MERGED from com.android.support:support-v4:22.2.0:22:5
+MERGED from com.android.support:appcompat-v7:22.2.1:22:5
+MERGED from com.android.support:support-v4:22.2.1:22:5
+MERGED from com.android.support:support-v4:22.2.1:22:5
 MERGED from com.ms-square:expandableTextView:0.1.4:9:5
+MERGED from com.android.support:design:22.2.1:22:5
+MERGED from com.android.support:appcompat-v7:22.2.1:22:5
+MERGED from com.android.support:support-v4:22.2.1:22:5
+MERGED from com.android.support:support-v4:22.2.1:22:5
 	android:label
 		ADDED from AndroidManifest.xml:10:9
 	android:allowBackup
@@ -83,7 +87,7 @@ ADDED from AndroidManifest.xml:41:9
 		ADDED from AndroidManifest.xml:44:13
 	android:name
 		ADDED from AndroidManifest.xml:42:13
-activity#com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyActivity
+activity#com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity
 ADDED from AndroidManifest.xml:49:9
 	android:label
 		ADDED from AndroidManifest.xml:51:13
@@ -131,10 +135,14 @@ ADDED from AndroidManifest.xml:86:9
 		ADDED from AndroidManifest.xml:88:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
-MERGED from com.android.support:appcompat-v7:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
-MERGED from com.android.support:support-v4:22.2.0:20:5
+MERGED from com.android.support:appcompat-v7:22.2.1:20:5
+MERGED from com.android.support:support-v4:22.2.1:20:5
+MERGED from com.android.support:support-v4:22.2.1:20:5
 MERGED from com.ms-square:expandableTextView:0.1.4:5:5
+MERGED from com.android.support:design:22.2.1:20:5
+MERGED from com.android.support:appcompat-v7:22.2.1:20:5
+MERGED from com.android.support:support-v4:22.2.1:20:5
+MERGED from com.android.support:support-v4:22.2.1:20:5
 	android:targetSdkVersion
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0

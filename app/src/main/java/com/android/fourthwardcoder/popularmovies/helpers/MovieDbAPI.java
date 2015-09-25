@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
+import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.models.Person;
@@ -34,7 +35,7 @@ import java.util.Collections;
  * Helper class for doing all access to the Movies DB API. This contains all defines for URLs,
  * paths, and JSON tags. Contains helper methods polling the Movie DB and returning data.
  */
-public class MovieDbAPI {
+public class MovieDbAPI implements Constants {
 
     /*******************************************************************************/
     /*                                Constants                                    */
@@ -71,6 +72,7 @@ public class MovieDbAPI {
     public static final String PATH_IMAGES = "images";
     public static final String PATH_TAGGED_IMAGES = "tagged_images";
     public static final String PATH_MOVIE_CREDIT = "movie_credits";
+    public static final String PATH_TV_CREDIT = "tv_credits";
 
     //Extra append patch for youtube
     public static final String PATH_WATCH = "watch";
@@ -116,6 +118,7 @@ public class MovieDbAPI {
     public static final String TAG_FILE_PATH = "file_path";
     public static final String TAG_PROFILES = "profiles";
     public static final String TAG_CHARACTER = "character";
+    public static final String TAG_FIRST_AIR_DATE = "first_air_date";
 
 
     /******************************************************************/
@@ -278,15 +281,15 @@ public class MovieDbAPI {
      * @param personId Person id
      * @return         ArrayList of credits of a person
      */
-    public static ArrayList<Credit> getPersonCreditList(int personId) {
+    public static ArrayList<Credit> getPersonCreditList(int personId,FilmographyTabName creditType) {
 
-        Uri creditUri = buildPersonCreditsUri(personId);
+        Uri creditUri = buildPersonCreditsUri(personId,creditType);
         String creditJsonStr = queryMovieDatabase(creditUri);
 
         if(creditJsonStr == null)
             return null;
         else
-            return parseJsonPersonCreditList(creditJsonStr);
+            return parseJsonPersonCreditList(creditJsonStr,creditType);
     }
 
     /**
@@ -405,12 +408,18 @@ public class MovieDbAPI {
      * @param personId
      * @return
      */
-    private static Uri buildPersonCreditsUri(int personId) {
+    private static Uri buildPersonCreditsUri(int personId,FilmographyTabName creditType) {
+
+        String creditPath = "";
+        if(creditType == FilmographyTabName.MOVIES)
+            creditPath = MovieDbAPI.PATH_MOVIE_CREDIT;
+        else
+            creditPath = MovieDbAPI.PATH_TV_CREDIT;
 
         Uri personCreditsUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
                 .appendPath(MovieDbAPI.PATH_PERSON)
                 .appendPath(String.valueOf(personId))
-                .appendPath(MovieDbAPI.PATH_MOVIE_CREDIT)
+                .appendPath(creditPath)
                 .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                 .build();
 
@@ -500,7 +509,7 @@ public class MovieDbAPI {
      * @param personCreditsJsonStr
      * @return
      */
-    private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr) {
+    private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr,FilmographyTabName creditType) {
 
         //List of Reviews that get parsed from Movie DB JSON return
         ArrayList<Credit> creditList = null;
@@ -511,6 +520,7 @@ public class MovieDbAPI {
 
             creditList = new ArrayList<>(resultsArray.length());
 
+            Log.e(TAG,"Credit json: " + personCreditsJsonStr);
             for(int i = 0; i< resultsArray.length(); i++) {
 
                 JSONObject result = resultsArray.getJSONObject(i);
@@ -519,8 +529,17 @@ public class MovieDbAPI {
                 credit.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE
                         + result.getString(MovieDbAPI.TAG_POSTER_PATH));
 
-                String releaseDate = result.getString(MovieDbAPI.TAG_RELEASE_DATE);
-                Log.e(TAG,"Release Date: " + releaseDate);
+                //Different release and title tags between movies and tv filmography
+                String releaseTag = TAG_RELEASE_DATE;
+                String titleTag = TAG_TITLE;
+                if(creditType == FilmographyTabName.TV) {
+                    releaseTag = TAG_FIRST_AIR_DATE;
+                    titleTag = TAG_NAME;
+                }
+
+                String releaseDate = result.getString(releaseTag);
+                credit.setTitle(result.getString(titleTag));
+                
                 if((releaseDate != null) && (releaseDate != "") && (releaseDate != "null")) {
                     String dateArray[] = releaseDate.split("-");
 
@@ -528,7 +547,8 @@ public class MovieDbAPI {
                 }
                 else
                     Log.e(TAG,"Got null release date");
-                credit.setTitle(result.getString(MovieDbAPI.TAG_TITLE));
+
+
 
                 creditList.add(credit);
             }

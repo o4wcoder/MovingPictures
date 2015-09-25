@@ -137,6 +137,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 //use AsynTAsk
                if(mSortOrder == 4) {
                 //Get Favorites
+                   Log.e(TAG,"In OnCreateView: Got sort order 4, calling loader to get favorites");
                    getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER,null,this);
                }
                else {
@@ -268,7 +269,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 mGridView.setAdapter(adapter);
 
 
-                ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
+                if(mMovieList.size() > 0)
+                   ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
 
             }
             else {

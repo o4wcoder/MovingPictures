@@ -157,9 +157,12 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
 
+            //Set first movie in detail pane. Needed to use "commitAllowingStateLoss"
+            //instead of just "commit" because calling this directly when the loader
+            //was done causes an "illegal state exception"
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
     }
 }

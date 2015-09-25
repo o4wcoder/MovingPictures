@@ -10,13 +10,20 @@ package com.android.fourthwardcoder.popularmovies.interfaces;
 public interface Constants {
 
     //Extras for intents
-    public static final String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
-    public static final String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
-    public static final String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";
-    public static final String EXTRA_PERSON_NAME = "com.android.fourthwardcoder.popularmovies.extra_person_name";
-    public static final String EXTRA_FULL_PHOTO_PATH = "com.android.fourthwardcoder.popularmovies.extra_full_photo_path";
-    public static final String EXTRA_PERSON_PHOTO = "com.android.fourthwardcoder.popularmovies.extra_person_photo";
-    public static final String EXTRA_PERSON_PHOTO_ID = "com.android.fourthwardcoder.popularmovies.extra_person_photo_id";
+    String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
+    String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
+    String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";
+    String EXTRA_PERSON_NAME = "com.android.fourthwardcoder.popularmovies.extra_person_name";
+    String EXTRA_FULL_PHOTO_PATH = "com.android.fourthwardcoder.popularmovies.extra_full_photo_path";
+    String EXTRA_PERSON_PHOTO = "com.android.fourthwardcoder.popularmovies.extra_person_photo";
+    String EXTRA_PERSON_PHOTO_ID = "com.android.fourthwardcoder.popularmovies.extra_person_photo_id";
 
 
+    //Names of filmography tabs
+    enum FilmographyTabName {
+        MOVIES,
+        TV
+    }
+
+    String EXTRA_FILMOGRAPHY_TAB = "com.android.fourthwardcoder.popularmovies.extra_filmography_tab";
 }

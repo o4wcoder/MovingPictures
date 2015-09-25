@@ -53,7 +53,7 @@
                 android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyActivity"
+            android:name="com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity"
             android:label="@string/title_activity_filmography"
             android:parentActivityName="com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity" >
             <meta-data

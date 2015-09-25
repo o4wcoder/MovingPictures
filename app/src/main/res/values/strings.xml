@@ -31,6 +31,8 @@
     <string name="to_favorites">to favorites</string>
     <string name="from_favorites">from favorites</string>
     <string name="more">More</string>
+    <string name="filmography_tab_movies">Movies</string>
+    <string name="filmography_tab_tv">Televistion</string>
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>
     <string name="secondary_text_alpha_dark">.54</string>
