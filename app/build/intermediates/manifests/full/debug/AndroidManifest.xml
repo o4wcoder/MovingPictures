@@ -45,7 +45,7 @@
                 android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.popularmovies.activities.MovieReviewsActivity"
+            android:name="com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity"
             android:label="@string/title_activity_movie_reviews"
             android:parentActivityName="com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity" >
             <meta-data
@@ -78,7 +78,7 @@
                 android:value=".activities.PersonPhotosActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.popularmovies.activities.MovieCastActivity"
+            android:name="com.android.fourthwardcoder.popularmovies.activities.CastListActivity"
             android:label="@string/title_activity_movie_cast"
             android:parentActivityName="com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity" >
             <meta-data
@@ -93,6 +93,15 @@
         <provider
             android:name="com.android.fourthwardcoder.popularmovies.data.MovieProvider"
             android:authorities="com.android.fourthwardcoder.popularmovies" />
+
+        <activity
+            android:name="com.android.fourthwardcoder.popularmovies.activities.TvDetailActivity"
+            android:label="@string/title_activity_tv_detail"
+            android:parentActivityName="com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Person;
 import com.android.fourthwardcoder.popularmovies.R;
@@ -145,14 +146,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 mNameTextView.setText(person.getName());
 
                 //Format birthday into form Jan 1, 2016
-                String strBirthDay;
-                try {
-                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(mPerson.getBirthday());
-                    strBirthDay = new SimpleDateFormat("MMM d, yyyy").format(date);
-                }
-                catch(ParseException pe) {
-                    strBirthDay = person.getBirthday();
-                }
+                String strBirthDay = Util.reverseDateString(person.getBirthday());
 
                 Spanned bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
                         strBirthDay);
@@ -177,7 +171,9 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     @Override
                     public void onClick(View view) {
                         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
-                        startActivity(i);
+                        // Verify that the intent will resolve to an activity
+                        if (i.resolveActivity(getActivity().getPackageManager()) != null)
+                           startActivity(i);
                     }
                 };
 

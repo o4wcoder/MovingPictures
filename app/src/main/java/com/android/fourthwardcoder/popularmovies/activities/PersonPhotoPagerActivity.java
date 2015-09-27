@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.PersonSinglePhotoFragment;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.PersonPhoto;
 
@@ -33,6 +34,9 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_pager);
+
+        //Change status bar color
+        Util.setStatusBarColor(this);
 
         mPhotoList = getIntent().getParcelableArrayListExtra(EXTRA_PERSON_PHOTO);
         String personName = getIntent().getStringExtra(EXTRA_PERSON_NAME);

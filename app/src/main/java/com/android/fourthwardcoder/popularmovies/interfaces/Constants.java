@@ -17,13 +17,20 @@ public interface Constants {
     String EXTRA_FULL_PHOTO_PATH = "com.android.fourthwardcoder.popularmovies.extra_full_photo_path";
     String EXTRA_PERSON_PHOTO = "com.android.fourthwardcoder.popularmovies.extra_person_photo";
     String EXTRA_PERSON_PHOTO_ID = "com.android.fourthwardcoder.popularmovies.extra_person_photo_id";
+    String EXTRA_TV_ID = "com.android.fourthwardcoder.popularmovies.extra_tv_id";
+    String EXTRA_ENT_TYPE = "com.android.fourthwardcoder.popularmovies.extra_ent_type";
 
 
     //Names of filmography tabs
-    enum FilmographyTabName {
-        MOVIES,
-        TV
-    }
+//    enum FilmographyTabName {
+//        MOVIES,
+//        TV
+//    }
+
+    int TYPE_MOVIE = 0;
+    int TYPE_TV = 1;
 
     String EXTRA_FILMOGRAPHY_TAB = "com.android.fourthwardcoder.popularmovies.extra_filmography_tab";
+
+
 }

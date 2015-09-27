@@ -62,6 +62,12 @@
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="appDarkPrimaryColor">@color/materialBlueGrey700DarkPrimary</color>
+    <color name="appPrimaryColor">@color/materialBlueGrey500Primary</color>
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
+    <eat-comment/>
     <color name="background_floating_material_dark">#ff424242</color>
     <color name="background_floating_material_light">#ffeeeeee</color>
     <color name="background_material_dark">#ff303030</color>
@@ -96,6 +102,13 @@
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="materialBlue500_linkColor">#2196F3</color>
+    <color name="materialBlueGrey500Primary">#607D8B</color>
+    <color name="materialBlueGrey700DarkPrimary">#455A64</color>
+    <color name="materialCyanAccent">#00BCD4</color>
+    <color name="materialGrey500Primary">#9E9E9E</color>
+    <color name="materialGrey700DarkPrimary">#616161</color>
+    <color name="materialPrimaryText">#212121</color>
+    <color name="materialSecondaryText">#727272</color>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>
     <color name="material_blue_grey_800">#ff37474f</color>
@@ -348,6 +361,7 @@
     <string name="biography">Biography</string>
     <string name="born">BORN:</string>
     <string name="cast">CAST:</string>
+    <string name="created_by">CREATED BY:</string>
     <string name="death">DEATH:</string>
     <string name="dialog_sort">Sort By</string>
     <string name="director">DIRECTOR:</string>
@@ -358,6 +372,7 @@
     <string name="genre">GENRE:</string>
     <string name="hello_world">Hello world!</string>
     <string name="more">More</string>
+    <string name="networks">NETWORKS:</string>
     <string name="no_reviews">NO Reviews</string>
     <string name="photos">Photos</string>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
@@ -410,6 +425,7 @@
     <string name="title_activity_settings">Settings</string>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
+    <string name="title_activity_tv_detail">TvDetailActivity</string>
     <string name="to_favorites">to favorites</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <string name="user_reviews">User Reviews</string>
@@ -422,7 +438,10 @@
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabBarStyle">@style/MyActionBarTabs</item>
+        <item name="actionBarTabBarStyle">@style/MyActionBarTabs</item>
     </style>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>
@@ -1351,6 +1370,18 @@
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
+    </style>
+    <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <item name="android:background">@color/appPrimaryColor</item>
+        <item name="background">@color/appPrimaryColor</item>
+        <item name="backgroundStacked">@color/appPrimaryColor</item>
+
+    </style>
+    <style name="MyActionBarTabs" parent="@style/Widget.AppCompat.ActionBar.TabView">
+        <item name="android:background">@drawable/actionbar_tab_indicator</item>
+        <item name="background">@drawable/actionbar_tab_indicator</item>
     </style>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>

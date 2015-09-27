@@ -31,7 +31,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
         super(context, 0, videoList);
 
         mContext = context;
-        Log.e(TAG,"Number of videos in adapter " +videoList.size());
+        //Log.e(TAG,"Number of videos in adapter " +videoList.size());
 
     }
 
@@ -64,7 +64,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
 
         holder.textView.setText(reviewStr);
         */
-        Log.e(TAG, "Pos: " + position + " with video " + video.getName());
+        //Log.e(TAG, "Pos: " + position + " with video " + video.getName());
         holder.nameTextView.setText(video.getName());
         holder.infoTextView.setText(video.getType() + ": " + String.valueOf(video.getSize()) + "p");
 

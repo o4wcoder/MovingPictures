@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.PersonFilmographyFragment;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 import java.util.ArrayList;
@@ -30,16 +31,27 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
     Fragment fragment = null;
     Fragment tabFragment = null;
 
+    int mTabPosition;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filmography);
 
+        //Change status bar color
+        Util.setStatusBarColor(this);
+
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
             @Override
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+
+                mTabPosition = tab.getPosition();
+
                 //Already created the fragment, just grab it
                 if(fragList.size() > tab.getPosition())
                     fragList.get(tab.getPosition());
@@ -53,7 +65,7 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
                     fragList.add(tabFragment);
                 }
                 else {
-                        tabFragment = (PersonFilmographyFragment)fragment;
+                        tabFragment = fragment;
                 }
 
                 ft.replace(R.id.fragment_container, tabFragment);
@@ -76,5 +88,20 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
 
         actionBar.addTab(actionBar.newTab().setText(R.string.filmography_tab_movies).setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText(R.string.filmography_tab_tv).setTabListener(tabListener));
+
+        if(savedInstanceState != null) {
+            mTabPosition = savedInstanceState.getInt(EXTRA_FILMOGRAPHY_TAB);
+            Log.e(TAG,"OnCreate setting tab " + mTabPosition);
+            actionBar.setSelectedNavigationItem(mTabPosition);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        Log.e(TAG,"onSaveInstanceState with tab pos " + mTabPosition);
+        savedInstanceState.putInt(EXTRA_FILMOGRAPHY_TAB, mTabPosition);
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

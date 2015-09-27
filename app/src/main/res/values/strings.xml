@@ -12,6 +12,8 @@
     <string name="synopsis">SYNOPSIS:</string>
     <string name="genre">GENRE:</string>
     <string name="revenue">REVENUE:</string>
+    <string name="created_by">CREATED BY:</string>
+    <string name="networks">NETWORKS:</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <string name="progress_downloading_movies">Downloading Movies...</string>
     <string name="progress_downloading_details">Downloading Details...</string>
@@ -33,6 +35,7 @@
     <string name="more">More</string>
     <string name="filmography_tab_movies">Movies</string>
     <string name="filmography_tab_tv">Televistion</string>
+
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>
     <string name="secondary_text_alpha_dark">.54</string>
@@ -45,5 +48,6 @@
     <string name="sort_release_date">release_date.desc</string>
     <string name="sort_revenue">revenue.desc</string>
     <string name="title_activity_movie_cast">Cast</string>
+    <string name="title_activity_tv_detail">TvDetailActivity</string>
 
 </resources>

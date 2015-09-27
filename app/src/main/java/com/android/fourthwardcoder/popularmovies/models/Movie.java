@@ -3,6 +3,8 @@ package com.android.fourthwardcoder.popularmovies.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
+
 import java.util.ArrayList;
 
 /**
@@ -47,8 +49,8 @@ public class Movie implements Parcelable {
     /**************************************************************/
     /*                      Constructors                          */
     /**************************************************************/
-    public Movie() {
-
+    public Movie(int id) {
+        this.id = id;
     }
 
     /**************************************************************/
@@ -124,13 +126,7 @@ public class Movie implements Parcelable {
     public void setGenreList(ArrayList<String> genreList) {
         this.genreList = genreList;
 
-        String strGenres = "";
-        for(int i = 0; i<genreList.size(); i++) {
-            strGenres += genreList.get(i) + ", ";
-        }
-
-        if(genreList.size() > 0)
-           this.genreString = strGenres.substring(0,strGenres.length() - 2);
+           this.genreString = Util.buildListString(genreList);
     }
 
     public String getGenreString() {
@@ -148,14 +144,7 @@ public class Movie implements Parcelable {
     public void setDirectors(ArrayList<String> directors) {
         this.directors = directors;
 
-        String strDirs = "";
-        //Set up display string of directors
-        for(int i = 0; i< directors.size(); i++) {
-            strDirs += directors.get(i) + ", ";
-        }
-
-        if(directors.size() > 0)
-            this.directorString = strDirs.substring(0,strDirs.length() - 2);
+            this.directorString = Util.buildListString(directors);
     }
 
     public ArrayList<Integer> getActorIds() {

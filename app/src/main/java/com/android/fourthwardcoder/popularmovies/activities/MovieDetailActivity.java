@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 import java.util.Stack;
@@ -34,6 +35,9 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants{
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Change status bar color
+        Util.setStatusBarColor(this);
 
         Log.e(TAG, "In onCreate");
         //Add parent that called Movie Activity to stack

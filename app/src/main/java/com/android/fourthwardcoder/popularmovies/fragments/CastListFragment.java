@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieCastActivityFragment extends Fragment implements Constants {
+public class CastListFragment extends Fragment implements Constants {
 
     /********************************************************************/
     /*                         Constants                                */
@@ -35,7 +35,8 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
     ListView mListView;
     CreditListAdapter mAdapter;
 
-    public MovieCastActivityFragment() {
+
+    public CastListFragment() {
     }
 
     @Override
@@ -43,7 +44,9 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_simple_listview, container, false);
 
-        final int movieId = getActivity().getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
+        Intent i = getActivity().getIntent();
+        final int movieId = i.getIntExtra(EXTRA_MOVIE_ID, 0);
+        final int entType = i.getIntExtra(EXTRA_ENT_TYPE,0);
 
         mListView = (ListView)view.findViewById(R.id.listView);
 
@@ -60,7 +63,7 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
 
         if(mListView != null) {
 
-            new FetchCastTask().execute(movieId);
+            new FetchCastTask().execute(movieId,entType);
         }
         return view;
     }
@@ -71,9 +74,13 @@ public class MovieCastActivityFragment extends Fragment implements Constants {
         @Override
         protected ArrayList<Credit> doInBackground(Integer... params) {
 
-            int movieId = params[0];
+            int id = params[0];
+            int entType = params[1];
 
-            return MovieDbAPI.getCastList(movieId);
+            if(entType == TYPE_MOVIE)
+                return MovieDbAPI.getMovieCastList(id);
+            else
+                return MovieDbAPI.getTvCastList(id);
         }
 
         @Override

@@ -3,7 +3,7 @@ package com.android.fourthwardcoder.popularmovies.models;
 /**
  * Class Review
  * Author: Chris Hare
- * Created by chare on 8/25/2015.
+ * Created: 8/25/2015.
  *
  * Class to hold a movie review
  */

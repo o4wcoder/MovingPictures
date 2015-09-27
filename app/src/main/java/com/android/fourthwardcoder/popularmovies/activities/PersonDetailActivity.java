@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 
 import java.util.Stack;
 
@@ -22,6 +23,9 @@ public class PersonDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Change status bar color
+        Util.setStatusBarColor(this);
 
         //Add parent that called Movie Activity to stack
         parents.push(getClass());

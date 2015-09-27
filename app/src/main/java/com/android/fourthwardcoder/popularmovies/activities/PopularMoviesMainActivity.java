@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.popularmovies.fragments.PopularMoviesMainFragment;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 /**
@@ -41,7 +42,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        Util.setStatusBarColor(this);
         Log.e(TAG, "onCreate");
 
 

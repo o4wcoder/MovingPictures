@@ -9,13 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,17 +24,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.fourthwardcoder.popularmovies.activities.MovieCastActivity;
 import com.android.fourthwardcoder.popularmovies.data.MovieContract;
-import com.android.fourthwardcoder.popularmovies.data.MovieDbHelper;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.models.Video;
 import com.android.fourthwardcoder.popularmovies.adapters.VideosListAdapter;
-import com.android.fourthwardcoder.popularmovies.activities.MovieReviewsActivity;
-import com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity;
+import com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity;
 import com.squareup.picasso.Picasso;
 
 
@@ -160,8 +153,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mReviewsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(),MovieReviewsActivity.class);
+                Intent i = new Intent(getActivity(),ReviewsActivity.class);
                 i.putExtra(EXTRA_MOVIE_ID,mMovie.getId());
+                i.putExtra(EXTRA_ENT_TYPE,TYPE_MOVIE);
                 startActivity(i);
             }
         });
@@ -173,7 +167,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Video video = (Video)mVideoListAdapter.getItem(position);
+                Video video = mVideoListAdapter.getItem(position);
 
                 Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
                         .appendPath(MovieDbAPI.PATH_WATCH)
@@ -219,7 +213,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = new String[1];
                 selectionArgs[0] = String.valueOf(mMovieId);
-        int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,selection,selectionArgs);
+        int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
         Log.e(TAG,"Deleted Row " + deletedRow);
 
     }
@@ -253,12 +247,12 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public Cursor getMovieDbCursor(SQLiteDatabase db) {
 
         Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, //TAble to Query
-        null, //all columns
-        null, //Columns for the "where" clause
-        null, //Values for the "where" clause
-        null, //columns for the group by
-        null, //columns to filter by group
-        null //sort order
+                null, //all columns
+                null, //Columns for the "where" clause
+                null, //Values for the "where" clause
+                null, //columns for the group by
+                null, //columns to filter by group
+                null //sort order
         );
 
         return cursor;
@@ -284,84 +278,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 
-    private void setCastLinks(TextView textView) {
 
-        Spanned cast = Html.fromHtml("<b>" + getString(R.string.cast) + "</b>" + " " +
-                mMovie.getActorsString() + ", " + getString(R.string.more));
 
-        SpannableString castSS = new SpannableString(cast);
 
-        ClickableSpan span1 = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-
-                Log.e(TAG,"Got actor 1 " + mMovie.getActorNames().get(0));
-                Log.e(TAG,"With ID " + mMovie.getActorIds().get(0));
-                startActorDetailActivity(mMovie.getActorIds().get(0));
-            }
-        };
-
-        ClickableSpan span2 = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-
-                Log.e(TAG,"Got actor 2 " + mMovie.getActorNames().get(1));
-                Log.e(TAG,"With ID " + mMovie.getActorIds().get(1));
-                startActorDetailActivity(mMovie.getActorIds().get(1));
-            }
-        };
-
-        ClickableSpan span3 = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-
-                Log.e(TAG,"Got actor 3 " + mMovie.getActorNames().get(2));
-                Log.e(TAG,"With ID " + mMovie.getActorIds().get(2));
-                startActorDetailActivity(mMovie.getActorIds().get(2));
-            }
-        };
-
-        //More test to the full list of cast members
-        ClickableSpan span4 = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent i = new Intent(getActivity(), MovieCastActivity.class);
-                i.putExtra(EXTRA_MOVIE_ID,mMovieId);
-                startActivity(i);
-            }
-        };
-
-        if(mMovie.getActorNames() == null)
-            Log.e(TAG,"Person list null!!!");
-
-        if(mMovie.getActorIds() == null)
-            Log.e(TAG,"Person id list null!!!");
-
-        int span1Start = 6;
-
-        int span1End = span1Start + mMovie.getActorNames().get(0).length();
-        int span2Start = span1End + 2;
-        int span2End = span2Start + mMovie.getActorNames().get(1).length();
-        int span3Start = span2End + 2;
-        int span3End = span3Start + mMovie.getActorNames().get(2).length();
-        int span4Start = span3End +2;
-        int span4End = span4Start + getString(R.string.more).length();
-        Log.e(TAG,"Total String length " + castSS.length());
-        Log.e(TAG,"End 3 span " + span3End);
-        castSS.setSpan(span1, span1Start, span1End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        castSS.setSpan(span2, span2Start,span2End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        castSS.setSpan(span3, span3Start,span3End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        castSS.setSpan(span4, span4Start,span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(castSS);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-    }
-
-    private void startActorDetailActivity(int id) {
-
-        Intent i = new Intent(getActivity(),PersonDetailActivity.class);
-        i.putExtra(EXTRA_PERSON_ID,id);
-        startActivity(i);
-    }
     private class FetchMovieTask extends AsyncTask<Integer,Void,Movie> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
@@ -407,10 +326,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
                             mMovie.getDirectorString());
                     mDirectorTextView.setText(director);
 
-                    setCastLinks(mCastTextView);
+                    Util.setCastLinks(getActivity(),mMovie, mCastTextView,TYPE_MOVIE);
 
                     Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-                            mMovie.getReleaseDate());
+                            Util.reverseDateString(mMovie.getReleaseDate()));
                     mReleaseDateTextView.setText(releaseDate);
 
                     Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +

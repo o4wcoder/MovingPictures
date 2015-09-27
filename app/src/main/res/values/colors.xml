@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="appPrimaryColor">@color/materialBlueGrey500Primary</color>
+    <color name="appDarkPrimaryColor">@color/materialBlueGrey700DarkPrimary</color>
+
     <color name="materialBlue500_linkColor">#2196F3</color>
+
+    <color name="materialGrey700DarkPrimary">#616161</color>
+    <color name="materialGrey500Primary">#9E9E9E</color>
+    <color name="materialBlueGrey700DarkPrimary">#455A64</color>
+    <color name="materialBlueGrey500Primary">#607D8B</color>
+    <color name="materialPrimaryText">#212121</color>
+    <color name="materialSecondaryText">#727272</color>
+    <color name="materialCyanAccent">#00BCD4</color>
 </resources>
