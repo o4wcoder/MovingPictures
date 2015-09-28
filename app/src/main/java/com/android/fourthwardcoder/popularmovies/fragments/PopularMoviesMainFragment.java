@@ -89,8 +89,6 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
         super.onCreate(savedInstanceState);
 
-        //Retain fragment across Activity re-creation
-        setRetainInstance(true);
         Log.e(TAG,"onCreate");
         //Set Option Menu
         setHasOptionsMenu(true);
@@ -226,14 +224,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-    //    cursor.moveToFirst();
-      //  while(cursor.moveToNext())
-        //   Log.e(TAG,"Loaded Favorite movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID));
-
         Log.e(TAG,"inside onLoadFinished");
         setMovieAdapter(convertCursorToSimpleMovieList(cursor));
-
-
     }
 
     @Override
@@ -257,6 +249,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
     private void setMovieAdapter(ArrayList<SimpleMovie> movieList) {
 
+        Log.e(TAG,"setMovieAdapter(): Inside");
         if(getActivity() != null && mGridView != null) {
 
             //If we've got movies in the list, then send them to the adapter from the
@@ -268,7 +261,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
                 mGridView.setAdapter(adapter);
 
-
+                Log.e(TAG,"setMovieAdapter(): CAlling onLoadfininied in Activity");
                 if(mMovieList.size() > 0)
                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
 
@@ -373,7 +366,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            setMovieAdapter(movieList);
+            if((getActivity() != null) && (movieList != null))
+               setMovieAdapter(movieList);
 
         }
     }
@@ -387,9 +381,9 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(int movieId);
+        void onItemSelected(int movieId);
 
-        public void onLoadFinished(int movieId);
+        void onLoadFinished(int movieId);
     }
 
 

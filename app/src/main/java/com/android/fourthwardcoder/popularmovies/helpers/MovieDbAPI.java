@@ -270,9 +270,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of videos from a Movie
-     * @param movieId Movie id
-     * @return        ArrayList of Videos
+     * Get list of videos from a Movie or TV Show
+     * @param id Movie id
+     * @return   ArrayList of Videos
      */
     public static ArrayList<Review> getReviewList(int id, int entType) {
 
@@ -394,9 +394,9 @@ public class MovieDbAPI implements Constants {
     /*/
 
     /**
-     *
-     * @param movieId
-     * @return
+     * Build URI to get a single movie from the database
+     * @param movieId Id of the movie
+     * @return        Uri to movie
      */
     private static Uri buildMovieUri(int movieId) {
         //Get Uri for basic movie info
@@ -411,9 +411,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param tvId
-     * @return
+     * Build URI to get a single TV show from the database
+     * @param tvId Id of the TV show
+     * @return     Uri to TV show
      */
     private static Uri buildTvUri(int tvId) {
         //Get Uri for basic tv info
@@ -427,6 +427,12 @@ public class MovieDbAPI implements Constants {
         return movieUri;
     }
 
+    /**
+     * Build URI to get the reviews of a Movie or TV show
+     * @param id      Id of the movie or TV show
+     * @param entType Type of entertainment; Movie or TV
+     * @return        Uri to the reviews of the Movie or TV show
+     */
     private static Uri buildReviewsUri(int id, int entType) {
 
         String entTypePath = "";
@@ -445,9 +451,10 @@ public class MovieDbAPI implements Constants {
         return reviewsUri;
     }
     /**
-     *
-     * @param id
-     * @return
+     * Build URI to get the videos of a Movie or TV show
+     * @param id      Id of the movie or TV show
+     * @param entType Type of entertainment; Movie or TV
+     * @return        Uri to the videos of the Movie or TV show
      */
     private static Uri buildVideoUri(int id, int entType) {
 
@@ -468,9 +475,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param personId
-     * @return
+     * Build Uri to get a Person
+     * @param personId Id of person
+     * @return         Uri to the Person
      */
     private static Uri buildPersonUri(int personId) {
 
@@ -484,9 +491,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param movieId
-     * @return
+     * Build Uri to Movie credits
+     * @param movieId Id of movie
+     * @return        Uri to Movie credits
      */
     private static Uri buildMovieCreditsUri(int movieId) {
 
@@ -503,9 +510,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param tvId
-     * @return
+     * Build Uri to TV show credits
+     * @param tvId Id of TV show
+     * @return     Uri of TV show credits
      */
     private static Uri buildTvCreditsUri(int tvId) {
 
@@ -522,9 +529,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param personId
-     * @return
+     * Build Uri to a Person's credits
+     * @param personId Id of Person
+     * @return         Uri to person's credits
      */
     private static Uri buildPersonCreditsUri(int personId,int entType) {
 
@@ -545,9 +552,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param creditJsonStr
-     * @return
+     * Parse JSON String of the cast list
+     * @param creditJsonStr Json string of cast list
+     * @return              return cast list info as a list of Credit Objects
      */
     private static ArrayList<Credit> parseJsonCastList(String creditJsonStr) {
 
@@ -587,9 +594,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param personJsonStr
-     * @return
+     * Parse JSON string of Person data
+     * @param personJsonStr JSON string of person data
+     * @return              Person Object containing data of the person
      */
     private static Person parseJsonPerson(String personJsonStr) {
 
@@ -611,8 +618,6 @@ public class MovieDbAPI implements Constants {
             strPage = strPage.replace("http://","");
             person.setHomepage(strPage);
 
-
-
         } catch (JSONException e) {
             Log.e(TAG,"Caught JSON exception " + e.getMessage());
             e.printStackTrace();
@@ -623,11 +628,12 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param personCreditsJsonStr
-     * @return
+     * Parse JSON String of a Person's credits
+     * @param personCreditsJsonStr JSON String of Person's credits
+     * @param entType              Type of entertainment; Movie or TV
+     * @return                     ArrayList of Person's credits
      */
-    private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr,int creditType) {
+    private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr,int entType) {
 
         //List of Reviews that get parsed from Movie DB JSON return
         ArrayList<Credit> creditList = null;
@@ -650,7 +656,7 @@ public class MovieDbAPI implements Constants {
                 //Different release and title tags between movies and tv filmography
                 String releaseTag = TAG_RELEASE_DATE;
                 String titleTag = TAG_TITLE;
-                if(creditType == TYPE_TV) {
+                if(entType == TYPE_TV) {
                     releaseTag = TAG_FIRST_AIR_DATE;
                     titleTag = TAG_NAME;
                 }
@@ -665,7 +671,6 @@ public class MovieDbAPI implements Constants {
                 }
                 else
                     Log.e(TAG,"Got null release date");
-
 
 
                 creditList.add(credit);
@@ -683,9 +688,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     *
-     * @param movieJsonStr
-     * @return
+     * Parse JSON String of Movie
+     * @param movieJsonStr JSON String of Movie
+     * @return             Movie object
      */
     private static Movie parseJsonMovie(String movieJsonStr) {
 
@@ -774,6 +779,11 @@ public class MovieDbAPI implements Constants {
 
     }
 
+    /**
+     * Parse JSON String of TV Show
+     * @param tvJsonStr Json String of TV Show
+     * @return          TVShow object
+     */
     public static TvShow parseJsonTvShow(String tvJsonStr) {
 
         TvShow tvShow = null;
@@ -897,6 +907,11 @@ public class MovieDbAPI implements Constants {
         return movieList;
     }
 
+    /**
+     * Parse JSON String of Reviews
+     * @param reviewsJsonStr JSON String of reviews
+     * @return               ArrayList of reviews
+     */
     private static ArrayList<Review> parseJsonReviewList(String reviewsJsonStr) {
 
         //List of Reviews that get parsed from Movie DB JSON return
@@ -966,6 +981,13 @@ public class MovieDbAPI implements Constants {
         return videoList;
     }
 
+    /**
+     * Parse a JSON Array and pull out date from one element in the array
+     * @param obj      JSON Object containing Array
+     * @param arrayTag Name of JSON Array in obj
+     * @param innerTag Name of element in the array to pull out
+     * @return         ArrayList of String elements pulled from the array
+     */
     private static ArrayList<String> parseList(JSONObject obj,String arrayTag, String innerTag) {
 
         ArrayList<String> list = null;

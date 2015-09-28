@@ -13,7 +13,11 @@ import com.squareup.picasso.Picasso;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class PersonSinglePhotoFragment
+ * Author: Chris Hare
+ * Created: 8/25/15
+ *
+ * Fragent to hold a single person's picture
  */
 public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
@@ -23,10 +27,10 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
         //Create argument bundle
         Bundle args = new Bundle();
-        //Add crime ID to bundle. Can have any number of args
+        //Add person's picture path to bundle
         args.putSerializable(EXTRA_FULL_PHOTO_PATH, photoPath);
 
-        //Create Fragment. This method is used instead of constructor
+        //Create Fragment.
         PersonSinglePhotoFragment fragment = new PersonSinglePhotoFragment();
         //Attach arguments to fragment
         fragment.setArguments(args);

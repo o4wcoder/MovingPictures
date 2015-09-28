@@ -22,11 +22,6 @@ public interface Constants {
 
 
     //Names of filmography tabs
-//    enum FilmographyTabName {
-//        MOVIES,
-//        TV
-//    }
-
     int TYPE_MOVIE = 0;
     int TYPE_TV = 1;
 

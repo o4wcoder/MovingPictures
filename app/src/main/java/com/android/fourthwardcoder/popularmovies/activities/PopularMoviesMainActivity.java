@@ -65,28 +65,6 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             }
         }
         else{
-//            Log.e(TAG, "Two pane is false");
-//            FragmentManager fm = getSupportFragmentManager();
-//            Fragment fr = fm.findFragmentByTag(DETAILFRAGMENT_TAG);
-//
-//            List<Fragment> fragList = fm.getFragments();
-//
-//            for (int i = 0; i < fragList.size(); i++)
-//                Log.e(TAG, "fragment= " + fragList.get(i).getClass().getSimpleName());
-//
-//            if (fr != null) {
-//
-//                //fm.beginTransaction().remove(fr).commit();
-//                //fm.beginTransaction().replace(R.id.movie_detail_container, null);
-//
-//                Log.e(TAG, "After frag delete.");
-//                fragList = fm.getFragments();
-//
-//                for (int i = 0; i < fragList.size(); i++)
-//                    Log.e(TAG, "fragment= " + fragList.get(i).getClass().getSimpleName());
-//            } else
-//                Log.e(TAG, "Fragment was null");
-
 
             mTwoPane = false;
         }

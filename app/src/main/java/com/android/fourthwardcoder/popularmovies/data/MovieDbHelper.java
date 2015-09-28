@@ -7,7 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.android.fourthwardcoder.popularmovies.data.MovieContract.MovieEntry;
 
 /**
- * Created by chare on 9/18/2015.
+ * Class MovieDbHelper
+ * Author: Chris Hare
+ * Created: 9/18/2015.
+ *
+ * Database helper for the Movies Content Provider.
  */
 public class MovieDbHelper extends SQLiteOpenHelper {
 

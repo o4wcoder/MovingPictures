@@ -1,15 +1,31 @@
 package com.android.fourthwardcoder.popularmovies.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
+import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
-public class TvDetailActivity extends AppCompatActivity {
+/**
+ * Class: TvDetailActivity
+ * Author: Chris Hare
+ * Created: 9/25/2015
+ *
+ * Activity for the TV Show Details.
+ */
+public class TvDetailActivity extends AppCompatActivity implements Constants{
 
+    /**********************************************************************/
+    /*                          Constants                                 */
+    /**********************************************************************/
+    private final static String TAG = TvDetailActivity.class.getSimpleName();
+
+    int mPersonId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +34,8 @@ public class TvDetailActivity extends AppCompatActivity {
         Util.setStatusBarColor(this);
 
         setContentView(R.layout.activity_tv_detail);
+
+        mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
     }
 
 
@@ -31,5 +49,16 @@ public class TvDetailActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Intent getSupportParentActivityIntent() {
+
+        Intent i = new Intent(this,PersonFilmographyTabActivity.class);
+        i.putExtra(EXTRA_FILMOGRAPHY_TAB,TYPE_TV);
+        Log.e(TAG, "getSupportParentActivityIntent():person id " + mPersonId);
+        i.putExtra(EXTRA_PERSON_ID,mPersonId);
+
+        return i;
     }
 }

@@ -30,7 +30,11 @@ import java.util.Date;
 import static android.view.WindowManager.*;
 
 /**
- * Created by Chris Hare on 9/25/2015.
+ * Clsss Util
+ * Author: Chris Hare
+ * Created: 9/25/2015.
+ *
+ * Class to keep common methods used between Activities/Fragments
  */
 public class Util implements Constants {
 

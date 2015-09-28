@@ -23,7 +23,11 @@ import java.util.ArrayList;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class PersonFilmographyFragment
+ * Author: Chris Hare
+ * Created: 8/15/15
+ *
+ * Display's a listview of Movies/TV of a person
  */
 public class PersonFilmographyFragment extends Fragment implements Constants {
 
@@ -47,22 +51,27 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        //setRetainInstance(true);
-        if(savedInstance != null) {
-            mTabType = savedInstance.getInt(EXTRA_FILMOGRAPHY_TAB);
-            Log.e(TAG,"Got savedInstance tab position " + mTabType);
-            mPersonId = savedInstance.getInt(EXTRA_PERSON_ID);
-            Log.e(TAG,"Got savedInstance person id " + mPersonId);
-        }
-        else {
+
+//        if(savedInstance != null) {
+//            mTabType = savedInstance.getInt(EXTRA_FILMOGRAPHY_TAB);
+//            Log.e(TAG,"Got savedInstance tab position " + mTabType);
+//            mPersonId = savedInstance.getInt(EXTRA_PERSON_ID);
+//            Log.e(TAG,"Got savedInstance person id " + mPersonId);
+//        }
+//        else {
             Bundle bundle = getArguments();
             mTabType = bundle.getInt(EXTRA_FILMOGRAPHY_TAB);
             Log.e(TAG,"Got bundle tab position " + mTabType);
 
 
             mPersonId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+
             Log.e(TAG,"Got intent person id " + mPersonId);
-        }
+            if(mPersonId == 0) {
+                mPersonId = bundle.getInt(EXTRA_PERSON_ID,0);
+                Log.e(TAG,"Person id was 0 from intent. Trying from bundle " + mPersonId);
+            }
+       // }
         Log.e(TAG, "In filmography fragment with tab " + mTabType);
     }
 

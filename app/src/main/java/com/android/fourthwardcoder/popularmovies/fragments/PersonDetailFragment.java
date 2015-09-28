@@ -33,7 +33,11 @@ import java.util.Date;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class PersonDetailFragment
+ * Author: Chris Hare
+ * Create: 8/25/15
+ *
+ * Fragment to hold the details of a person's info
  */
 public class PersonDetailFragment extends Fragment implements Constants {
 
@@ -137,7 +141,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
         @Override
         protected void onPostExecute(Person person) {
 
-            if(person != null) {
+            if((getActivity()!= null) && (person != null)) {
 
                 //Store local copy of Person object
                 mPerson = person;

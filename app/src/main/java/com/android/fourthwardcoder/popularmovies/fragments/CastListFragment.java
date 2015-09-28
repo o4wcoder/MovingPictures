@@ -20,7 +20,11 @@ import com.android.fourthwardcoder.popularmovies.models.Credit;
 import java.util.ArrayList;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class CastListFragment
+ * Author: Chris Hare
+ * Created: 9/25/15
+ *
+ * Fragment to hold the Cast List of a Movie or TV show
  */
 public class CastListFragment extends Fragment implements Constants {
 
@@ -86,7 +90,7 @@ public class CastListFragment extends Fragment implements Constants {
         @Override
         protected void onPostExecute(ArrayList<Credit> creditList) {
 
-            if (creditList != null) {
+            if ((getActivity()!= null) && (creditList != null)) {
                 mAdapter = new CreditListAdapter(getActivity(), creditList, false);
                 mListView.setAdapter(mAdapter);
             }

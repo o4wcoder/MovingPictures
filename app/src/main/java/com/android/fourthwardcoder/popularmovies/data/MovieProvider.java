@@ -9,7 +9,11 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- * Created by Chris Hare on 9/20/2015.
+ * Class MovieProvider
+ * Auther: Chris Hare
+ * Created: 9/20/2015
+ *
+ * Content Provider
  */
 public class MovieProvider extends ContentProvider {
 

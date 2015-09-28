@@ -15,7 +15,11 @@ import com.android.fourthwardcoder.popularmovies.models.Review;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 8/26/2015.
+ * Class ReviewsListAdapter
+ * Author: Chris Hare
+ * Created: 8/26/2015
+ *
+ * Adapter to display the reviews on a ListView
  */
 public class ReviewsListAdapter extends ArrayAdapter<Review> {
 
@@ -34,7 +38,6 @@ public class ReviewsListAdapter extends ArrayAdapter<Review> {
         mContext = context;
 
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -62,7 +65,6 @@ public class ReviewsListAdapter extends ArrayAdapter<Review> {
                 review.getAuthor() + "<br><br>" + review.getContent());
 
                 holder.textView.setText(reviewStr);
-
 
         return convertView;
     }

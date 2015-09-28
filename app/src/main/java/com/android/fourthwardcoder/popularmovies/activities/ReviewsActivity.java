@@ -6,7 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 
-
+/**
+ * Class ReviewsActivity
+ * Author: Chris Hare
+ * Created: 8/25/2015
+ *
+ * Main Activity for reviews of a movie or a TV show
+ */
 public class ReviewsActivity extends AppCompatActivity {
 
     @Override

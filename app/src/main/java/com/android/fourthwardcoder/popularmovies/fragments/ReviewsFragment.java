@@ -25,7 +25,11 @@ import java.util.ArrayList;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class ReviewsFragment
+ * Author: Chris Hare
+ * Creatwd: 8/15/15
+ *
+ * Fragment to hold reviews of a Movie/TV show.
  */
 public class ReviewsFragment extends Fragment implements Constants {
 
@@ -82,8 +86,10 @@ public class ReviewsFragment extends Fragment implements Constants {
         @Override
         protected void onPostExecute(ArrayList<Review> reviewsList) {
 
-            ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(),reviewsList);
-            mListView.setAdapter(adapter);
+            if((getActivity()!= null) && (reviewsList != null)) {
+                ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);
+                mListView.setAdapter(adapter);
+            }
 
         }
 

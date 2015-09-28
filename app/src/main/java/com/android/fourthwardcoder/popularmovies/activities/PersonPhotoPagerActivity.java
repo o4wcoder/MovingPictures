@@ -16,7 +16,13 @@ import com.android.fourthwardcoder.popularmovies.models.PersonPhoto;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class PersonPhotoPageActivityActivity
+ * Author: Chris Hare
+ * Created: 8/26/2015
+ *
+ * Activity to show the GridView of photos of a person.
+ */
 public class PersonPhotoPagerActivity extends AppCompatActivity implements Constants {
 
     /**********************************************************************/

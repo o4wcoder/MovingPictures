@@ -11,7 +11,13 @@ import com.android.fourthwardcoder.popularmovies.helpers.Util;
 
 import java.util.Stack;
 
-
+/**
+ * Class PersonDetailActivity
+ * Author: Chris Hare
+ * Created: 8/26/2015
+ *
+ * Activity to show the details of a particular movie
+ */
 public class PersonDetailActivity extends AppCompatActivity {
 
     /**********************************************************************/
@@ -33,14 +39,6 @@ public class PersonDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_actor_detail);
 
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_actor_detail, menu);
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

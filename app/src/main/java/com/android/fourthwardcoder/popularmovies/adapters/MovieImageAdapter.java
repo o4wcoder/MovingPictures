@@ -14,9 +14,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 8/27/2015.
- *
  * Class MovieImageAdapter
+ * Author: Chris Hare
+ * Created: 8/27/2015
  *
  * ArrayAdapter used for the GridView that displays the movie posters on the main activity
  *

@@ -14,8 +14,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by chare on 9/2/2015.
+/** Class CreditListAdapter
+ *  Author: Chris Hare
+ *  Created: 9/2/2015.
+ *
+ *  Adapter to display a Movie or TV shows Credit info in a listview of the Filmography
  */
 public class CreditListAdapter extends ArrayAdapter<Credit>{
 
@@ -64,6 +67,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
         //Call Picasso to load it into the imageView
         Picasso.with(mContext).load(credit.getPosterPath()).into(holder.imageView);
 
+        //Set (????) if Credit does not have a release year
         String releaseYear = "";
         if(mShowYear) {
             if (credit.getReleaseYear() == 0)

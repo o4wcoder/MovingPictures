@@ -244,19 +244,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         }
         return true;
     }
-    public Cursor getMovieDbCursor(SQLiteDatabase db) {
 
-        Cursor cursor = db.query(MovieContract.MovieEntry.TABLE_NAME, //TAble to Query
-                null, //all columns
-                null, //Columns for the "where" clause
-                null, //Values for the "where" clause
-                null, //columns for the group by
-                null, //columns to filter by group
-                null //sort order
-        );
-
-        return cursor;
-    }
     public void getListViewSize(ListView myListView) {
         ListAdapter myListAdapter = myListView.getAdapter();
         if (myListAdapter == null) {

@@ -14,7 +14,10 @@ import com.android.fourthwardcoder.popularmovies.models.Video;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 8/28/2015.
+ * Class VideosListAdapter
+ * Author: Chris Hare
+ * Created: 8/28/2015
+ * List Adapater for Videos of a Movie or TV Show.
  */
 public class VideosListAdapter extends ArrayAdapter<Video> {
 
@@ -29,10 +32,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
 
     public VideosListAdapter(Context context, ArrayList<Video> videoList) {
         super(context, 0, videoList);
-
         mContext = context;
-        //Log.e(TAG,"Number of videos in adapter " +videoList.size());
-
     }
 
     @Override
@@ -58,13 +58,6 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
         //Get each Movie using the position in the ArrayAdapter
         Video video = getItem(position);
 
-        /*
-        Spanned reviewStr = Html.fromHtml("<b>" + mContext.getString(R.string.author) + "</b>" + " " +
-                review.getAuthor() + "<br><br>" + review.getContent());
-
-        holder.textView.setText(reviewStr);
-        */
-        //Log.e(TAG, "Pos: " + position + " with video " + video.getName());
         holder.nameTextView.setText(video.getName());
         holder.infoTextView.setText(video.getType() + ": " + String.valueOf(video.getSize()) + "p");
 

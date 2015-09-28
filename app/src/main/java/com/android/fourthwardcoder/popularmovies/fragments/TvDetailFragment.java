@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity;
 import com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity;
 import com.android.fourthwardcoder.popularmovies.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
@@ -30,6 +31,8 @@ import com.squareup.picasso.Picasso;
  * Class TvDetailFragment
  * Author: Chris Hare
  * Created: 9/25/2015
+ *
+ * Fragment to show the details of a TV show.
  */
 public class TvDetailFragment extends Fragment implements Constants{
 
@@ -120,6 +123,7 @@ public class TvDetailFragment extends Fragment implements Constants{
         return view;
     }
 
+
     private class FetchTvTask extends AsyncTask<Integer, Void, TvShow> {
 
         @Override
@@ -132,8 +136,9 @@ public class TvDetailFragment extends Fragment implements Constants{
         @Override
         protected void onPostExecute(TvShow tvShow) {
 
-            if(getActivity() != null) {
-                if (tvShow != null) {
+            if((getActivity() != null) && (tvShow != null)) {
+
+
                     mTvShow = tvShow;
                     //Set title of Movie on Action Bar
                     String historyDate = Util.getDateHistory(tvShow);
@@ -173,7 +178,6 @@ public class TvDetailFragment extends Fragment implements Constants{
                     mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideoList());
                     mListView.setAdapter(mVideoListAdapter);
                 }
-            }
         }
     }
 }

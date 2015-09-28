@@ -14,7 +14,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- * Created by chare on 9/1/2015.
+ * Class PersonImageAdapter
+ * Author: Chris Hare
+ * Created: 9/1/2015
+ *
+ * Adapter to show a person's image
  */
 public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
 
