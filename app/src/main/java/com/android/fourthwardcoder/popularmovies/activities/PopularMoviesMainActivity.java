@@ -3,6 +3,7 @@ package com.android.fourthwardcoder.popularmovies.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,9 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
         Util.setStatusBarColor(this);
         Log.e(TAG, "onCreate");
 

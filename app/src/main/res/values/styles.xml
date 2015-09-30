@@ -1,17 +1,19 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabBarStyle">@style/MyActionBarTabs</item>
-        <item name="actionBarTabBarStyle">@style/MyActionBarTabs</item>
+        <item name="actionBarTabBarStyle">@style/MyActionBarTabs</item> -->
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="MyActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:background">@color/appPrimaryColor</item>
         <item name="background">@color/appPrimaryColor</item>
         <item name="backgroundStacked">@color/appPrimaryColor</item>
+
 
     </style>
 

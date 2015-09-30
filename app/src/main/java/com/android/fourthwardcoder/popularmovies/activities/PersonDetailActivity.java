@@ -3,6 +3,7 @@ package com.android.fourthwardcoder.popularmovies.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -37,6 +38,9 @@ public class PersonDetailActivity extends AppCompatActivity {
         parents.push(getClass());
 
         setContentView(R.layout.activity_actor_detail);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

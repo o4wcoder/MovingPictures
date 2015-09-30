@@ -14,6 +14,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +76,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     //ArrayList<Pair<Integer,String>> mGenreList;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
+    Toolbar mToolbar;
 
     Loader<Cursor> mDbLoader;
 
@@ -106,8 +109,9 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e(TAG,"onCreateView");
+        Log.e(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+
 
         //Get main Gridview and set up click listener
         mGridView = (GridView)view.findViewById(R.id.gridView);

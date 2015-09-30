@@ -35,15 +35,17 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants{
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_movie_detail);
         //Change status bar color
         Util.setStatusBarColor(this);
-
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Log.e(TAG, "In onCreate");
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 
-        setContentView(R.layout.activity_movie_detail);
+
 
         if(savedInstanceState == null) {
 

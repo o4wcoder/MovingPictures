@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -93,6 +95,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+
+//        Toolbar toolbar = (Toolbar)view.findViewById(R.id.toolbar);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         //Get Movie passed from Main Activity
         Bundle arguments = getArguments();
