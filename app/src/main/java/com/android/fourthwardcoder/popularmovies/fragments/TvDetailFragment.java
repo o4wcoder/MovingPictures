@@ -25,6 +25,7 @@ import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.TvShow;
 import com.android.fourthwardcoder.popularmovies.models.Video;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -57,7 +58,7 @@ public class TvDetailFragment extends Fragment implements Constants{
     TextView mCreatedByTextView;
     TextView mCastTextView;
     TextView mRatingTextView;
-    TextView mOverviewTextView;
+    ExpandableTextView mOverviewTextView;
     TextView mGenreTextView;
     TextView mNetworksTextView;
     TextView mReleaseDateTextView;
@@ -90,7 +91,7 @@ public class TvDetailFragment extends Fragment implements Constants{
         mCreatedByTextView = (TextView)view.findViewById(R.id.createdByTextView);
         mCastTextView = (TextView)view.findViewById(R.id.castTextView);
         mRatingTextView = (TextView)view.findViewById(R.id.ratingTextView);
-        mOverviewTextView = (TextView)view.findViewById(R.id.overviewTextView);
+        mOverviewTextView = (ExpandableTextView)view.findViewById(R.id.overviewContentExpandableTextView);
         mGenreTextView = (TextView)view.findViewById(R.id.genreTextView);
         mNetworksTextView = (TextView)view.findViewById(R.id.networksTextView);
         mReleaseDateTextView = (TextView)view.findViewById(R.id.releaseDateTextView);

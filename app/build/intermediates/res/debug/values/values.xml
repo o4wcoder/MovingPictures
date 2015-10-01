@@ -64,8 +64,8 @@
     <color name="accent_material_light">@color/material_deep_teal_500</color>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/colors.xml -->
     <eat-comment/>
-    <color name="appDarkPrimaryColor">@color/materialBlueGrey700DarkPrimary</color>
-    <color name="appPrimaryColor">@color/materialBlueGrey500Primary</color>
+    <color name="appDarkPrimaryColor">@color/materialRed700DarkPrimary</color>
+    <color name="appPrimaryColor">@color/materialRed500Primary</color>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>
     <color name="background_floating_material_dark">#ff424242</color>
@@ -107,7 +107,10 @@
     <color name="materialCyanAccent">#00BCD4</color>
     <color name="materialGrey500Primary">#9E9E9E</color>
     <color name="materialGrey700DarkPrimary">#616161</color>
+    <color name="materialIndigoAccent">#536DFE</color>
     <color name="materialPrimaryText">#212121</color>
+    <color name="materialRed500Primary">#F44336</color>
+    <color name="materialRed700DarkPrimary">#D32F2F</color>
     <color name="materialSecondaryText">#727272</color>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/res/values/values.xml -->
     <eat-comment/>
@@ -358,7 +361,7 @@
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="author">AUTHOR:</string>
-    <string name="biography">Biography</string>
+    <string name="biography">BIOGRAPHY:</string>
     <string name="born">BORN:</string>
     <string name="cast">CAST:</string>
     <string name="created_by">CREATED BY:</string>

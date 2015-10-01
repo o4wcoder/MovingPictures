@@ -3,14 +3,18 @@ package com.android.fourthwardcoder.popularmovies.activities;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.adapters.FilmographyPagerAdapter;
 import com.android.fourthwardcoder.popularmovies.fragments.PersonFilmographyFragment;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
@@ -40,91 +44,61 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filmography);
 
+        Log.e(TAG, "onCreate");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if(savedInstanceState != null) {
+            Log.e(TAG,"!!!!!!!!!!! Got something in tab activity saved!!");
+        }
+        //Get PersonId from Intent
+        mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
         //Change status bar color
         Util.setStatusBarColor(this);
 
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.filmography_tab_movies)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.filmography_tab_tv)));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        mActionBar = getSupportActionBar();
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+        final ViewPager viewPager = (ViewPager)findViewById(R.id.pager);
+        final PagerAdapter adapter = new FilmographyPagerAdapter(getSupportFragmentManager(),
+                tabLayout.getTabCount(),mPersonId);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
-
-                mTabPosition = tab.getPosition();
-
-                //Already created the fragment, just grab it
-                if(fragList.size() > tab.getPosition())
-                    fragList.get(tab.getPosition());
-
-                if(fragment == null) {
-
-                    Bundle bundle = new Bundle();
-                    tabFragment = new PersonFilmographyFragment();
-                    bundle.putInt(EXTRA_FILMOGRAPHY_TAB,tab.getPosition());
-                    bundle.putInt(EXTRA_PERSON_ID,mPersonId);
-                    tabFragment.setArguments(bundle);
-                    fragList.add(tabFragment);
-                }
-                else {
-                        tabFragment = fragment;
-                }
-
-                ft.replace(R.id.fragment_container, tabFragment);
-
-                Log.e(TAG, "TAb " + tab.getPosition());
-
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
             }
 
             @Override
-            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
-
-            @Override
-            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-            }
-        };
-
-        mActionBar.addTab(mActionBar.newTab().setText(R.string.filmography_tab_movies).setTabListener(tabListener));
-        mActionBar.addTab(mActionBar.newTab().setText(R.string.filmography_tab_tv).setTabListener(tabListener));
-
-        Intent i = getIntent();
-        if(i.hasExtra(EXTRA_FILMOGRAPHY_TAB)) {
-            mTabPosition = i.getIntExtra(EXTRA_FILMOGRAPHY_TAB,0);
-            Log.e(TAG,"onCreate: Got callback extra with tab position " + mTabPosition);
-            mActionBar.setSelectedNavigationItem(mTabPosition);
-        }
-
-        if(i.hasExtra(EXTRA_PERSON_ID)) {
-            mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
-            Log.e(TAG,"onCreate: Got callback extra person ID " + mPersonId);
-        }
-
-//        if(savedInstanceState != null) {
-//            mTabPosition = savedInstanceState.getInt(EXTRA_FILMOGRAPHY_TAB);
-//            Log.e(TAG,"OnCreate setting tab " + mTabPosition);
-//            mActionBar.setSelectedNavigationItem(mTabPosition);
-//        }
-
+        });
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//
-//        Log.e(TAG, "onSaveInstanceState with tab pos " + mTabPosition);
-//        savedInstanceState.putInt(EXTRA_FILMOGRAPHY_TAB, mTabPosition);
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        Log.e(TAG,"onSaveInstanceState saving person " + mPersonId);
+        savedInstanceState.putInt(EXTRA_PERSON_ID,mPersonId);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    protected void onRestoreInstanceState (Bundle savedInstanceState) {
+
+        Log.e(TAG,"!!!!!!!!!!!!! Hit onRestoreInstance");
+    }
+
 
 
 }

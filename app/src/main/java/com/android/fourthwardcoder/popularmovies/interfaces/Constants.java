@@ -25,7 +25,6 @@ public interface Constants {
     int TYPE_MOVIE = 0;
     int TYPE_TV = 1;
 
-    String EXTRA_FILMOGRAPHY_TAB = "com.android.fourthwardcoder.popularmovies.extra_filmography_tab";
 
 
 }

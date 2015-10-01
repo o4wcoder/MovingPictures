@@ -54,7 +54,6 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mBornDateTextView;
     TextView mBornPlaceTextView;
     TextView mDeathDateTextView;
-    TextView mBiographyTextView;
     ExpandableTextView mBiographyContentTextView;
     TextView mWebpageTextView;
     TextView mFilmographyTextView;
@@ -90,8 +89,6 @@ public class PersonDetailFragment extends Fragment implements Constants {
         mBornPlaceTextView = (TextView)view.findViewById(R.id.bornPlaceTextView);
         //Person Death Date
         mDeathDateTextView = (TextView)view.findViewById(R.id.deathDateTextView);
-        //Person Biography Link
-        mBiographyTextView = (TextView)view.findViewById(R.id.biographyTextView);
 
         //Person Biography Content
         mBiographyContentTextView = (ExpandableTextView)view.findViewById(R.id.biographyContentExpandableTextView);
@@ -166,8 +163,9 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     mDeathDateTextView.setVisibility(View.INVISIBLE);
                 }
 
-
-                mBiographyContentTextView.setText(mPerson.getBiography());
+                Spanned biography = Html.fromHtml("<b>" + getString(R.string.biography) + "</b>" + " " +
+                        mPerson.getBiography());
+                mBiographyContentTextView.setText(biography);
 
                 SpannableString pageSS = new SpannableString(mPerson.getHomepage());
 

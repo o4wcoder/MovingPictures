@@ -55,14 +55,14 @@ public class TvDetailActivity extends AppCompatActivity implements Constants{
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public Intent getSupportParentActivityIntent() {
-
-        Intent i = new Intent(this,PersonFilmographyTabActivity.class);
-        i.putExtra(EXTRA_FILMOGRAPHY_TAB,TYPE_TV);
-        Log.e(TAG, "getSupportParentActivityIntent():person id " + mPersonId);
-        i.putExtra(EXTRA_PERSON_ID,mPersonId);
-
-        return i;
-    }
+//    @Override
+//    public Intent getSupportParentActivityIntent() {
+//
+//        Intent i = new Intent(this,PersonFilmographyTabActivity.class);
+//        i.putExtra(EXTRA_FILMOGRAPHY_TAB,TYPE_TV);
+//        Log.e(TAG, "getSupportParentActivityIntent():person id " + mPersonId);
+//        i.putExtra(EXTRA_PERSON_ID,mPersonId);
+//
+//        return i;
+//    }
 }

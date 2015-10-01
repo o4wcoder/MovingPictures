@@ -87,13 +87,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/biography"
-                android:id="@+id/biographyTextView"
-                style="@style/headerTextView"/>
-
             <com.ms.square.android.expandabletextview.ExpandableTextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"

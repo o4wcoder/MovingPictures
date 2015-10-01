@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.models.Video;
 import com.android.fourthwardcoder.popularmovies.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 
 
@@ -69,11 +71,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mDirectorTextView;
     TextView mCastTextView;
     TextView mReleaseDateTextView;
-    TextView mOverviewTextView;
+    ExpandableTextView mOverviewTextView;
     TextView mGenreTextView;
     TextView mRevenueTextView;
     TextView mReviewsTextView;
-
+    LinearLayout mVideoLayout;
     CheckBox mFavoritesToggleButton;
 
     /*****************************************************************/
@@ -150,7 +152,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mDirectorTextView = (TextView)view.findViewById(R.id.directorTextView);
         mCastTextView = (TextView)view.findViewById(R.id.castTextView);
         mReleaseDateTextView = (TextView)view.findViewById(R.id.releaseDateTextView);
-        mOverviewTextView = (TextView)view.findViewById(R.id.overviewTextView);
+        mOverviewTextView = (ExpandableTextView)view.findViewById(R.id.overviewContentExpandableTextView);
         mGenreTextView = (TextView)view.findViewById(R.id.genreTextView);
         mRevenueTextView = (TextView)view.findViewById(R.id.revenueTextView);
         mReviewsTextView = (TextView)view.findViewById(R.id.reviewsTextView);
@@ -176,16 +178,18 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
                         .appendPath(MovieDbAPI.PATH_WATCH)
-                        .appendQueryParameter(MovieDbAPI.PARAM_V,video.getKey())
+                        .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
                         .build();
 
-                Log.e(TAG,"Youtube path: " + youtubeUri.toString());
+                Log.e(TAG, "Youtube path: " + youtubeUri.toString());
 
-                Intent i = new Intent(Intent.ACTION_VIEW,youtubeUri);
+                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
 
                 startActivity(i);
             }
         });
+
+        mVideoLayout = (LinearLayout)view.findViewById(R.id.videosLayout);
 
         if(mListView != null) {
             new FetchMovieTask().execute(mMovieId);
@@ -319,7 +323,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                             mMovie.getDirectorString());
                     mDirectorTextView.setText(director);
 
-                    Util.setCastLinks(getActivity(),mMovie, mCastTextView,TYPE_MOVIE);
+                    Util.setCastLinks(getActivity(), mMovie, mCastTextView, TYPE_MOVIE);
 
                     Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
                             Util.reverseDateString(mMovie.getReleaseDate()));
@@ -338,9 +342,13 @@ public class MovieDetailFragment extends Fragment implements Constants {
                             mMovie.getRevenue());
                     mRevenueTextView.setText(revenue);
 
-                    mVideoListAdapter = new VideosListAdapter(getActivity(), movie.getVideoList());
-                    mListView.setAdapter(mVideoListAdapter);
-                    getListViewSize(mListView);
+                    if(movie.getVideoList().size() > 0 ) {
+                        mVideoListAdapter = new VideosListAdapter(getActivity(), movie.getVideoList());
+                        mListView.setAdapter(mVideoListAdapter);
+                        getListViewSize(mListView);
+                    }
+                    else
+                        mVideoLayout.setVisibility(View.GONE);
                 }
             }
         }

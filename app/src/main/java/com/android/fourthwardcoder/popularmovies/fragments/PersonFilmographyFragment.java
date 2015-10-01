@@ -41,38 +41,38 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     /********************************************************************/
     ListView mListView;
     CreditListAdapter mAdapter;
-    int mTabType;
+    int mEntType;
     int mPersonId;
 
-    public PersonFilmographyFragment() {
+    public static PersonFilmographyFragment newInstance(int entType,int personId) {
+
+        //Store data in bungle for the fragment
+        Bundle args = new Bundle();
+        //Store entertainment type; movie or tv
+        args.putInt(EXTRA_ENT_TYPE,entType);
+        args.putInt(EXTRA_PERSON_ID,personId);
+        //Create Fragment and store arguments to it.
+        PersonFilmographyFragment fragment = new PersonFilmographyFragment();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
+        //setRetainInstance(true);
 
-//        if(savedInstance != null) {
-//            mTabType = savedInstance.getInt(EXTRA_FILMOGRAPHY_TAB);
-//            Log.e(TAG,"Got savedInstance tab position " + mTabType);
-//            mPersonId = savedInstance.getInt(EXTRA_PERSON_ID);
-//            Log.e(TAG,"Got savedInstance person id " + mPersonId);
-//        }
-//        else {
+        if(savedInstance != null) {
+            Log.e(TAG,"onCreate: !!! Got stuff in savedInstance. Person " + savedInstance.getInt(EXTRA_PERSON_ID) +
+            " entType: " + savedInstance.getInt(EXTRA_ENT_TYPE));
+        }
+        else {
             Bundle bundle = getArguments();
-            mTabType = bundle.getInt(EXTRA_FILMOGRAPHY_TAB);
-            Log.e(TAG,"Got bundle tab position " + mTabType);
-
-
-            mPersonId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
-
-            Log.e(TAG,"Got intent person id " + mPersonId);
-            if(mPersonId == 0) {
-                mPersonId = bundle.getInt(EXTRA_PERSON_ID,0);
-                Log.e(TAG,"Person id was 0 from intent. Trying from bundle " + mPersonId);
-            }
-       // }
-        Log.e(TAG, "In filmography fragment with tab " + mTabType);
+            mEntType = bundle.getInt(EXTRA_ENT_TYPE);
+            Log.e(TAG, "onCreate: Nothing saved. Got bundle tab position " + mEntType);
+            mPersonId = bundle.getInt(EXTRA_PERSON_ID);}
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
                 Credit credit = (Credit) mAdapter.getItem(position);
                 Intent i;
-                if (mTabType == TYPE_MOVIE) {
+                if (mEntType == TYPE_MOVIE) {
                     i = new Intent(getActivity(), MovieDetailActivity.class);
                     i.putExtra(EXTRA_MOVIE_ID, credit.getId());
                 } else {
@@ -104,7 +104,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
         if (mListView != null) {
 
-            new FetchFilmographyTask().execute(mPersonId);
+            new FetchFilmographyTask().execute(mPersonId,mEntType);
         }
         return view;
 
@@ -113,7 +113,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putInt(EXTRA_FILMOGRAPHY_TAB, mTabType);
+        savedInstanceState.putInt(EXTRA_ENT_TYPE, mEntType);
         savedInstanceState.putInt(EXTRA_PERSON_ID,mPersonId);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -126,9 +126,11 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
             //Get ID of person
             int personId = params[0];
+            //Get Entertainment type; Movie or TV
+            int entType = params[1];
 
-            Log.e(TAG,"Calling movieDB with person " + personId + " tab " + mTabType);
-            return MovieDbAPI.getPersonCreditList(personId, mTabType);
+            Log.e(TAG,"Calling movieDB with person " + personId + " tab " + entType);
+            return MovieDbAPI.getPersonCreditList(personId, entType);
         }
 
         @Override
