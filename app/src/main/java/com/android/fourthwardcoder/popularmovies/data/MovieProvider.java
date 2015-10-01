@@ -10,7 +10,7 @@ import android.util.Log;
 
 /**
  * Class MovieProvider
- * Auther: Chris Hare
+ * Author: Chris Hare
  * Created: 9/20/2015
  *
  * Content Provider

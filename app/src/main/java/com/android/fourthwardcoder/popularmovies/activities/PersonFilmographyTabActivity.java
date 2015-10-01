@@ -21,7 +21,14 @@ import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 
 import java.util.ArrayList;
 
-
+/**
+ * Class PersonFilmographyTabActivity
+ * Author: Chris Hare
+ * Created: 9/30/15
+ *
+ * Activity to hold the pager that holds the tabs of the person's fimography. They are
+ * two tabs; Movies and TV.
+ */
 public class PersonFilmographyTabActivity extends AppCompatActivity implements Constants{
 
     /*************************************************************************/
@@ -33,13 +40,8 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
     /*************************************************************************/
     /*                             Local Data                                */
     /*************************************************************************/
-    ArrayList<Fragment> fragList = new ArrayList<Fragment>();
-    Fragment fragment = null;
-    Fragment tabFragment = null;
-    ActionBar mActionBar;
-
-    int mTabPosition;
     int mPersonId = 0;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filmography);
@@ -51,9 +53,12 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
 
         if(savedInstanceState != null) {
             Log.e(TAG,"!!!!!!!!!!! Got something in tab activity saved!!");
+            mPersonId = savedInstanceState.getInt(EXTRA_PERSON_ID);
         }
-        //Get PersonId from Intent
-        mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+        else {
+            //Get PersonId from Intent
+            mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+        }
         //Change status bar color
         Util.setStatusBarColor(this);
 
@@ -92,11 +97,6 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
         Log.e(TAG,"onSaveInstanceState saving person " + mPersonId);
         savedInstanceState.putInt(EXTRA_PERSON_ID,mPersonId);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    protected void onRestoreInstanceState (Bundle savedInstanceState) {
-
-        Log.e(TAG,"!!!!!!!!!!!!! Hit onRestoreInstance");
     }
 
 

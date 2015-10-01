@@ -52,6 +52,8 @@ public class CastListFragment extends Fragment implements Constants {
         final int movieId = i.getIntExtra(EXTRA_MOVIE_ID, 0);
         final int entType = i.getIntExtra(EXTRA_ENT_TYPE,0);
 
+        getActivity().setTitle(getString(R.string.cast_toolbar) + " " + i.getStringExtra(EXTRA_TITLE));
+
         mListView = (ListView)view.findViewById(R.id.listView);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

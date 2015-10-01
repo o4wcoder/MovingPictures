@@ -124,7 +124,30 @@ public class TvDetailFragment extends Fragment implements Constants{
         return view;
     }
 
+    /**
+     * Set a history string of a tv show from release till end data. Format will
+     * be like (2000 - 2009)
+     * @param tvShow tv
+     * @return
+     */
+    private static String getDateHistory(TvShow tvShow){
 
+        String[] yearStart = tvShow.getReleaseDate().split("-");
+        String startYear = yearStart[0];
+
+        String[] yearEnd = tvShow.getLastAirDate().split("-");
+        String endYear = yearEnd[0];
+
+        //If TV show has not ended don't add a end date
+        if(tvShow.getStatus().equals(MovieDbAPI.STATUS_ENDED))
+            return "(" + startYear + " - " + endYear + ")";
+        else
+            return "(" + startYear + " - ";
+    }
+
+    /*********************************************************************/
+    /*                         Inner Classes                             */
+    /*********************************************************************/
     private class FetchTvTask extends AsyncTask<Integer, Void, TvShow> {
 
         @Override
@@ -142,7 +165,7 @@ public class TvDetailFragment extends Fragment implements Constants{
 
                     mTvShow = tvShow;
                     //Set title of Movie on Action Bar
-                    String historyDate = Util.getDateHistory(tvShow);
+                    String historyDate = getDateHistory(tvShow);
                     getActivity().setTitle(tvShow.getTitle() + " " + historyDate);
 
                     Picasso.with(getActivity()).load(tvShow.getBackdropPath()).into(mBackdropImageView);

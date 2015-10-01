@@ -65,7 +65,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
         final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
         mPersonName = getActivity().getIntent().getStringExtra(EXTRA_PERSON_NAME);
 
-        getActivity().setTitle(mPersonName);
+        getActivity().setTitle(getString(R.string.photos_toolbar) + " " + mPersonName);
 
         mGridView = (GridView)view.findViewById(R.id.personPhotoGridView);
 

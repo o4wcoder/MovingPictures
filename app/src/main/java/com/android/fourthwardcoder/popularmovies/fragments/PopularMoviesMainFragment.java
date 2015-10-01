@@ -73,12 +73,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     /**************************************************/
     GridView mGridView;
     ArrayList<SimpleMovie> mMovieList = null;
-    //ArrayList<Pair<Integer,String>> mGenreList;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
-    Toolbar mToolbar;
-
-    Loader<Cursor> mDbLoader;
 
     public PopularMoviesMainFragment() {
     }

@@ -144,6 +144,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 mPerson = person;
                 Picasso.with(getActivity()).load(person.getProfileImagePath()).into(mProfileImageView);
 
+                //Set title of Movie on Action Bar
+                getActivity().setTitle(person.getName());
                 mNameTextView.setText(person.getName());
 
                 //Format birthday into form Jan 1, 2016
@@ -157,7 +159,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
                 if (!(mPerson.getDeathday()).equals("")) {
                     Spanned deathDate = Html.fromHtml("<b>" + getString(R.string.death) + "</b>" + " " +
-                            mPerson.getDeathday());
+                            Util.reverseDateString(mPerson.getDeathday()));
                     mDeathDateTextView.setText(deathDate);
                 } else {
                     mDeathDateTextView.setVisibility(View.INVISIBLE);

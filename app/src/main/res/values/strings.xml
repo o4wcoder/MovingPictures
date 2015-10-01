@@ -7,6 +7,7 @@
     <string name="title_activity_movie_detail">MovieDetail</string>
     <string name="director">DIRECTOR:</string>
     <string name="cast">CAST:</string>
+    <string name="cast_toolbar">Cast:</string>
     <string name="rated">RATED:</string>
     <string name="release_date">RELEASE DATE:</string>
     <string name="synopsis">SYNOPSIS:</string>
@@ -27,6 +28,7 @@
     <string name="biography">BIOGRAPHY:</string>
     <string name="filmography">Filmography</string>
     <string name="photos">Photos</string>
+    <string name="photos_toolbar">Photos:</string>
     <string name="no_reviews">NO Reviews</string>
     <string name="added">Added</string>
     <string name="removed">Removed</string>

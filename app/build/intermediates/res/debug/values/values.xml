@@ -364,6 +364,7 @@
     <string name="biography">BIOGRAPHY:</string>
     <string name="born">BORN:</string>
     <string name="cast">CAST:</string>
+    <string name="cast_toolbar">Cast:</string>
     <string name="created_by">CREATED BY:</string>
     <string name="death">DEATH:</string>
     <string name="dialog_sort">Sort By</string>
@@ -378,6 +379,7 @@
     <string name="networks">NETWORKS:</string>
     <string name="no_reviews">NO Reviews</string>
     <string name="photos">Photos</string>
+    <string name="photos_toolbar">Photos:</string>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/strings_activity_settings.xml -->
     <eat-comment/>
     <string name="pref_default_display_name">John Smith</string>
@@ -1793,6 +1795,14 @@
     </style>
     <!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/values/styles.xml -->
     <eat-comment/>
+    <style name="detailLayoutSection">
+        <item name="android:background">#ffffff</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
     <style name="headerLinkTextView">
         <item name="android:gravity">left</item>
         <item name="android:padding">2dp</item>

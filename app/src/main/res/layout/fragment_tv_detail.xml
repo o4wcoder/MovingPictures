@@ -25,12 +25,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffff"
-            android:padding="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginTop="4dp"
+            style="@style/detailLayoutSection">
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -88,12 +84,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffff"
-            android:padding="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+            style="@style/detailLayoutSection">
 
             <TextView
                 android:layout_width="fill_parent"
@@ -107,12 +98,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:background="#ffffff"
-            android:padding="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+            style="@style/detailLayoutSection">
 
 
             <com.ms.square.android.expandabletextview.ExpandableTextView
@@ -162,12 +148,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
-            android:padding="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp">
+            style="@style/detailLayoutSection">
 
 
             <ListView

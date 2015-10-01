@@ -198,45 +198,62 @@ public class MovieDetailFragment extends Fragment implements Constants {
         return view;
     }
 
+    /**
+     * Add this Movie to the Favorites DB
+     */
     private void addMovieToFavoritesDb(){
 
         ContentValues movieValues = new ContentValues();
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,mMovie.getPosterPath());
 
+        //Insert Movie data to the content provider
         Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
-        Log.e(TAG, "Inserted inti Uri " + inserted.toString());
 
-        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
-
-        cursor.moveToFirst();
-        while(cursor.moveToNext())
-           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID) + " poster: " + cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
-
-         cursor.close();
+//        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+//
+//        cursor.moveToFirst();
+//        while(cursor.moveToNext())
+//           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID) + " poster: " + cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
+//
+//         cursor.close();
     }
 
 
+    /**
+     * Removie this Movie from the Favorites DB
+     */
     private void removeMovieFromDb() {
 
+        //Put togeter SQL selection
         String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = new String[1];
                 selectionArgs[0] = String.valueOf(mMovieId);
+
+        //Remove movie data from the content provider
         int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
         Log.e(TAG,"Deleted Row " + deletedRow);
 
     }
 
+    /**
+     * Check if this movie is in the Favorites Database
+     * @return If movie is in the Favorites DB
+     */
     private boolean checkIfFavorite() {
 
+        //Get projection with Movie ID
         String[] projection =
                 {
                         MovieContract.MovieEntry.COLUMN_MOVIE_ID
                 };
+
+        //Put together SQL selection
         String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = new String[1];
         selectionArgs[0] = String.valueOf(mMovieId);
 
+        //Return cursor to the row that contains the movie
         Cursor cursor = getActivity().getContentResolver().query(
                 MovieContract.MovieEntry.CONTENT_URI,
                 projection,
@@ -246,15 +263,22 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         if(cursor != null) {
 
+            //If the cursor is empty, than the movie is not in the DB; else it is in the DB
             if(cursor.getCount() < 1)
                 return false;
             else
                 return true;
         }
-        return true;
+
+        //Something went wrong. Just return false.
+        return false;
     }
 
-    public void getListViewSize(ListView myListView) {
+    /**
+     * Adjust the size of the nexted listview that contains the videos list
+     * @param myListView listview of Videos
+     */
+    private void setListViewSize(ListView myListView) {
         ListAdapter myListAdapter = myListView.getAdapter();
         if (myListAdapter == null) {
             //do nothing return null
@@ -275,9 +299,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 
-
-
-
+    /*********************************************************************/
+    /*                         Inner Classes                             */
+    /*********************************************************************/
     private class FetchMovieTask extends AsyncTask<Integer,Void,Movie> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
@@ -345,7 +369,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     if(movie.getVideoList().size() > 0 ) {
                         mVideoListAdapter = new VideosListAdapter(getActivity(), movie.getVideoList());
                         mListView.setAdapter(mVideoListAdapter);
-                        getListViewSize(mListView);
+                        setListViewSize(mListView);
                     }
                     else
                         mVideoLayout.setVisibility(View.GONE);
