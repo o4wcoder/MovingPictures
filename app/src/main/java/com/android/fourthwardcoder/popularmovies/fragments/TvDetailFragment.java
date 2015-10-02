@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity;
@@ -116,7 +117,14 @@ public class TvDetailFragment extends Fragment implements Constants {
         });
 
         if (mListView != null)
-            new FetchTvTask().execute(mTvId);
+            if(Util.isNetworkAvailable(getActivity())) {
+                new FetchTvTask().execute(mTvId);
+            }
+            else {
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
 
         return view;
     }

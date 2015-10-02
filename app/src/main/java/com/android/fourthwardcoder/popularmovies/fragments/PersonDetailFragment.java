@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
@@ -115,8 +116,15 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 startActivity(i);
             }
         });
-        Log.e(TAG, "In Person detail with id " + personId);
-        new FetchPersonTask().execute(personId);
+
+        if(Util.isNetworkAvailable(getActivity())) {
+            new FetchPersonTask().execute(personId);
+        }
+        else {
+            Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                    getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+            connectToast.show();
+        }
 
         return view;
     }

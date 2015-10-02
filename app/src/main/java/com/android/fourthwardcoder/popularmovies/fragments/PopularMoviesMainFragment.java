@@ -31,6 +31,7 @@ import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.adapters.MovieImageAdapter;
 import com.android.fourthwardcoder.popularmovies.data.MovieContract;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
 
@@ -67,19 +68,15 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
 
     /**************************************************/
-	/*                Local Data                      */
+    /*                Local Data                      */
     /**************************************************/
     GridView mGridView;
     ArrayList<SimpleMovie> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
 
-    public PopularMoviesMainFragment() {
-    }
-
     /**************************************************/
     /*               Override Methods                 */
-
     /**************************************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +133,13 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                     Log.e(TAG, "In OnCreateView: Got sort order 4, calling loader to get favorites");
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
-                    new FetchPhotosTask().execute(mSortOrder);
+                    if (Util.isNetworkAvailable(getActivity())) {
+                        new FetchPhotosTask().execute(mSortOrder);
+                    } else {
+                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                        connectToast.show();
+                    }
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
@@ -196,7 +199,14 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                     //Get Favorites
                     getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
-                    new FetchPhotosTask().execute(mSortOrder);
+                    if(Util.isNetworkAvailable(getActivity())) {
+                        new FetchPhotosTask().execute(mSortOrder);
+                    }
+                    else {
+                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                        connectToast.show();
+                    }
                 }
         }
     }

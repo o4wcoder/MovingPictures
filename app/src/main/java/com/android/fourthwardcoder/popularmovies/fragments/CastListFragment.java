@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.popularmovies.adapters.CreditListAdapter;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
 
@@ -68,7 +70,14 @@ public class CastListFragment extends Fragment implements Constants {
 
         if (mListView != null) {
 
-            new FetchCastTask().execute(movieId, entType);
+            if(Util.isNetworkAvailable(getActivity())) {
+                new FetchCastTask().execute(movieId, entType);
+            }
+            else {
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
         }
         return view;
     }

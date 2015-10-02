@@ -188,7 +188,14 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mVideoLayout = (LinearLayout) view.findViewById(R.id.videosLayout);
 
         if (mListView != null) {
-            new FetchMovieTask().execute(mMovieId);
+            if(Util.isNetworkAvailable(getActivity())) {
+                new FetchMovieTask().execute(mMovieId);
+            }
+            else {
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
         }
 
         return view;

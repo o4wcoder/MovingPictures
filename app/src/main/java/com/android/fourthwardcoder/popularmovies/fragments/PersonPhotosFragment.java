@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.adapters.PersonImageAdapter;
 import com.android.fourthwardcoder.popularmovies.models.PersonPhoto;
@@ -89,7 +90,14 @@ public class PersonPhotosFragment extends Fragment implements Constants {
 
         if (mGridView != null) {
 
-            new FetchPersonPhotosTask().execute(personId);
+            if(Util.isNetworkAvailable(getActivity())) {
+                new FetchPersonPhotosTask().execute(personId);
+            }
+            else {
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
         } else {
             //Hit this when we retained our instance of the fragment on a rotation.
             //Just apply the current list of photos

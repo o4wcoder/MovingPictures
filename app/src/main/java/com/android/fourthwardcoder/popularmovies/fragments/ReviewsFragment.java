@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.models.Review;
@@ -63,7 +65,14 @@ public class ReviewsFragment extends Fragment implements Constants {
 
         if (mListView != null) {
 
-            new FetchReviewsTask().execute(id, entType);
+            if(Util.isNetworkAvailable(getActivity())) {
+                new FetchReviewsTask().execute(id, entType);
+            }
+            else {
+                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                connectToast.show();
+            }
         }
         return view;
     }
