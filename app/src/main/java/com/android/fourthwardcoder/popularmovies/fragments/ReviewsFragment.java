@@ -27,8 +27,8 @@ import java.util.ArrayList;
 /**
  * Class ReviewsFragment
  * Author: Chris Hare
- * Creatwd: 8/15/15
- *
+ * Created: 8/15/15
+ * <p/>
  * Fragment to hold reviews of a Movie/TV show.
  */
 public class ReviewsFragment extends Fragment implements Constants {
@@ -36,8 +36,7 @@ public class ReviewsFragment extends Fragment implements Constants {
     /***********************************************************************/
     /*                           Constants                                 */
     /***********************************************************************/
-     private static final String TAG = ReviewsFragment.class.getSimpleName();
-
+    private static final String TAG = ReviewsFragment.class.getSimpleName();
 
     /***********************************************************************/
     /*                          Local Data                                 */
@@ -54,23 +53,22 @@ public class ReviewsFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.fragment_movie_reviews, container, false);
 
-        mListView = (ListView)view.findViewById(R.id.reviewsListView);
+        mListView = (ListView) view.findViewById(R.id.reviewsListView);
         mListView.setEmptyView(view.findViewById(R.id.emptyReviewsLayout));
 
         Intent i = getActivity().getIntent();
-        final int id = i.getIntExtra(EXTRA_MOVIE_ID,0);
-        final int entType = i.getIntExtra(EXTRA_ENT_TYPE,0);
+        final int id = i.getIntExtra(EXTRA_MOVIE_ID, 0);
+        final int entType = i.getIntExtra(EXTRA_ENT_TYPE, 0);
 
 
-        if(mListView != null) {
+        if (mListView != null) {
 
-           new FetchReviewsTask().execute(id,entType);
+            new FetchReviewsTask().execute(id, entType);
         }
         return view;
     }
 
-    private class FetchReviewsTask extends AsyncTask<Integer,Void,ArrayList<Review>> {
-
+    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<Review>> {
 
         @Override
         protected ArrayList<Review> doInBackground(Integer... params) {
@@ -79,19 +77,16 @@ public class ReviewsFragment extends Fragment implements Constants {
             int id = params[0];
             int entType = params[1];
 
-            return MovieDbAPI.getReviewList(id,entType);
-
+            return MovieDbAPI.getReviewList(id, entType);
         }
 
         @Override
         protected void onPostExecute(ArrayList<Review> reviewsList) {
 
-            if((getActivity()!= null) && (reviewsList != null)) {
+            if ((getActivity() != null) && (reviewsList != null)) {
                 ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);
                 mListView.setAdapter(adapter);
             }
-
         }
-
     }
 }

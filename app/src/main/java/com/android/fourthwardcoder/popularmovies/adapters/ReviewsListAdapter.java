@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Class ReviewsListAdapter
  * Author: Chris Hare
  * Created: 8/26/2015
- *
+ * <p/>
  * Adapter to display the reviews on a ListView
  */
 public class ReviewsListAdapter extends ArrayAdapter<Review> {
@@ -33,10 +33,9 @@ public class ReviewsListAdapter extends ArrayAdapter<Review> {
     private Context mContext;
 
     public ReviewsListAdapter(Context context, ArrayList<Review> reviewList) {
-        super(context,0,reviewList);
+        super(context, 0, reviewList);
 
         mContext = context;
-
     }
 
     @Override
@@ -53,24 +52,24 @@ public class ReviewsListAdapter extends ArrayAdapter<Review> {
             //Get imageView
             holder.textView = (TextView) convertView.findViewById(R.id.reviewsTextView);
             convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //Get each Movie using the position in the ArrayAdapter
         Review review = getItem(position);
 
-       Spanned reviewStr = Html.fromHtml("<b>" + mContext.getString(R.string.author) + "</b>" + " " +
+        Spanned reviewStr = Html.fromHtml("<b>" + mContext.getString(R.string.author) + "</b>" + " " +
                 review.getAuthor() + "<br><br>" + review.getContent());
 
-                holder.textView.setText(reviewStr);
+        holder.textView.setText(reviewStr);
 
         return convertView;
     }
 
     /**********************************************************************/
     /*                          Inner Classes                             */
+
     /**********************************************************************/
     private static class ViewHolder {
 

@@ -25,17 +25,16 @@ import java.util.ArrayList;
  * Class PersonFilmographyTabActivity
  * Author: Chris Hare
  * Created: 9/30/15
- *
+ * <p/>
  * Activity to hold the pager that holds the tabs of the person's fimography. They are
  * two tabs; Movies and TV.
  */
-public class PersonFilmographyTabActivity extends AppCompatActivity implements Constants{
+public class PersonFilmographyTabActivity extends AppCompatActivity implements Constants {
 
     /*************************************************************************/
     /*                             Constants                                 */
     /*************************************************************************/
     private static final String TAG = PersonFilmographyTabActivity.class.getSimpleName();
-
 
     /*************************************************************************/
     /*                             Local Data                                */
@@ -46,30 +45,30 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filmography);
 
-        Log.e(TAG, "onCreate");
+        //Set toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(savedInstanceState != null) {
-            Log.e(TAG,"!!!!!!!!!!! Got something in tab activity saved!!");
+        if (savedInstanceState != null) {
             mPersonId = savedInstanceState.getInt(EXTRA_PERSON_ID);
-        }
-        else {
+        } else {
             //Get PersonId from Intent
             mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
         }
         //Change status bar color
         Util.setStatusBarColor(this);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        //Create TabLayout for the Filmography (Movies or TV Shows)
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.filmography_tab_movies)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.filmography_tab_tv)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager)findViewById(R.id.pager);
+        //Create ViewPager to swipe between the tabs
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new FilmographyPagerAdapter(getSupportFragmentManager(),
-                tabLayout.getTabCount(),mPersonId);
+                tabLayout.getTabCount(), mPersonId);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -94,11 +93,7 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        Log.e(TAG,"onSaveInstanceState saving person " + mPersonId);
-        savedInstanceState.putInt(EXTRA_PERSON_ID,mPersonId);
+        savedInstanceState.putInt(EXTRA_PERSON_ID, mPersonId);
         super.onSaveInstanceState(savedInstanceState);
     }
-
-
-
 }

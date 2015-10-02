@@ -14,13 +14,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/** Class CreditListAdapter
- *  Author: Chris Hare
- *  Created: 9/2/2015.
- *
- *  Adapter to display a Movie or TV shows Credit info in a listview of the Filmography
+/**
+ * Class CreditListAdapter
+ * Author: Chris Hare
+ * Created: 9/2/2015.
+ * <p/>
+ * Adapter to display a Movie or TV shows Credit info in a listview of the Filmography
  */
-public class CreditListAdapter extends ArrayAdapter<Credit>{
+public class CreditListAdapter extends ArrayAdapter<Credit> {
 
     /**********************************************************************/
     /*                           Constants                                */
@@ -32,8 +33,8 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
     private Context mContext;
     private boolean mShowYear;
 
-    public CreditListAdapter(Context context, ArrayList<Credit> creditList,boolean showYear) {
-        super(context,0,creditList);
+    public CreditListAdapter(Context context, ArrayList<Credit> creditList, boolean showYear) {
+        super(context, 0, creditList);
 
         mContext = context;
         mShowYear = showYear;
@@ -52,13 +53,12 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
 
             convertView = inflater.inflate(R.layout.image_name_character_list_item, parent, false);
             //Get imageView
-            holder.imageView = (ImageView)convertView.findViewById(R.id.posterImageView);
-            holder.nameTextView = (TextView)convertView.findViewById(R.id.nameTextView);
-            holder.characterTextView = (TextView)convertView.findViewById(R.id.characterTextView);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.posterImageView);
+            holder.nameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
+            holder.characterTextView = (TextView) convertView.findViewById(R.id.characterTextView);
             convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //Get each Movie using the position in the ArrayAdapter
@@ -69,7 +69,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
 
         //Set (????) if Credit does not have a release year
         String releaseYear = "";
-        if(mShowYear) {
+        if (mShowYear) {
             if (credit.getReleaseYear() == 0)
                 releaseYear = "(????)";
             else
@@ -77,7 +77,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
         }
 
         holder.nameTextView.setText(credit.getTitle() + " "
-                        + releaseYear);
+                + releaseYear);
         holder.characterTextView.setText(credit.getCharacter());
 
         return convertView;
@@ -85,6 +85,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit>{
 
     /**********************************************************************/
     /*                          Inner Classes                             */
+
     /**********************************************************************/
     private static class ViewHolder {
 

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Class PersonFilmographyFragment
  * Author: Chris Hare
  * Created: 8/15/15
- *
+ * <p/>
  * Display's a listview of Movies/TV of a person
  */
 public class PersonFilmographyFragment extends Fragment implements Constants {
@@ -44,13 +44,13 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     int mEntType;
     int mPersonId;
 
-    public static PersonFilmographyFragment newInstance(int entType,int personId) {
+    public static PersonFilmographyFragment newInstance(int entType, int personId) {
 
         //Store data in bungle for the fragment
         Bundle args = new Bundle();
         //Store entertainment type; movie or tv
-        args.putInt(EXTRA_ENT_TYPE,entType);
-        args.putInt(EXTRA_PERSON_ID,personId);
+        args.putInt(EXTRA_ENT_TYPE, entType);
+        args.putInt(EXTRA_PERSON_ID, personId);
         //Create Fragment and store arguments to it.
         PersonFilmographyFragment fragment = new PersonFilmographyFragment();
         fragment.setArguments(args);
@@ -62,25 +62,21 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        //setRetainInstance(true);
-
-        if(savedInstance != null) {
-            Log.e(TAG,"onCreate: !!! Got stuff in savedInstance. Person " + savedInstance.getInt(EXTRA_PERSON_ID) +
-            " entType: " + savedInstance.getInt(EXTRA_ENT_TYPE));
-        }
-        else {
+        //Check if we've rotated
+        if (savedInstance != null) {
+            mEntType = savedInstance.getInt(EXTRA_ENT_TYPE);
+            mPersonId = savedInstance.getInt(EXTRA_PERSON_ID);
+        } else {
             Bundle bundle = getArguments();
             mEntType = bundle.getInt(EXTRA_ENT_TYPE);
-            Log.e(TAG, "onCreate: Nothing saved. Got bundle tab position " + mEntType);
-            mPersonId = bundle.getInt(EXTRA_PERSON_ID);}
+            mPersonId = bundle.getInt(EXTRA_PERSON_ID);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_simple_listview, container, false);
-
-
 
         mListView = (ListView) view.findViewById(R.id.listView);
 
@@ -104,7 +100,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
         if (mListView != null) {
 
-            new FetchFilmographyTask().execute(mPersonId,mEntType);
+            new FetchFilmographyTask().execute(mPersonId, mEntType);
         }
         return view;
 
@@ -114,10 +110,14 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(EXTRA_ENT_TYPE, mEntType);
-        savedInstanceState.putInt(EXTRA_PERSON_ID,mPersonId);
+        savedInstanceState.putInt(EXTRA_PERSON_ID, mPersonId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    /****************************************************************************/
+    /*                              Inner Classes                               */
+
+    /****************************************************************************/
     private class FetchFilmographyTask extends AsyncTask<Integer, Void, ArrayList<Credit>> {
 
 
@@ -129,7 +129,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
             //Get Entertainment type; Movie or TV
             int entType = params[1];
 
-            Log.e(TAG,"Calling movieDB with person " + personId + " tab " + entType);
+            //return list of a person credits from a movie or tv show
             return MovieDbAPI.getPersonCreditList(personId, entType);
         }
 
@@ -137,7 +137,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
         protected void onPostExecute(ArrayList<Credit> creditList) {
 
             if ((getActivity() != null) && (creditList != null)) {
-                Log.e(TAG,"Credit list size " + creditList.size());
+
                 mAdapter = new CreditListAdapter(getActivity(), creditList, true);
                 mListView.setAdapter(mAdapter);
             }

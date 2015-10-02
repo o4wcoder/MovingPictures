@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableString;
@@ -126,53 +128,60 @@ public class Util implements Constants {
         final Movie movie = passMovie;
         final Context context = passContext;
 
-        Spanned cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
-                movie.getActorsString() + ", " + context.getString(R.string.more));
-
-        SpannableString castSS = new SpannableString(cast);
-
-        //Only going to display 3 actors. If there are less than 3 actors in the movie/tv
-        //show get the number in the list.
-        int numOfActors = 3;
-        if(movie.getActorIds().size() < 3 )
-            numOfActors = movie.getActorIds().size();
-
-        ClickableSpan span1 = createClickablSpan(context,movie.getActorIds().get(0));
-        ClickableSpan span2 = createClickablSpan(context,movie.getActorIds().get(1));
-        ClickableSpan span3 = createClickablSpan(context,movie.getActorIds().get(2));
-
-        int span1Start = 6;
-        Log.e(TAG,"------------- number of actors in list: " + movie.getActorNames().size());
-        int span1End = span1Start + movie.getActorNames().get(0).length();
-        int span2Start = span1End + 2;
-        int span2End = span2Start + movie.getActorNames().get(1).length();
-        int span3Start = span2End + 2;
-        int span3End = span3Start + movie.getActorNames().get(2).length();
-        int span4Start = span3End +2;
-        int span4End = span4Start + context.getString(R.string.more).length();
-
-        castSS.setSpan(span1, span1Start, span1End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        castSS.setSpan(span2, span2Start,span2End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        castSS.setSpan(span3, span3Start,span3End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        //More link to the full list of cast members
-        ClickableSpan spanMore = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent i = new Intent(context, CastListActivity.class);
-                i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-                i.putExtra(EXTRA_TITLE,movie.getTitle());
-                if(entType == TYPE_MOVIE)
-                    i.putExtra(EXTRA_ENT_TYPE,TYPE_MOVIE);
-                else
-                    i.putExtra(EXTRA_ENT_TYPE,TYPE_TV);
-                context.startActivity(i);
+        //If there are no cast members, don't show anything in the textview
+        if(movie.getActorIds() != null) {
+            //If there are more than 3 actors, add the "More" link to get the rest of the cast
+            Spanned cast;
+            if (movie.getActorIds().size() > 3) {
+                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
+                        movie.getActorsString() + ", " + context.getString(R.string.more));
+            } else {
+                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
+                        movie.getActorsString());
             }
-        };
 
-        castSS.setSpan(spanMore, span4Start,span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(castSS);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
+            //Get spannable string that links will be set to.
+            SpannableString castSS = new SpannableString(cast);
+
+            //Only going to display 3 actors. If there are less than 3 actors in the movie/tv
+            //show get the number in the list.
+            int numOfActors = 3;
+            if (movie.getActorIds().size() < 3)
+                numOfActors = movie.getActorIds().size();
+
+            int spanStart = 6;
+            for (int i = 0; i < numOfActors; i++) {
+                ClickableSpan span = createClickablSpan(context, movie.getActorIds().get(i));
+
+                int spanEnd = spanStart + movie.getActorNames().get(i).length();
+
+                castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spanStart = spanEnd + 2;
+            }
+
+            //More link to the full list of cast members
+            ClickableSpan spanMore = new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    Intent i = new Intent(context, CastListActivity.class);
+                    i.putExtra(EXTRA_MOVIE_ID, movie.getId());
+                    i.putExtra(EXTRA_TITLE, movie.getTitle());
+                    if (entType == TYPE_MOVIE)
+                        i.putExtra(EXTRA_ENT_TYPE, TYPE_MOVIE);
+                    else
+                        i.putExtra(EXTRA_ENT_TYPE, TYPE_TV);
+                    context.startActivity(i);
+                }
+            };
+
+            if (movie.getActorIds().size() > 3) {
+                int span4End = spanStart + context.getString(R.string.more).length();
+                castSS.setSpan(spanMore, spanStart, span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            textView.setText(castSS);
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     /**
@@ -194,60 +203,10 @@ public class Util implements Constants {
         return str;
     }
 
-
-
-
-
-//    public static void setCastLinks(Context passContext, Movie passMovie, TextView textView, final int entType) {
-//
-//        //Since this is a static method, need to create local versions of variables.
-//        final Movie movie = passMovie;
-//        final Context context = passContext;
-//
-//        Spanned cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
-//                movie.getActorsString() + ", " + context.getString(R.string.more));
-//
-//        SpannableString castSS = new SpannableString(cast);
-//
-//        int numOfActors = 3;
-//        if(movie.getActorIds().size() < 3 )
-//            numOfActors = movie.getActorIds().size();
-//
-//        ClickableSpan span1 = createClickablSpan(context,movie.getActorIds().get(0));
-//        ClickableSpan span2 = createClickablSpan(context,movie.getActorIds().get(1));
-//        ClickableSpan span3 = createClickablSpan(context,movie.getActorIds().get(2));
-//
-//        int span1Start = 6;
-//        Log.e(TAG,"------------- number of actors in list: " + movie.getActorNames().size());
-//        int span1End = span1Start + movie.getActorNames().get(0).length();
-//        int span2Start = span1End + 2;
-//        int span2End = span2Start + movie.getActorNames().get(1).length();
-//        int span3Start = span2End + 2;
-//        int span3End = span3Start + movie.getActorNames().get(2).length();
-//        int span4Start = span3End +2;
-//        int span4End = span4Start + context.getString(R.string.more).length();
-//
-//        castSS.setSpan(span1, span1Start, span1End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        castSS.setSpan(span2, span2Start,span2End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        castSS.setSpan(span3, span3Start,span3End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//        //More test to the full list of cast members
-//        ClickableSpan spanMore = new ClickableSpan() {
-//            @Override
-//            public void onClick(View widget) {
-//                Intent i = new Intent(context, CastListActivity.class);
-//                i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-//                i.putExtra(EXTRA_TITLE,movie.getTitle());
-//                if(entType == TYPE_MOVIE)
-//                    i.putExtra(EXTRA_ENT_TYPE,TYPE_MOVIE);
-//                else
-//                    i.putExtra(EXTRA_ENT_TYPE,TYPE_TV);
-//                context.startActivity(i);
-//            }
-//        };
-//
-//        castSS.setSpan(spanMore, span4Start,span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        textView.setText(castSS);
-//        textView.setMovementMethod(LinkMovementMethod.getInstance());
-//    }
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

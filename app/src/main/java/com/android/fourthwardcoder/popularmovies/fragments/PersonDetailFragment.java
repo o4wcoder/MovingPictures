@@ -36,7 +36,7 @@ import java.util.Date;
  * Class PersonDetailFragment
  * Author: Chris Hare
  * Create: 8/25/15
- *
+ * <p/>
  * Fragment to hold the details of a person's info
  */
 public class PersonDetailFragment extends Fragment implements Constants {
@@ -58,7 +58,6 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mWebpageTextView;
     TextView mFilmographyTextView;
     TextView mPhotosTextView;
-
     Person mPerson;
 
     public PersonDetailFragment() {
@@ -69,7 +68,6 @@ public class PersonDetailFragment extends Fragment implements Constants {
         super.onCreate(savedInstanceState);
         //retain the instance on rotation
         setRetainInstance(true);
-
     }
 
     @Override
@@ -77,54 +75,57 @@ public class PersonDetailFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person_detail, container, false);
 
-        final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID,0);
+        final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
 
         //Person Profile Image
-        mProfileImageView = (ImageView)view.findViewById(R.id.profileImageView);
+        mProfileImageView = (ImageView) view.findViewById(R.id.profileImageView);
         //Person Name
-        mNameTextView = (TextView)view.findViewById(R.id.nameTextView);
+        mNameTextView = (TextView) view.findViewById(R.id.nameTextView);
         //Person Birth Date
-        mBornDateTextView = (TextView)view.findViewById(R.id.bornDateTextView);
+        mBornDateTextView = (TextView) view.findViewById(R.id.bornDateTextView);
         //Person Birth Place
-        mBornPlaceTextView = (TextView)view.findViewById(R.id.bornPlaceTextView);
+        mBornPlaceTextView = (TextView) view.findViewById(R.id.bornPlaceTextView);
         //Person Death Date
-        mDeathDateTextView = (TextView)view.findViewById(R.id.deathDateTextView);
+        mDeathDateTextView = (TextView) view.findViewById(R.id.deathDateTextView);
 
         //Person Biography Content
-        mBiographyContentTextView = (ExpandableTextView)view.findViewById(R.id.biographyContentExpandableTextView);
+        mBiographyContentTextView = (ExpandableTextView) view.findViewById(R.id.biographyContentExpandableTextView);
 
-        mWebpageTextView = (TextView)view.findViewById(R.id.webPageTextView);
+        mWebpageTextView = (TextView) view.findViewById(R.id.webPageTextView);
         //Person Filmography
-        mFilmographyTextView = (TextView)view.findViewById(R.id.filmographyTextView);
+        mFilmographyTextView = (TextView) view.findViewById(R.id.filmographyTextView);
         mFilmographyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent i = new Intent(getActivity(),PersonFilmographyTabActivity.class);
-                i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID,personId);
+                Intent i = new Intent(getActivity(), PersonFilmographyTabActivity.class);
+                i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID, personId);
                 startActivity(i)
-;            }
+                ;
+            }
         });
 
-        mPhotosTextView = (TextView)view.findViewById(R.id.photosTextView);
+        mPhotosTextView = (TextView) view.findViewById(R.id.photosTextView);
         mPhotosTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(),PersonPhotosActivity.class);
-                i.putExtra(EXTRA_PERSON_ID,personId);
-                i.putExtra(EXTRA_PERSON_NAME,mPerson.getName());
+                Intent i = new Intent(getActivity(), PersonPhotosActivity.class);
+                i.putExtra(EXTRA_PERSON_ID, personId);
+                i.putExtra(EXTRA_PERSON_NAME, mPerson.getName());
                 startActivity(i);
             }
         });
-        Log.e(TAG,"In Person detail with id " + personId);
+        Log.e(TAG, "In Person detail with id " + personId);
         new FetchPersonTask().execute(personId);
 
         return view;
     }
 
+    /*************************************************************************/
+    /*                           Inner Classes                               */
 
-    private class FetchPersonTask extends AsyncTask<Integer,Void,Person> {
-
+    /*************************************************************************/
+    private class FetchPersonTask extends AsyncTask<Integer, Void, Person> {
 
         @Override
         protected Person doInBackground(Integer... params) {
@@ -138,7 +139,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
         @Override
         protected void onPostExecute(Person person) {
 
-            if((getActivity()!= null) && (person != null)) {
+            if ((getActivity() != null) && (person != null)) {
 
                 //Store local copy of Person object
                 mPerson = person;
@@ -177,17 +178,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
                         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
                         // Verify that the intent will resolve to an activity
                         if (i.resolveActivity(getActivity().getPackageManager()) != null)
-                           startActivity(i);
+                            startActivity(i);
                     }
                 };
 
-                pageSS.setSpan(span,0,mPerson.getHomepage().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                pageSS.setSpan(span, 0, mPerson.getHomepage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 mWebpageTextView.setText(pageSS);
                 mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
-
             }
-
         }
-
     }
 }

@@ -12,7 +12,7 @@ import android.util.Log;
  * Class MovieProvider
  * Author: Chris Hare
  * Created: 9/20/2015
- *
+ * <p/>
  * Content Provider
  */
 public class MovieProvider extends ContentProvider {
@@ -38,11 +38,12 @@ public class MovieProvider extends ContentProvider {
 
         String authority = MovieContract.CONTENT_AUTHORITY;
 
-        sURIMather.addURI(authority,MovieContract.PATH_MOVIE,MOVIE);
-        sURIMather.addURI(authority,MovieContract.PATH_MOVIE + "/#",MOVIE_WITH_ID);
+        sURIMather.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
+        sURIMather.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
 
         return sURIMather;
     }
+
     @Override
     public boolean onCreate() {
         mMovieHelper = new MovieDbHelper(getContext());
@@ -55,10 +56,9 @@ public class MovieProvider extends ContentProvider {
 
         Cursor retCursor;
 
-        switch(sUriMatcher.match(uri)) {
+        switch (sUriMatcher.match(uri)) {
 
-            case MOVIE:
-            {
+            case MOVIE: {
                 retCursor = mMovieHelper.getReadableDatabase().query(
                         MovieContract.MovieEntry.TABLE_NAME,
                         projection,
@@ -74,7 +74,7 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return retCursor;
     }
@@ -114,7 +114,7 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         //Notify all register observer of changes
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
@@ -124,26 +124,25 @@ public class MovieProvider extends ContentProvider {
         //Get writeable database
         final SQLiteDatabase db = mMovieHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        Log.e(TAG, "MovieProfider got, URI match " + uri);
 
         int deletedRows;
 
-        if(selection == null)
+        if (selection == null)
             selection = "1";
 
-        switch(match) {
+        switch (match) {
 
             case MOVIE: {
-                deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+                deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
                 throw new UnsupportedOperationException("Unknow uri: " + uri);
         }
 
-        //Notify all registerd observers of changes
-        if(deletedRows != 0)
-            getContext().getContentResolver().notifyChange(uri,null);
+        //Notify all registered observers of changes
+        if (deletedRows != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
 
         //return the rows deleted
         return deletedRows;
@@ -156,7 +155,7 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int updatedRows;
 
-        if(selection == null)
+        if (selection == null)
             selection = "1";
 
         switch (match) {
@@ -169,8 +168,8 @@ public class MovieProvider extends ContentProvider {
         }
 
         //Notify all registered observers of changes
-        if(updatedRows != 0)
-            getContext().getContentResolver().notifyChange(uri,null);
+        if (updatedRows != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
 
         return updatedRows;
     }

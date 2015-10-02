@@ -44,7 +44,7 @@ import com.squareup.picasso.Picasso;
  * Class MovieDetailFragment
  * Author: Chris Hare
  * Created: 7/26/2015
- *
+ * <p/>
  * Fragment to show the details of a particular movie
  */
 public class MovieDetailFragment extends Fragment implements Constants {
@@ -80,18 +80,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     /*****************************************************************/
     /*                       Constructor                             */
+
     /*****************************************************************/
     public MovieDetailFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.e(TAG,"onCreate");
         super.onCreate(savedInstanceState);
-        //retain the instance on rotation
-        //setRetainInstance(true);
-
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,31 +101,29 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         //Get Movie passed from Main Activity
         Bundle arguments = getArguments();
-        if(arguments != null) {
+        if (arguments != null) {
             mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
         }
         //mMovieId = getActivity().getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
 
         //Set image views
-        mBackdropImageView = (ImageView)view.findViewById(R.id.backdropImageView);
-        mPosterImageView = (ImageView)view.findViewById(R.id.posterImageView);
+        mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
+        mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
 
-        mFavoritesToggleButton = (CheckBox)view.findViewById(R.id.favoritesToggleButton);
+        mFavoritesToggleButton = (CheckBox) view.findViewById(R.id.favoritesToggleButton);
         mFavoritesToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                Log.e(TAG,"Favorites changed to " + isChecked);
-                if(mMovie != null) {
+                if (mMovie != null) {
                     String toastStr = "";
-                    if(isChecked) {
+                    if (isChecked) {
 
                         toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.to_favorites);
                         addMovieToFavoritesDb();
 
-                    }
-                    else {
+                    } else {
                         toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.from_favorites);
                         removeMovieFromDb();
@@ -139,35 +135,35 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-        if(checkIfFavorite())
+        if (checkIfFavorite())
             mFavoritesToggleButton.setChecked(true);
         else
             mFavoritesToggleButton.setChecked(false);
 
         //Set textviews with Movie details
-        mTitleTextView = (TextView)view.findViewById(R.id.titleTextView);
-        mReleaseYearTextView = (TextView)view.findViewById(R.id.releaseYearTextView);
-        mRuntimeTextView = (TextView)view.findViewById(R.id.runtimeTextView);
-        mRatingTextView = (TextView)view.findViewById(R.id.ratingTextView);
-        mDirectorTextView = (TextView)view.findViewById(R.id.directorTextView);
-        mCastTextView = (TextView)view.findViewById(R.id.castTextView);
-        mReleaseDateTextView = (TextView)view.findViewById(R.id.releaseDateTextView);
-        mOverviewTextView = (ExpandableTextView)view.findViewById(R.id.overviewContentExpandableTextView);
-        mGenreTextView = (TextView)view.findViewById(R.id.genreTextView);
-        mRevenueTextView = (TextView)view.findViewById(R.id.revenueTextView);
-        mReviewsTextView = (TextView)view.findViewById(R.id.reviewsTextView);
+        mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
+        mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
+        mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
+        mRatingTextView = (TextView) view.findViewById(R.id.ratingTextView);
+        mDirectorTextView = (TextView) view.findViewById(R.id.directorTextView);
+        mCastTextView = (TextView) view.findViewById(R.id.castTextView);
+        mReleaseDateTextView = (TextView) view.findViewById(R.id.releaseDateTextView);
+        mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.overviewContentExpandableTextView);
+        mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
+        mRevenueTextView = (TextView) view.findViewById(R.id.revenueTextView);
+        mReviewsTextView = (TextView) view.findViewById(R.id.reviewsTextView);
 
         mReviewsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(),ReviewsActivity.class);
-                i.putExtra(EXTRA_MOVIE_ID,mMovie.getId());
-                i.putExtra(EXTRA_ENT_TYPE,TYPE_MOVIE);
+                Intent i = new Intent(getActivity(), ReviewsActivity.class);
+                i.putExtra(EXTRA_MOVIE_ID, mMovie.getId());
+                i.putExtra(EXTRA_ENT_TYPE, TYPE_MOVIE);
                 startActivity(i);
             }
         });
 
-        mListView = (ListView)view.findViewById(R.id.videosListView);
+        mListView = (ListView) view.findViewById(R.id.videosListView);
         mListView.setScrollContainer(false);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -189,9 +185,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-        mVideoLayout = (LinearLayout)view.findViewById(R.id.videosLayout);
+        mVideoLayout = (LinearLayout) view.findViewById(R.id.videosLayout);
 
-        if(mListView != null) {
+        if (mListView != null) {
             new FetchMovieTask().execute(mMovieId);
         }
 
@@ -201,43 +197,33 @@ public class MovieDetailFragment extends Fragment implements Constants {
     /**
      * Add this Movie to the Favorites DB
      */
-    private void addMovieToFavoritesDb(){
+    private void addMovieToFavoritesDb() {
 
         ContentValues movieValues = new ContentValues();
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,mMovie.getPosterPath());
+        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, mMovie.getPosterPath());
 
         //Insert Movie data to the content provider
         Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
-
-//        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
-//
-//        cursor.moveToFirst();
-//        while(cursor.moveToNext())
-//           Log.e(TAG,"movie id " + cursor.getInt(MovieContract.COL_MOVIE_ID) + " poster: " + cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
-//
-//         cursor.close();
     }
 
-
     /**
-     * Removie this Movie from the Favorites DB
+     * Remove this Movie from the Favorites DB
      */
     private void removeMovieFromDb() {
 
         //Put togeter SQL selection
         String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = new String[1];
-                selectionArgs[0] = String.valueOf(mMovieId);
+        selectionArgs[0] = String.valueOf(mMovieId);
 
         //Remove movie data from the content provider
         int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
-        Log.e(TAG,"Deleted Row " + deletedRow);
-
     }
 
     /**
      * Check if this movie is in the Favorites Database
+     *
      * @return If movie is in the Favorites DB
      */
     private boolean checkIfFavorite() {
@@ -261,10 +247,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 selectionArgs,
                 null);
 
-        if(cursor != null) {
+        if (cursor != null) {
 
             //If the cursor is empty, than the movie is not in the DB; else it is in the DB
-            if(cursor.getCount() < 1)
+            if (cursor.getCount() < 1)
                 return false;
             else
                 return true;
@@ -276,6 +262,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     /**
      * Adjust the size of the nexted listview that contains the videos list
+     *
      * @param myListView listview of Videos
      */
     private void setListViewSize(ListView myListView) {
@@ -301,8 +288,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     /*********************************************************************/
     /*                         Inner Classes                             */
+
     /*********************************************************************/
-    private class FetchMovieTask extends AsyncTask<Integer,Void,Movie> {
+    private class FetchMovieTask extends AsyncTask<Integer, Void, Movie> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
         private ProgressDialog progressDialog;
@@ -311,8 +299,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         protected void onPreExecute() {
 
             //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(),"",getString(R.string.progress_downloading_movies),true);
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
         }
+
         @Override
         protected Movie doInBackground(Integer... params) {
 
@@ -329,7 +318,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            if(getActivity() != null && mListView != null) {
+            if (getActivity() != null && mListView != null) {
                 if (movie != null) {
                     mMovie = movie;
                     //Set title of Movie on Action Bar
@@ -366,16 +355,14 @@ public class MovieDetailFragment extends Fragment implements Constants {
                             mMovie.getRevenue());
                     mRevenueTextView.setText(revenue);
 
-                    if(movie.getVideoList().size() > 0 ) {
+                    if (movie.getVideoList().size() > 0) {
                         mVideoListAdapter = new VideosListAdapter(getActivity(), movie.getVideoList());
                         mListView.setAdapter(mVideoListAdapter);
                         setListViewSize(mListView);
-                    }
-                    else
+                    } else
                         mVideoLayout.setVisibility(View.GONE);
                 }
             }
         }
-
     }
 }

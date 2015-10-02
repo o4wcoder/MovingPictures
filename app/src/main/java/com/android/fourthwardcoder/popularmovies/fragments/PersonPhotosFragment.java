@@ -29,7 +29,11 @@ import java.util.ArrayList;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Class PersonPhotosFragment
+ * Author: Chris Hare
+ * Created: 9/26/2015
+ * <p/>
+ * Fragment to hold the GridView of a person's photos
  */
 public class PersonPhotosFragment extends Fragment implements Constants {
 
@@ -67,7 +71,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
 
         getActivity().setTitle(getString(R.string.photos_toolbar) + " " + mPersonName);
 
-        mGridView = (GridView)view.findViewById(R.id.personPhotoGridView);
+        mGridView = (GridView) view.findViewById(R.id.personPhotoGridView);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,26 +81,29 @@ public class PersonPhotosFragment extends Fragment implements Constants {
                 Intent i = new Intent(getActivity(), PersonPhotoPagerActivity.class);
                 i.putParcelableArrayListExtra(EXTRA_PERSON_PHOTO, mPhotoList);
                 i.putExtra(EXTRA_PERSON_NAME, mPersonName);
-                i.putExtra(EXTRA_PERSON_PHOTO_ID,position);
+                i.putExtra(EXTRA_PERSON_PHOTO_ID, position);
                 startActivity(i);
 
             }
         });
 
-        if(mGridView != null) {
+        if (mGridView != null) {
 
             new FetchPersonPhotosTask().execute(personId);
-        }
-        else {
+        } else {
             //Hit this when we retained our instance of the fragment on a rotation.
             //Just apply the current list of photos
-            PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(),mPhotoList);
+            PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(), mPhotoList);
             mGridView.setAdapter(adapter);
         }
         return view;
     }
 
-    private class FetchPersonPhotosTask extends AsyncTask<Integer,Void,ArrayList<PersonPhoto>> {
+    /****************************************************************************/
+    /*                            Inner Classes                                 */
+
+    /****************************************************************************/
+    private class FetchPersonPhotosTask extends AsyncTask<Integer, Void, ArrayList<PersonPhoto>> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
         private ProgressDialog progressDialog;
@@ -105,7 +112,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
         protected void onPreExecute() {
 
             //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(),"",getString(R.string.progress_downloading_photos),true);
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_photos), true);
         }
 
         @Override
@@ -124,7 +131,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
             //Log.e(TAG, "Phot URI: " + personPhotosUri);
 
             String personPhotosJSONStr = MovieDbAPI.queryMovieDatabase(personPhotosUri);
-            Log.e(TAG,personPhotosJSONStr);
+            Log.e(TAG, personPhotosJSONStr);
 
             ArrayList<PersonPhoto> photoList = null;
 
@@ -135,7 +142,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
 
                 photoList = new ArrayList<>(profilesArray.length());
 
-                for(int i = 0; i < profilesArray.length(); i++) {
+                for (int i = 0; i < profilesArray.length(); i++) {
 
                     JSONObject photoProfile = profilesArray.getJSONObject(i);
 
@@ -147,14 +154,12 @@ public class PersonPhotosFragment extends Fragment implements Constants {
                     personPhoto.setFullImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL +
                             MovieDbAPI.IMAGE_500_SIZE + photoProfile.getString(MovieDbAPI.TAG_FILE_PATH));
 
-                    Log.e(TAG,personPhoto.getThumbnailImagePath());
+                    Log.e(TAG, personPhoto.getThumbnailImagePath());
                     photoList.add(personPhoto);
 
                 }
-
-            }
-            catch(JSONException e) {
-                Log.e(TAG,"Caught JSON Exception " + e.getMessage());
+            } catch (JSONException e) {
+                Log.e(TAG, "Caught JSON Exception " + e.getMessage());
             }
 
             return photoList;
@@ -166,18 +171,17 @@ public class PersonPhotosFragment extends Fragment implements Constants {
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            if(getActivity() != null && mGridView != null) {
+            if (getActivity() != null && mGridView != null) {
 
                 //If we've got movies in the list, then send them to the adapter fro the
                 //GridView
-                if(photoList != null) {
+                if (photoList != null) {
 
                     //Store global copy
                     mPhotoList = photoList;
-                    PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(),photoList);
+                    PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(), photoList);
                     mGridView.setAdapter(adapter);
-                }
-                else {
+                } else {
 
                     //If we get here, then the movieList was empty and something went wrong.
                     //Most likely a network connection problem
@@ -188,6 +192,5 @@ public class PersonPhotosFragment extends Fragment implements Constants {
 
             }
         }
-
     }
 }

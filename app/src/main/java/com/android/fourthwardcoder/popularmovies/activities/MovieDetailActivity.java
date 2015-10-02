@@ -19,19 +19,19 @@ import java.util.Stack;
  * Class MovieDetailActivity
  * Author: Chris Hare
  * Created: 7/26/2015
- *
+ * <p/>
  * Activity to show the details of a particular movie
  */
-public class MovieDetailActivity extends AppCompatActivity implements Constants{
+public class MovieDetailActivity extends AppCompatActivity implements Constants {
 
     final static String TAG = MovieDetailActivity.class.getSimpleName();
 
     /**********************************************************************/
     /*                         Local Data                                 */
     /**********************************************************************/
-    //Stack to hold parent of activiy to aid in Up navigation to different parents
+    //Stack to hold parent of activity to aid in Up navigation to different parents
     public static Stack<Class<?>> parents = new Stack<Class<?>>();
-    //Class mParent;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,46 +41,29 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants{
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Log.e(TAG, "In onCreate");
+
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 
+        Bundle arguments = new Bundle();
+        int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
+        arguments.putInt(EXTRA_MOVIE_ID, movieId);
 
+        MovieDetailFragment fragment = new MovieDetailFragment();
+        fragment.setArguments(arguments);
 
-        if(savedInstanceState == null) {
+        Log.e(TAG, "onCreate got movie ID " + movieId);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.movie_detail_container, fragment)
+                .commit();
 
-            Bundle arguments = new Bundle();
-            int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
-            arguments.putInt(EXTRA_MOVIE_ID,movieId);
-
-            MovieDetailFragment fragment = new MovieDetailFragment();
-            fragment.setArguments(arguments);
-
-            Log.e(TAG,"onCreate got movie ID "  + movieId);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container,fragment)
-                    .commit();
-        }
-        else {
-            Log.e(TAG,"onCreate saved instance state NOT null!");
-        }
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
-
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -94,7 +77,6 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants{
                 finish();
                 return true;
         }
-
 
         return super.onOptionsItemSelected(item);
     }

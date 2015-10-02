@@ -16,11 +16,14 @@ import com.squareup.picasso.Picasso;
  * Class PersonSinglePhotoFragment
  * Author: Chris Hare
  * Created: 8/25/15
- *
+ * <p/>
  * Fragent to hold a single person's picture
  */
 public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
+    /*************************************************************************/
+    /*                           Local Data                                  */
+    /*************************************************************************/
     String mPhotoPath;
 
     public static PersonSinglePhotoFragment newInstance(String photoPath) {
@@ -53,17 +56,14 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //final String photoPath= getActivity().getIntent().getStringExtra(EXTRA_FULL_PHOTO_PATH);
-
         View view = inflater.inflate(R.layout.movie_image, container, false);
 
-        ImageView imageView = (ImageView)view.findViewById(R.id.movie_imageView);
+        ImageView imageView = (ImageView) view.findViewById(R.id.movie_imageView);
 
-        if((imageView != null) && (mPhotoPath != null)){
+        if ((imageView != null) && (mPhotoPath != null)) {
 
             Picasso.with(getActivity()).load(mPhotoPath).into(imageView);
         }
-
 
         return view;
     }

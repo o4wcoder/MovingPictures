@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Class PersonImageAdapter
  * Author: Chris Hare
  * Created: 9/1/2015
- *
+ * <p/>
  * Adapter to show a person's image
  */
 public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
@@ -31,8 +31,8 @@ public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
     /****************************************************************/
     Context mContext;
 
-    public PersonImageAdapter(Context context,ArrayList<PersonPhoto> photos) {
-        super(context,0,photos);
+    public PersonImageAdapter(Context context, ArrayList<PersonPhoto> photos) {
+        super(context, 0, photos);
 
         mContext = context;
     }
@@ -53,9 +53,8 @@ public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
             //Get imageView
             holder.imageView = (ImageView) convertView.findViewById(R.id.movie_imageView);
             convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //Get each Movie using the position in the ArrayAdapter
@@ -69,6 +68,7 @@ public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
 
     /**********************************************************************/
     /*                          Inner Classes                             */
+
     /**********************************************************************/
     private static class ViewHolder {
 

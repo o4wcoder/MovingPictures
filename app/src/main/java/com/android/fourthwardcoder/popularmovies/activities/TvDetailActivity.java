@@ -16,10 +16,10 @@ import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
  * Class: TvDetailActivity
  * Author: Chris Hare
  * Created: 9/25/2015
- *
+ * <p/>
  * Activity for the TV Show Details.
  */
-public class TvDetailActivity extends AppCompatActivity implements Constants{
+public class TvDetailActivity extends AppCompatActivity implements Constants {
 
     /**********************************************************************/
     /*                          Constants                                 */
@@ -27,6 +27,7 @@ public class TvDetailActivity extends AppCompatActivity implements Constants{
     private final static String TAG = TvDetailActivity.class.getSimpleName();
 
     int mPersonId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +43,6 @@ public class TvDetailActivity extends AppCompatActivity implements Constants{
         mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -54,15 +53,4 @@ public class TvDetailActivity extends AppCompatActivity implements Constants{
 
         return super.onOptionsItemSelected(item);
     }
-
-//    @Override
-//    public Intent getSupportParentActivityIntent() {
-//
-//        Intent i = new Intent(this,PersonFilmographyTabActivity.class);
-//        i.putExtra(EXTRA_FILMOGRAPHY_TAB,TYPE_TV);
-//        Log.e(TAG, "getSupportParentActivityIntent():person id " + mPersonId);
-//        i.putExtra(EXTRA_PERSON_ID,mPersonId);
-//
-//        return i;
-//    }
 }

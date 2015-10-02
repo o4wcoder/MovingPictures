@@ -16,7 +16,7 @@ import java.util.Stack;
  * Class PersonDetailActivity
  * Author: Chris Hare
  * Created: 8/26/2015
- *
+ * <p/>
  * Activity to show the details of a particular movie
  */
 public class PersonDetailActivity extends AppCompatActivity {
@@ -62,8 +62,6 @@ public class PersonDetailActivity extends AppCompatActivity {
                 //Kill this activity
                 finish();
                 return true;
-//            case R.id.action_settings:
-//                return true;
         }
 
         return super.onOptionsItemSelected(item);

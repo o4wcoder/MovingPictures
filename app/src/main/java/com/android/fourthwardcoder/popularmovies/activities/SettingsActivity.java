@@ -22,6 +22,9 @@ import com.android.fourthwardcoder.popularmovies.R;
 import java.util.List;
 
 /**
+ *
+ * !!!!!!!!!!!! NOT Complete. Will add some settings at a later time. !!!!!!!!!
+ *
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of

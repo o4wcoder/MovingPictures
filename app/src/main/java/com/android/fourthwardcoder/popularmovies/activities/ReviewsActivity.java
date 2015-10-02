@@ -11,7 +11,7 @@ import com.android.fourthwardcoder.popularmovies.helpers.Util;
  * Class ReviewsActivity
  * Author: Chris Hare
  * Created: 8/25/2015
- *
+ * <p/>
  * Main Activity for reviews of a movie or a TV show
  */
 public class ReviewsActivity extends AppCompatActivity {

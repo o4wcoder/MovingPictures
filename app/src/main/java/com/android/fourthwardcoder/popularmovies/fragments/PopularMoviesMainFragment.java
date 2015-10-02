@@ -40,18 +40,16 @@ import java.util.ArrayList;
  * Class PopularMoviesMainFragment
  * Author: Chris Hare
  * Created: 7/25/2015
- *
+ * <p/>
  * Main Fragment of the Popular Movies App
  */
 public class PopularMoviesMainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Constants {
 
-
     /**************************************************/
-	/*                 Constants                      */
+    /*                 Constants                      */
     /**************************************************/
     //Log tag used for debugging
     private static final String TAG = PopularMoviesMainFragment.class.getSimpleName();
-
 
     //Shared Preference for storing sort type
     private static final String PREF_SORT = "sort";
@@ -79,16 +77,16 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     public PopularMoviesMainFragment() {
     }
 
-
     /**************************************************/
     /*               Override Methods                 */
+
     /**************************************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        Log.e(TAG,"onCreate");
+        Log.e(TAG, "onCreate");
         //Set Option Menu
         setHasOptionsMenu(true);
 
@@ -110,7 +108,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
 
         //Get main Gridview and set up click listener
-        mGridView = (GridView)view.findViewById(R.id.gridView);
+        mGridView = (GridView) view.findViewById(R.id.gridView);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -118,7 +116,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 //Get selected movie from the GridView
                 SimpleMovie movie = mMovieList.get(position);
                 //Start intent to bring up Details Activity
-               // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
+                // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
                 //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
                 //startActivity(i);
                 ((Callback) getActivity()).onItemSelected(movie.getId());
@@ -126,26 +124,25 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         });
 
         //Make sure we have a gridview
-        if(mGridView != null) {
+        if (mGridView != null) {
 
             //We don't have any movies, go fetch them
             if (mMovieList == null)
                 //Start up thread to pull in movie data. Send in sort
                 //type. If we are pulling favorites (4) then use a cursorLoader. Otherwise
                 //use AsynTAsk
-               if(mSortOrder == 4) {
-                //Get Favorites
-                   Log.e(TAG,"In OnCreateView: Got sort order 4, calling loader to get favorites");
-                   getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER,null,this);
-               }
-               else {
-                   new FetchPhotosTask().execute(mSortOrder);
-               }
+                if (mSortOrder == 4) {
+                    //Get Favorites
+                    Log.e(TAG, "In OnCreateView: Got sort order 4, calling loader to get favorites");
+                    getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
+                } else {
+                    new FetchPhotosTask().execute(mSortOrder);
+                }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
                 //Just apply the current list of movies
-                Log.e(TAG,"Apply current movie list");
-                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),mMovieList);
+                Log.e(TAG, "Apply current movie list");
+                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(), mMovieList);
                 mGridView.setAdapter(adapter);
 
             }
@@ -166,7 +163,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.menu_item_sort:
                 //Get support Fragment Manager
                 android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -189,19 +186,16 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
         if (requestCode == REQUEST_SORT) {
             //Get change in sort from dialog and store it in Shared Preferences
-            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT,DEFAULT_SORT);
+            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT, DEFAULT_SORT);
             prefsEditor.putInt(PREF_SORT, mSortOrder);
             prefsEditor.commit();
 
             //Fetch new set of movies based on sort order
-            if(mGridView != null)
-                if(mSortOrder == 4) {
+            if (mGridView != null)
+                if (mSortOrder == 4) {
                     //Get Favorites
-                    Log.e(TAG,"CAlling init LOader");
                     getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
-                    Log.e(TAG,"initLoader called");
-                }
-                else {
+                } else {
                     new FetchPhotosTask().execute(mSortOrder);
                 }
         }
@@ -210,7 +204,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Log.e(TAG,"Inside onCreateLoader");
+        Log.e(TAG, "Inside onCreateLoader");
         Uri movieFavoritesUri = MovieContract.MovieEntry.buildMovieUri();
 
         return new CursorLoader(getActivity(),
@@ -224,7 +218,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-        Log.e(TAG,"inside onLoadFinished");
+        Log.e(TAG, "inside onLoadFinished");
         setMovieAdapter(convertCursorToSimpleMovieList(cursor));
     }
 
@@ -237,9 +231,9 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
         ArrayList<SimpleMovie> movieList = new ArrayList<>(cursor.getCount());
 
-        while(cursor.moveToNext()) {
-            SimpleMovie movie = new SimpleMovie(cursor.getInt(MovieContract.COL_MOVIE_ID),cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
-            Log.e(TAG,"Created simple movie " + movie.getId());
+        while (cursor.moveToNext()) {
+            SimpleMovie movie = new SimpleMovie(cursor.getInt(MovieContract.COL_MOVIE_ID), cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
+            Log.e(TAG, "Created simple movie " + movie.getId());
             movieList.add(movie);
         }
 
@@ -247,27 +241,28 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
     }
 
+    /**
+     * Set the adapter of the movie list
+     *
+     * @param movieList ArrayList of Movies
+     */
     private void setMovieAdapter(ArrayList<SimpleMovie> movieList) {
 
-        Log.e(TAG,"setMovieAdapter(): Inside");
-        if(getActivity() != null && mGridView != null) {
+        if (getActivity() != null && mGridView != null) {
 
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
-            if(movieList != null) {
+            if (movieList != null) {
 
                 //Store global copy
                 mMovieList = movieList;
-                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(),movieList);
+                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(), movieList);
                 mGridView.setAdapter(adapter);
 
-                Log.e(TAG,"setMovieAdapter(): CAlling onLoadfininied in Activity");
-                if(mMovieList.size() > 0)
-                   ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
-
-            }
-            else {
-
+                //If we are in two pane mode, set the first movie in the details fragment
+                if (mMovieList.size() > 0)
+                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
+            } else {
                 //If we get here, then the movieList was empty and something went wrong.
                 //Most likely a network connection problem
                 Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
@@ -282,16 +277,16 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     /*****************************************************/
     /**
      * Class FetchPhotosTask
-     *
+     * <p/>
      * Inner-class that extend AysncTask to pull movie data over the network.
      * That data is return from the Movie DB API as JSON data. It is then parsed
      * and stored in Movie objects that are put into and ArrayList. This is then displayed
      * on a GridView.
-     *
+     * <p/>
      * Input: Integer sort type
      * Return: ArrayList of Movies
      */
-    private class FetchPhotosTask extends AsyncTask<Integer,Void,ArrayList<SimpleMovie>> {
+    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<SimpleMovie>> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
         private ProgressDialog progressDialog;
@@ -300,7 +295,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         protected void onPreExecute() {
 
             //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(),"",getString(R.string.progress_downloading_movies),true);
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
         }
 
         @Override
@@ -315,7 +310,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             String[] sortList = res.getStringArray(R.array.sort_url_list);
             String sortOrder = sortList[sortPos];
 
-            switch(sortPos) {
+            switch (sortPos) {
 
                 //Sort by Popularity
                 case 0:
@@ -366,9 +361,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            if((getActivity() != null) && (movieList != null))
-               setMovieAdapter(movieList);
-
+            if ((getActivity() != null) && (movieList != null))
+                setMovieAdapter(movieList);
         }
     }
 
@@ -385,9 +379,4 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
         void onLoadFinished(int movieId);
     }
-
-
-
-
-
 }

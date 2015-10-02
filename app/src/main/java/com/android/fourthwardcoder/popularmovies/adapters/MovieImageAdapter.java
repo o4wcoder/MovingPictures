@@ -17,11 +17,10 @@ import java.util.ArrayList;
  * Class MovieImageAdapter
  * Author: Chris Hare
  * Created: 8/27/2015
- *
+ * <p/>
  * ArrayAdapter used for the GridView that displays the movie posters on the main activity
- *
  */
-public class MovieImageAdapter extends ArrayAdapter<SimpleMovie>{
+public class MovieImageAdapter extends ArrayAdapter<SimpleMovie> {
 
     /****************************************************************/
     /*                       Constants                              */
@@ -32,8 +31,8 @@ public class MovieImageAdapter extends ArrayAdapter<SimpleMovie>{
     /****************************************************************/
     Context mContext;
 
-    public MovieImageAdapter(Context context,ArrayList<SimpleMovie> movies) {
-        super(context,0,movies);
+    public MovieImageAdapter(Context context, ArrayList<SimpleMovie> movies) {
+        super(context, 0, movies);
 
         mContext = context;
 
@@ -55,9 +54,8 @@ public class MovieImageAdapter extends ArrayAdapter<SimpleMovie>{
             //Get imageView
             holder.imageView = (ImageView) convertView.findViewById(R.id.movie_imageView);
             convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //Get each Movie using the position in the ArrayAdapter
@@ -71,6 +69,7 @@ public class MovieImageAdapter extends ArrayAdapter<SimpleMovie>{
 
     /**********************************************************************/
     /*                          Inner Classes                             */
+
     /**********************************************************************/
     private static class ViewHolder {
 

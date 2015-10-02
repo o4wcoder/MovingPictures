@@ -17,26 +17,31 @@ import com.android.fourthwardcoder.popularmovies.R;
 
 /**
  * Class SortDialogFragment
- *
  * Author: Chris Hare
  * Created: 8/6/2015
- *
+ * <p/>
  * Dialog Fragment used for selecting the sort order of the movies.
  */
 public class SortDialogFragment extends DialogFragment {
 
+    /******************************************************************************/
+    /*                               Constants                                    */
+    /******************************************************************************/
     //Log tag from debugging
     private static final String TAG = SortDialogFragment.class.getSimpleName();
 
     //Extra for passing the sort order
     public static final String EXTRA_SORT = "com.android.fourthwardcoder.popularmovies.extra_sort";
 
+    /******************************************************************************/
+    /*                                Local Data                                  */
+    /******************************************************************************/
     int mSortOrder;
 
     public static SortDialogFragment newInstance(int sortOrder) {
         //Store sortOder as extra to pass to the dialog
         Bundle args = new Bundle();
-        args.putInt(EXTRA_SORT,sortOrder);
+        args.putInt(EXTRA_SORT, sortOrder);
 
         //Start new fragment dialog and pass sortOrder
         SortDialogFragment fragment = new SortDialogFragment();
@@ -49,7 +54,7 @@ public class SortDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         //Get sort order that was passed as an extra
-        mSortOrder = (int)getArguments().getInt(EXTRA_SORT);
+        mSortOrder = (int) getArguments().getInt(EXTRA_SORT);
 
         View v = getActivity().getLayoutInflater()
                 .inflate(R.layout.dialog_sort, null);
@@ -61,10 +66,8 @@ public class SortDialogFragment extends DialogFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.e(TAG, "Got dialog sort item " + which);
-                        Resources res = getResources();
-                        //String[] sortList = res.getStringArray(R.array.sort_url_list);
 
+                        Resources res = getResources();
                         mSortOrder = which;
 
                         sendResult(Activity.RESULT_OK);
@@ -80,11 +83,10 @@ public class SortDialogFragment extends DialogFragment {
                     }
                 })
                 .create();
-
     }
 
     /***************************************************************/
-	/*                   Private Methods                           */
+    /*                   Private Methods                           */
     /***************************************************************/
     /**
      * Sends the result of the dialog back to calling fragment
@@ -92,12 +94,12 @@ public class SortDialogFragment extends DialogFragment {
      * @param resultCode code of result of dialog. In this case "OK"
      */
     private void sendResult(int resultCode) {
-        if(getTargetFragment() == null)
+        if (getTargetFragment() == null)
             return;
 
         //Create intent and put extra on it
         Intent i = new Intent();
-        i.putExtra(EXTRA_SORT,mSortOrder );
+        i.putExtra(EXTRA_SORT, mSortOrder);
 
         //Send result to PopularMoviesMain Fragment
         //Request code to tell the target who is returning the result
@@ -105,5 +107,4 @@ public class SortDialogFragment extends DialogFragment {
         //An intent that can have extra data
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
     }
-
 }

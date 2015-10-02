@@ -9,10 +9,10 @@ import android.provider.BaseColumns;
  * Class MovieContract
  * Author:  Chris Hare
  * Created: 9/18/2015.
- *
+ * <p/>
  * Contract Provider Movie Contract
  */
-public class MovieContract  {
+public class MovieContract {
 
     public static final String[] MOVIE_COLUMNS = {
             MovieEntry.TABLE_NAME,

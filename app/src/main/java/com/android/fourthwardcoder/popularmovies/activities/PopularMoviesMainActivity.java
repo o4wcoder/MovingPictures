@@ -18,7 +18,7 @@ import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
  * Class PopularMoviesMainActivity
  * Author: Chris Hare
  * Created: 7/25/2015
- *
+ * <p/>
  * Main Activity of the PopularMovies App
  */
 public class PopularMoviesMainActivity extends AppCompatActivity implements PopularMoviesMainFragment.Callback,
@@ -28,11 +28,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
     /*                       Constants                           */
     /*************************************************************/
     private static final String TAG = PopularMoviesMainActivity.class.getSimpleName();
-
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
-
-
-
     /*************************************************************/
     /*                       Local Data                          */
     /*************************************************************/
@@ -43,16 +39,14 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        //Set Toolbar
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.app_name);
+
         Util.setStatusBarColor(this);
-        Log.e(TAG, "onCreate");
 
-
-            if((findViewById(R.id.movie_detail_container) != null)) {
-            Log.e(TAG, "onCreate two pane");
-
+        if ((findViewById(R.id.movie_detail_container) != null)) {
             //The detail container view will be present only in the large-screen layouts
             //(res/layout-sw600dp). If this view is present, then the activity should
             //be two-pane mode.
@@ -61,14 +55,12 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment transaction.
             if (savedInstanceState == null) {
-                Log.e(TAG, "onCreate movie detail container");
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, new MovieDetailFragment(),
                                 DETAILFRAGMENT_TAG)
                         .commit();
             }
-        }
-        else{
+        } else {
 
             mTwoPane = false;
         }
@@ -102,9 +94,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
     @Override
     public void onItemSelected(int movieId) {
 
-        Log.e(TAG, "Inside onItemSelected Callback");
         if (mTwoPane) {
-            Log.e(TAG,"Got two pane");
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
@@ -118,9 +108,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commit();
         } else {
-            Log.e(TAG,"Have single pane with content uri "+ movieId);
-
-            Intent i = new Intent(this,MovieDetailActivity.class);
+            Intent i = new Intent(this, MovieDetailActivity.class);
             i.putExtra(EXTRA_MOVIE_ID, movieId);
             startActivity(i);
         }
@@ -130,7 +118,6 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
     public void onLoadFinished(int movieId) {
 
         if (mTwoPane) {
-            Log.e(TAG,"onLoadFinished Got two pane");
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction

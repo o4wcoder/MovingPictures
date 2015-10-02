@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * Class VideosListAdapter
  * Author: Chris Hare
  * Created: 8/28/2015
+ * <p/>
  * List Adapater for Videos of a Movie or TV Show.
  */
 public class VideosListAdapter extends ArrayAdapter<Video> {
@@ -50,9 +51,8 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
             holder.nameTextView = (TextView) convertView.findViewById(R.id.videoNameTextView);
             holder.infoTextView = (TextView) convertView.findViewById(R.id.videoInfoTextView);
             convertView.setTag(holder);
-        }
-        else {
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
         //Get each Movie using the position in the ArrayAdapter
@@ -66,6 +66,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
 
     /**********************************************************************/
     /*                          Inner Classes                             */
+
     /**********************************************************************/
     private static class ViewHolder {
 

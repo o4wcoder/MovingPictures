@@ -10,18 +10,18 @@ import com.android.fourthwardcoder.popularmovies.data.MovieContract.MovieEntry;
  * Class MovieDbHelper
  * Author: Chris Hare
  * Created: 9/18/2015.
- *
+ * <p/>
  * Database helper for the Movies Content Provider.
  */
 public class MovieDbHelper extends SQLiteOpenHelper {
 
 
-    private static final  int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "movie.db";
 
     public MovieDbHelper(Context context) {
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
