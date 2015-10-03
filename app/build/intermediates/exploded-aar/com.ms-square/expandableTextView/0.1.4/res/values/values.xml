@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="ExpandableTextView"><attr format="integer" name="maxCollapsedLines"/><attr format="integer" name="animDuration"/><attr format="float" name="animAlphaStart"/><attr format="reference" name="expandDrawable"/><attr format="reference" name="collapseDrawable"/></declare-styleable>
-    <!-- From: file:/Users/manabu/Documents/private/git/ExpandableTextView/lib/src/main/res/values/ids.xml -->
-    <eat-comment/>
-    <item name="expand_collapse" type="id"/>
-    <item name="expandable_text" type="id"/>
-</resources>
