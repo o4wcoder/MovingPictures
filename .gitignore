@@ -41,4 +41,6 @@ project.properties
 ##Gradle-based build
 .gradle
 build/
+
+# Don't store private API Keys
 app/src/main/java/com/android/fourthwardcoder/popularmovies/interfaces/APIKeys.java
