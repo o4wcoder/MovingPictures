@@ -13,6 +13,7 @@ import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.popularmovies.fragments.PopularMoviesMainFragment;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
+import com.android.fourthwardcoder.popularmovies.models.Movie;
 
 /**
  * Class PopularMoviesMainActivity
@@ -51,7 +52,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             //(res/layout-sw600dp). If this view is present, then the activity should
             //be two-pane mode.
             mTwoPane = true;
-
+            Log.e(TAG,"onCreate: mTwoPane = true");
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment transaction.
             if (savedInstanceState == null) {
@@ -61,7 +62,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
                         .commit();
             }
         } else {
-
+            Log.e(TAG,"onCreate: onTwoPane = false");
             mTwoPane = false;
         }
 
@@ -92,14 +93,15 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
 
 
     @Override
-    public void onItemSelected(int movieId) {
+    public void onItemSelected(Movie movie) {
 
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
+            Log.e(TAG,"onItemSelected(): with twoPane");
             Bundle args = new Bundle();
-            args.putInt(EXTRA_MOVIE_ID, movieId);
+            args.putParcelable(EXTRA_MOVIE, movie);
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
@@ -109,20 +111,22 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
                     .commit();
         } else {
             Intent i = new Intent(this, MovieDetailActivity.class);
-            i.putExtra(EXTRA_MOVIE_ID, movieId);
+            i.putExtra(EXTRA_MOVIE, movie);
             startActivity(i);
         }
     }
 
     @Override
-    public void onLoadFinished(int movieId) {
+    public void onLoadFinished(Movie movie) {
 
+        Log.e(TAG,"In onLoadFinsished()");
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
+            Log.e(TAG,"In two pane, setting details fragment");
             Bundle args = new Bundle();
-            args.putInt(EXTRA_MOVIE_ID, movieId);
+            args.putParcelable(EXTRA_MOVIE, movie);
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
@@ -133,6 +137,9 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commitAllowingStateLoss();
+        }
+        else {
+            Log.e(TAG,"onLoadFinished(): NOt in two pane!!!!!!!!");
         }
     }
 }

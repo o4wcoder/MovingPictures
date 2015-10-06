@@ -1,10 +1,17 @@
 package com.android.fourthwardcoder.popularmovies.models;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+import com.android.fourthwardcoder.popularmovies.data.MovieContract;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +29,8 @@ public class Movie implements Parcelable {
     //Number of cast members to be displayed on the Details Activity
     public static final int NUM_CAST_DISPLAY = 3;
 
+    public static final String TAG = Movie.class.getSimpleName();
+
     /******************************************************/
     /*                   Local Data                       */
     /******************************************************/
@@ -35,16 +44,16 @@ public class Movie implements Parcelable {
     String runtime;
     double rating;
     String revenue;
-    boolean favorite;
 
-    ArrayList<String> genreList;
+    ArrayList<String> genres;
+    ArrayList<IdNamePair> directors;
+    ArrayList<IdNamePair> actors;
+    ArrayList<Video> videos;
+
+    //Fields calculated internally
     String genreString;
-    ArrayList<String> directors;
     String directorString;
-    ArrayList<Integer> actorIds;
-    ArrayList<String> actorNames;
     String actorsString;
-    ArrayList<Video> videoList;
 
     /**************************************************************/
     /*                      Constructors                          */
@@ -104,12 +113,15 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
 
         String[] dateArray = releaseDate.split("-");
-        releaseYear = dateArray[0];
+
+        if(dateArray != null)
+            releaseYear = dateArray[0];
     }
 
     public String getReleaseYear() {
         return releaseYear;
     }
+
 
     public double getRating() {
         return rating;
@@ -119,64 +131,53 @@ public class Movie implements Parcelable {
         this.rating = rating;
     }
 
-    public ArrayList<String> getGenreList() {
-        return genreList;
+    public ArrayList<String> getGenres() {
+        return genres;
     }
 
-    public void setGenreList(ArrayList<String> genreList) {
-        this.genreList = genreList;
+    public void setGenres(ArrayList<String> genres) {
+        this.genres = genres;
 
-           this.genreString = Util.buildListString(genreList);
+        this.genreString = Util.buildListString(genres);
     }
 
     public String getGenreString() {
         return genreString;
     }
 
-    public void setGenreString(String genreString) {
-        this.genreString = genreString;
-    }
 
-    public ArrayList<String> getDirectors() {
+    public ArrayList<IdNamePair> getDirectors() {
         return directors;
     }
 
-    public void setDirectors(ArrayList<String> directors) {
+    public void setDirectors(ArrayList<IdNamePair> directors) {
         this.directors = directors;
 
-            this.directorString = Util.buildListString(directors);
+        this.directorString = Util.buildPersonListString(directors);
     }
 
-    public ArrayList<Integer> getActorIds() {
-        return actorIds;
-    }
-
-    public ArrayList<String> getActorNames() {
-        return actorNames;
-    }
-
-    public void setActorIds(ArrayList<Integer> actorIds) {
-        this.actorIds = actorIds;
+    public ArrayList<IdNamePair> getActors() {
+        return actors;
     }
 
 
-    public void setActorNames(ArrayList<String> actorNames) {
+    public void setActors(ArrayList<IdNamePair> actors) {
 
-        this.actorNames = actorNames;
+        this.actors = actors;
 
         String strActors = "";
 
         //We want to show at least 3 actors, but some movies have less
         int numActors = NUM_CAST_DISPLAY;
-        if(actorNames.size() < NUM_CAST_DISPLAY)
-           numActors = actorNames.size();
+        if(actors.size() < NUM_CAST_DISPLAY)
+            numActors = actors.size();
 
         //Set up display string for actors. Just display the first 3 top billed
         for(int i = 0; i < numActors; i++) {
-            strActors += actorNames.get(i) + ", ";
+            strActors += actors.get(i).getName() + ", ";
         }
 
-        if(actorNames.size() > 0)
+        if(actors.size() > 0)
             this.actorsString = strActors.substring(0,strActors.length() - 2);
     }
 
@@ -184,9 +185,6 @@ public class Movie implements Parcelable {
         return directorString;
     }
 
-    public void setDirectorString(String directorString) {
-        this.directorString = directorString;
-    }
 
     public String getActorsString() {
         return actorsString;
@@ -209,25 +207,77 @@ public class Movie implements Parcelable {
         this.revenue = "$" + revenue;
     }
 
-    public ArrayList<Video> getVideoList() {
-        return videoList;
+    public ArrayList<Video> getVideos() {
+        return videos;
     }
 
-    public void setVideoList(ArrayList<Video> videoList) {
-        this.videoList = videoList;
+    public void setVideos(ArrayList<Video> videos) {
+        this.videos = videos;
     }
 
-    public boolean isFavorite() {
-        return favorite;
+
+    /**
+     *
+     * @return
+     */
+    public ContentValues getContentValues() {
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieContract.MovieEntry.COLUMN_ID, this.id);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, this.title);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, this.overview);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, this.posterPath);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, this.backdropPath);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, this.releaseDate);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, this.runtime);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_RATING, this.rating);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_REVENUE, this.revenue);
+
+        //Store Array lists as JSON Strings. No need to create complicated SQL tabels
+        //ass these values will never change once the data has been fetched.
+        movieValues.put(MovieContract.MovieEntry.COLUMN_GENRE_JSON,new Gson().toJson(genres));
+        movieValues.put(MovieContract.MovieEntry.COLUMN_DIRECTOR_JSON, new Gson().toJson(directors));
+        movieValues.put(MovieContract.MovieEntry.COLUMN_ACTOR_JSON, new Gson().toJson(actors));
+        movieValues.put(MovieContract.MovieEntry.COLUMN_VIDEO_JSON, new Gson().toJson(videos));
+
+
+
+
+        return movieValues;
     }
 
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
+    public static Movie convertCursorToMovie(Cursor cursor) {
+
+        Movie movie = new Movie(cursor.getInt(MovieContract.COL_MOVIE_ID));
+        movie.setTitle(cursor.getString(MovieContract.COL_MOVIE_TITLE));
+        movie.setOverview(cursor.getString(MovieContract.COL_MOVIE_OVERVIEW));
+        movie.setPosterPath(cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
+        movie.setBackdropPath(cursor.getString(MovieContract.COL_MOVIE_BACKDROP_PATH));
+        movie.setReleaseDate(cursor.getString(MovieContract.COL_MOVIE_RELEASE_DATE));
+        movie.setRuntime(cursor.getString(MovieContract.COL_MOVIE_RUNTIME));
+        movie.setRating(cursor.getDouble(MovieContract.COL_MOVIE_RATING));
+        movie.setRevenue(cursor.getString(MovieContract.COL_MOVIE_REVENUE));
+
+        //Get Json String and put them into ArrayLists
+        Type stringType = new TypeToken<ArrayList<String>>(){}.getType();
+        Type idNamePairType = new TypeToken<ArrayList<IdNamePair>>(){}.getType();
+        Type videoType = new TypeToken<ArrayList<Video>>(){}.getType();
+
+        //Parse genres
+        String genreJsonString = cursor.getString(MovieContract.COL_MOVIE_GENRE_JSON);
+        movie.setGenres((ArrayList<String>)new Gson().fromJson(genreJsonString,stringType));
+        //Parse directors
+        String directorJsonString = cursor.getString(MovieContract.COL_MOVIE_DIRECTOR_JSON);
+        movie.setDirectors((ArrayList<IdNamePair>) new Gson().fromJson(directorJsonString, idNamePairType));
+        //Parse actors
+        String actorJsonString = cursor.getString(MovieContract.COL_MOVIE_ACTOR_JSON);
+        movie.setActors((ArrayList<IdNamePair>) new Gson().fromJson(actorJsonString, idNamePairType));
+        //Parse videos
+        String videoJsonString = cursor.getString(MovieContract.COL_MOVIE_VIDEO_JSON);
+        movie.setVideos((ArrayList<Video>) new Gson().fromJson(videoJsonString, videoType));
+        return movie;
     }
 
-    /**************************************************************/
-    /*                      Parcelable Section                    */
-    /**************************************************************/
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();
@@ -236,38 +286,36 @@ public class Movie implements Parcelable {
         backdropPath = in.readString();
         releaseDate = in.readString();
         releaseYear = in.readString();
-        rating = in.readDouble();
-        directorString = in.readString();
-        actorsString = in.readString();
         runtime = in.readString();
+        rating = in.readDouble();
         revenue = in.readString();
-        favorite = in.readByte() != 0x00;
-
         if (in.readByte() == 0x01) {
-            genreList = new ArrayList<String>();
-            in.readList(genreList, Integer.class.getClassLoader());
+            genres = new ArrayList<String>();
+            in.readList(genres, String.class.getClassLoader());
         } else {
-            genreList = null;
+            genres = null;
         }
-        genreString = in.readString();
         if (in.readByte() == 0x01) {
-            directors = new ArrayList<String>();
-            in.readList(directors, String.class.getClassLoader());
+            directors = new ArrayList<IdNamePair>();
+            in.readList(directors, IdNamePair.class.getClassLoader());
         } else {
             directors = null;
         }
         if (in.readByte() == 0x01) {
-            actorIds = new ArrayList<Integer>();
-            in.readList(actorIds, String.class.getClassLoader());
+            actors = new ArrayList<IdNamePair>();
+            in.readList(actors, IdNamePair.class.getClassLoader());
         } else {
-            actorIds = null;
+            actors = null;
         }
         if (in.readByte() == 0x01) {
-            actorNames = new ArrayList<String>();
-            in.readList(actorNames, String.class.getClassLoader());
+            videos = new ArrayList<Video>();
+            in.readList(videos, Video.class.getClassLoader());
         } else {
-            actorNames = null;
+            videos = null;
         }
+        genreString = in.readString();
+        directorString = in.readString();
+        actorsString = in.readString();
     }
 
     @Override
@@ -284,38 +332,36 @@ public class Movie implements Parcelable {
         dest.writeString(backdropPath);
         dest.writeString(releaseDate);
         dest.writeString(releaseYear);
-        dest.writeDouble(rating);
-        dest.writeString(directorString);
-        dest.writeString(actorsString);
         dest.writeString(runtime);
+        dest.writeDouble(rating);
         dest.writeString(revenue);
-        dest.writeByte((byte) (favorite ? 0x01 : 0x00));
-
-        if (genreList == null) {
+        if (genres == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(genreList);
+            dest.writeList(genres);
         }
-        dest.writeString(genreString);
         if (directors == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(directors);
         }
-        if (actorIds == null) {
+        if (actors == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(actorIds);
+            dest.writeList(actors);
         }
-        if (actorNames == null) {
+        if (videos == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(actorNames);
+            dest.writeList(videos);
         }
+        dest.writeString(genreString);
+        dest.writeString(directorString);
+        dest.writeString(actorsString);
     }
 
     @SuppressWarnings("unused")

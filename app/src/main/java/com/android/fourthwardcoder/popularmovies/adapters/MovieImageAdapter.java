@@ -1,6 +1,7 @@
 package com.android.fourthwardcoder.popularmovies.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.android.fourthwardcoder.popularmovies.R;
+import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
 import com.squareup.picasso.Picasso;
 
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * <p/>
  * ArrayAdapter used for the GridView that displays the movie posters on the main activity
  */
-public class MovieImageAdapter extends ArrayAdapter<SimpleMovie> {
+public class MovieImageAdapter extends ArrayAdapter<Movie> {
 
     /****************************************************************/
     /*                       Constants                              */
@@ -31,7 +33,7 @@ public class MovieImageAdapter extends ArrayAdapter<SimpleMovie> {
     /****************************************************************/
     Context mContext;
 
-    public MovieImageAdapter(Context context, ArrayList<SimpleMovie> movies) {
+    public MovieImageAdapter(Context context, ArrayList<Movie> movies) {
         super(context, 0, movies);
 
         mContext = context;
@@ -59,7 +61,8 @@ public class MovieImageAdapter extends ArrayAdapter<SimpleMovie> {
         }
 
         //Get each Movie using the position in the ArrayAdapter
-        SimpleMovie movie = getItem(position);
+        Movie movie = getItem(position);
+        //Log.e(TAG, "Setting movie position " + position + " name: " + movie.getTitle());
 
         //Call Picasso to load it into the imageView
         Picasso.with(mContext).load(movie.getPosterPath()).into(holder.imageView);

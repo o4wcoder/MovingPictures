@@ -33,6 +33,7 @@ import com.android.fourthwardcoder.popularmovies.data.MovieContract;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
+import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     /*                Local Data                      */
     /**************************************************/
     GridView mGridView;
-    ArrayList<SimpleMovie> mMovieList = null;
+    ArrayList<Movie> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
 
@@ -87,6 +88,9 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         //Set Option Menu
         setHasOptionsMenu(true);
 
+        if(savedInstanceState != null) {
+            mMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
+        }
         //Get instanace of Shared Preferences
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity()
                 .getApplicationContext());
@@ -111,12 +115,12 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //Get selected movie from the GridView
-                SimpleMovie movie = mMovieList.get(position);
+                Movie movie = mMovieList.get(position);
                 //Start intent to bring up Details Activity
                 // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
                 //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
                 //startActivity(i);
-                ((Callback) getActivity()).onItemSelected(movie.getId());
+                ((Callback) getActivity()).onItemSelected(movie);
             }
         });
 
@@ -144,15 +148,29 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
                 //Just apply the current list of movies
-                Log.e(TAG, "Apply current movie list");
-                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(), mMovieList);
-                mGridView.setAdapter(adapter);
+                Log.e(TAG, "-----------Apply current movie list --------------");
+                setMovieAdapter(mMovieList);
 
             }
         }
         return view;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Log.e(TAG,"onActitiyCreated()");
+
+        //Need to set the details view to the first movie when in 2 pane mode. Hit this
+        //situation when we first come up on a tablet in portrait and rotate to landscape
+        if(mMovieList != null) {
+            if (mMovieList.size() > 0) {
+                Log.e(TAG, "Calling on loadfinished");
+                ((Callback) getActivity()).onLoadFinished(mMovieList.get(0));
+            }
+        }
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
@@ -229,7 +247,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         Log.e(TAG, "inside onLoadFinished");
-        setMovieAdapter(convertCursorToSimpleMovieList(cursor));
+        setMovieAdapter(convertCursorToMovieList(cursor));
     }
 
     @Override
@@ -237,13 +255,13 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
 
     }
 
-    private ArrayList<SimpleMovie> convertCursorToSimpleMovieList(Cursor cursor) {
+    private ArrayList<Movie> convertCursorToMovieList(Cursor cursor) {
 
-        ArrayList<SimpleMovie> movieList = new ArrayList<>(cursor.getCount());
+        ArrayList<Movie> movieList = new ArrayList<>(cursor.getCount());
 
         while (cursor.moveToNext()) {
-            SimpleMovie movie = new SimpleMovie(cursor.getInt(MovieContract.COL_MOVIE_ID), cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
-            Log.e(TAG, "Created simple movie " + movie.getId());
+            Movie movie = Movie.convertCursorToMovie(cursor);
+            Log.e(TAG,"Conver favorite movie " + movie.getTitle());
             movieList.add(movie);
         }
 
@@ -256,7 +274,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
      *
      * @param movieList ArrayList of Movies
      */
-    private void setMovieAdapter(ArrayList<SimpleMovie> movieList) {
+    private void setMovieAdapter(ArrayList<Movie> movieList) {
 
         if (getActivity() != null && mGridView != null) {
 
@@ -268,10 +286,12 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 mMovieList = movieList;
                 MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(), movieList);
                 mGridView.setAdapter(adapter);
-
+                Log.e(TAG,"Movie list not null, if there is anthing in the list set 1st pos");
                 //If we are in two pane mode, set the first movie in the details fragment
-                if (mMovieList.size() > 0)
-                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
+                if (mMovieList.size() > 0) {
+                    Log.e(TAG, "Calling on loadfinished");
+                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0));
+                }
             } else {
                 //If we get here, then the movieList was empty and something went wrong.
                 //Most likely a network connection problem
@@ -281,6 +301,12 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             }
 
         }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST, mMovieList);
+        super.onSaveInstanceState(savedInstanceState);
     }
     /*****************************************************/
     /*                Inner Classes                      */
@@ -296,7 +322,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
      * Input: Integer sort type
      * Return: ArrayList of Movies
      */
-    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<SimpleMovie>> {
+    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<Movie>> {
 
         //ProgressDialog to be displayed while the data is being fetched and parsed
         private ProgressDialog progressDialog;
@@ -309,7 +335,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         }
 
         @Override
-        protected ArrayList<SimpleMovie> doInBackground(Integer... params) {
+        protected ArrayList<Movie> doInBackground(Integer... params) {
 
             Uri movieUri = null;
             //We only pass one param for the sort order, so get the first one.
@@ -366,7 +392,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         }
 
         @Override
-        protected void onPostExecute(ArrayList<SimpleMovie> movieList) {
+        protected void onPostExecute(ArrayList<Movie> movieList) {
 
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
@@ -385,8 +411,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(int movieId);
+        void onItemSelected(Movie movie);
 
-        void onLoadFinished(int movieId);
+        void onLoadFinished(Movie movie);
     }
 }

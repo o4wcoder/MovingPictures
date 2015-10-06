@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/reviewsTextView"
+        android:padding="2dp">
+    </TextView>
+
+</FrameLayout>
+<!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMoviesClean/PopularMovies/app/src/main/res/layout/reviews_list_item.xml -->

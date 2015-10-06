@@ -5,13 +5,13 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.util.Log;
 
-import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
+//import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
+import com.android.fourthwardcoder.popularmovies.models.IdNamePair;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
 import com.android.fourthwardcoder.popularmovies.models.Person;
 import com.android.fourthwardcoder.popularmovies.models.Review;
-import com.android.fourthwardcoder.popularmovies.models.SimpleMovie;
 import com.android.fourthwardcoder.popularmovies.models.TvShow;
 import com.android.fourthwardcoder.popularmovies.models.Video;
 
@@ -49,7 +49,7 @@ public class MovieDbAPI implements Constants {
     public static final String NUM_QUERY_PAGES = "3";
 
     //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
-    public static final String API_KEY_MOVIE_DB = APIKeys.MOVIE_DB;
+    public static final String API_KEY_MOVIE_DB = "e80f27e43348054952d67e7d0353ac38";
     //Base URLs
     public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES;
     //Full URLs for the movie DB
@@ -209,7 +209,7 @@ public class MovieDbAPI implements Constants {
      * @param movieUri  URI string use to poll data from movie database
      * @return          ArralyList of Simple Movies
      */
-    public static ArrayList<SimpleMovie> getMovieList(Context context, Uri movieUri) {
+    public static ArrayList<Movie> getMovieList(Context context, Uri movieUri) {
 
         String movieJsonStr = queryMovieDatabase(movieUri);
 
@@ -470,7 +470,7 @@ public class MovieDbAPI implements Constants {
             .appendPath(PATH_VIDEOS)
             .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
             .build();
-        Log.e(TAG,"video URI: " + videosUri);
+        //Log.e(TAG,"video URI: " + videosUri);
         return videosUri;
     }
 
@@ -712,7 +712,7 @@ public class MovieDbAPI implements Constants {
                 movie.setRating(movieObj.getDouble(MovieDbAPI.TAG_RATING));
                 movie.setRuntime(movieObj.getString(MovieDbAPI.TAG_RUNTIME));
 
-                movie.setGenreList(parseList(movieObj, TAG_GENRES, TAG_NAME));
+                movie.setGenres(parseList(movieObj, TAG_GENRES, TAG_NAME));
 
                 int iRevenue = movieObj.getInt(MovieDbAPI.TAG_REVENUE);
                 movie.setRevenue(NumberFormat.getIntegerInstance().format(iRevenue));
@@ -731,14 +731,16 @@ public class MovieDbAPI implements Constants {
                     //Pull out Crew information
                     JSONArray crewArray = creditObj.getJSONArray(MovieDbAPI.TAG_CREW);
 
-                    ArrayList<String> directorList = new ArrayList<String>();
+                    ArrayList<IdNamePair> directorList = new ArrayList<IdNamePair>();
                     for (int j = 0; j < crewArray.length(); j++) {
                         String job = crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_JOB);
 
                         //Find director
-                        if (job.equals(MovieDbAPI.TAG_JOB_DIRECTOR))
-                            directorList.add(crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
-
+                        if (job.equals(MovieDbAPI.TAG_JOB_DIRECTOR)) {
+                            IdNamePair director = new IdNamePair(crewArray.getJSONObject(j).getInt(MovieDbAPI.TAG_ID));
+                            director.setName(crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
+                            directorList.add(director);
+                        }
                     }
                     //Add director list to movie
                     if (directorList.size() > 0)
@@ -746,27 +748,25 @@ public class MovieDbAPI implements Constants {
 
                     //Pull out Cast Information
                     JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
-                    ArrayList<Integer> actorIdList = new ArrayList<Integer>();
-                    ArrayList<String> actorNameList = new ArrayList<String>();
+                    ArrayList<IdNamePair> actorNameList = new ArrayList<IdNamePair>();
                     //Pull out actors of the movie
                     for (int j = 0; j < castArray.length(); j++) {
                         //Log.e(TAG, castArray.getJSONObject(j).toString());
-                        int id = castArray.getJSONObject(j).getInt(TAG_ID);
-                        String name = castArray.getJSONObject(j).getString(TAG_NAME);
+                        IdNamePair cast = new IdNamePair(castArray.getJSONObject(j).getInt(TAG_ID));
+                        cast.setName(castArray.getJSONObject(j).getString(TAG_NAME));
 
-                        actorIdList.add(id);
-                        actorNameList.add(name);
+                        actorNameList.add(cast);
                     }
 
                     //Add cast list to movie
-                    if ((actorIdList.size() > 0) && (actorNameList.size() > 0)) {
+                    if (actorNameList.size() > 0) {
                         //Log.e(TAG, "Setting actor lists to movie object");
-                        movie.setActorIds(actorIdList);
-                        movie.setActorNames(actorNameList);
+
+                        movie.setActors(actorNameList);
                     }
 
                     //Get Videos
-                    movie.setVideoList(getVideoList(movie.getId(),TYPE_MOVIE));
+                    movie.setVideos(getVideoList(movie.getId(), TYPE_MOVIE));
 
                 }
             }
@@ -790,7 +790,7 @@ public class MovieDbAPI implements Constants {
 
         try {
             if (tvJsonStr != null) {
-                Log.e(TAG, "TV: " + tvJsonStr);
+                //Log.e(TAG, "TV: " + tvJsonStr);
 
 
                 JSONObject tvObj = new JSONObject(tvJsonStr);
@@ -810,7 +810,7 @@ public class MovieDbAPI implements Constants {
                 JSONArray runtimeArray = tvObj.getJSONArray(TAG_EPISODE_RUN_TIME);
                 tvShow.setRuntime(String.valueOf(runtimeArray.getInt(0)));
 
-                tvShow.setGenreList(parseList(tvObj, TAG_GENRES, TAG_NAME));
+                tvShow.setGenres(parseList(tvObj, TAG_GENRES, TAG_NAME));
 
                 tvShow.setNetworks(parseList(tvObj, TAG_NETWORKS, TAG_NAME));
                 //Get status of show
@@ -828,28 +828,25 @@ public class MovieDbAPI implements Constants {
 
                     //Pull out Cast Information
                     JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
-                    ArrayList<Integer> actorIdList = new ArrayList<Integer>();
-                    ArrayList<String> actorNameList = new ArrayList<String>();
+                    ArrayList<IdNamePair> actorNameList = new ArrayList<>(castArray.length());
                     //Pull out actors of the movie
                     for (int j = 0; j < castArray.length(); j++) {
                         //Log.e(TAG, castArray.getJSONObject(j).toString());
-                        int id = castArray.getJSONObject(j).getInt(TAG_ID);
-                        String name = castArray.getJSONObject(j).getString(TAG_NAME);
+                        IdNamePair cast = new IdNamePair(castArray.getJSONObject(j).getInt(TAG_ID));
+                        cast.setName(castArray.getJSONObject(j).getString(TAG_NAME));
 
-                        actorIdList.add(id);
-                        actorNameList.add(name);
+                        actorNameList.add(cast);
                     }
 
                     //Add cast list to movie
-                    if ((actorIdList.size() > 0) && (actorNameList.size() > 0)) {
+                    if (actorNameList.size() > 0) {
                         //Log.e(TAG, "Setting actor lists to movie object");
-                        tvShow.setActorIds(actorIdList);
-                        tvShow.setActorNames(actorNameList);
+                        tvShow.setActors(actorNameList);
                     }
                 }
 
                 //Get Videos
-                tvShow.setVideoList(getVideoList(tvShow.getId(),TYPE_TV));
+                tvShow.setVideos(getVideoList(tvShow.getId(), TYPE_TV));
             }
         }
         catch (JSONException e) {
@@ -867,10 +864,10 @@ public class MovieDbAPI implements Constants {
      * @param moviesJsonStr Full return JSON String of movie data
      * @return              ArrayList of Movies
      */
-    private static ArrayList<SimpleMovie> parseJsonMovieList(Context context, String moviesJsonStr) {
+    private static ArrayList<Movie> parseJsonMovieList(Context context, String moviesJsonStr) {
 
         //List of Movies that get parsed Movie DB JSON return
-        ArrayList<SimpleMovie> movieList = null;
+        ArrayList<Movie> movieList = null;
 
         try {
             JSONObject obj = new JSONObject(moviesJsonStr);
@@ -889,13 +886,14 @@ public class MovieDbAPI implements Constants {
                 //Get Movie result. Create movie object and pull out particular data for
                 //that movie.
                 JSONObject result = resultsArray.getJSONObject(i);
-                int movieId = result.getInt(MovieDbAPI.TAG_ID);
-                String posterPath = MovieDbAPI.BASE_MOVIE_IMAGE_URL + getPosterSize(context) + result.getString(MovieDbAPI.TAG_POSTER_PATH);
-                Log.e(TAG,"PosterPath: " + posterPath);
-                SimpleMovie movie = new SimpleMovie(movieId,posterPath);
+               // Log.e(TAG,"MOVIE Result: " + result.toString());
+
+                 int movieId = result.getInt(MovieDbAPI.TAG_ID);
+                 Movie movie = getMovie(movieId);
 
                 //Add movie to movie list array.
-                movieList.add(movie);
+                if(movie != null)
+                   movieList.add(movie);
             }
 
 
@@ -916,7 +914,7 @@ public class MovieDbAPI implements Constants {
 
         //List of Reviews that get parsed from Movie DB JSON return
         ArrayList<Review> reviewList = null;
-        Log.e(TAG,"REviewJson: " +reviewsJsonStr);
+        //Log.e(TAG,"REviewJson: " +reviewsJsonStr);
         try {
             JSONObject obj = new JSONObject(reviewsJsonStr);
             JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
@@ -952,7 +950,7 @@ public class MovieDbAPI implements Constants {
     private static ArrayList<Video> parseJsonVideoList(String videosJsonStr) {
 
         ArrayList<Video> videoList = null;
-        Log.e(TAG,"videoJson: " + videosJsonStr);
+       // Log.e(TAG,"videoJson: " + videosJsonStr);
 
         try {
             JSONObject obj = new JSONObject(videosJsonStr);
@@ -963,13 +961,12 @@ public class MovieDbAPI implements Constants {
             for(int i = 0; i< resultsArray.length(); i++) {
 
                 JSONObject result = resultsArray.getJSONObject(i);
-                Video video = new Video();;
+                Video video = new Video(result.getString(MovieDbAPI.TAG_KEY));
                 video.setName(result.getString(MovieDbAPI.TAG_NAME));
-                video.setKey(result.getString(MovieDbAPI.TAG_KEY));
                 video.setType(result.getString(MovieDbAPI.TAG_TYPE));
                 video.setSize(result.getInt(MovieDbAPI.TAG_SIZE));
 
-                //Log.e(TAG, review.toString());
+                Log.e(TAG, video.getName());
                 videoList.add(video);
             }
         } catch (JSONException e) {

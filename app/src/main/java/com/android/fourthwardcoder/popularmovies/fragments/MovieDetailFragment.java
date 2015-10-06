@@ -9,12 +9,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -78,12 +83,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
     LinearLayout mVideoLayout;
     CheckBox mFavoritesToggleButton;
 
+    boolean mFetchData = false;
+
     /*****************************************************************/
     /*                       Constructor                             */
 
     /*****************************************************************/
     public MovieDetailFragment() {
+
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,21 +105,36 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-//        Toolbar toolbar = (Toolbar)view.findViewById(R.id.toolbar);
-//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
         //Get Movie passed from Main Activity
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+            Log.e(TAG, "Getting movie in bundle");
+            if (arguments.containsKey(EXTRA_MOVIE)) {
+                Log.e(TAG,"Arguments: Got Movie Object");
+                mMovie = arguments.getParcelable(EXTRA_MOVIE);
+            } else {
+                Log.e(TAG,"Argumemnts: Got Movie id");
+                mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+                mFetchData = true;
+
+            }
         }
-        //mMovieId = getActivity().getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
+
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
         mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
 
         mFavoritesToggleButton = (CheckBox) view.findViewById(R.id.favoritesToggleButton);
+
+        //See if this is a favorite movie and set the state of the star button
+        if(mMovie != null) {
+            if (checkIfFavorite())
+                mFavoritesToggleButton.setChecked(true);
+            else
+                mFavoritesToggleButton.setChecked(false);
+        }
+
         mFavoritesToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -135,10 +159,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-        if (checkIfFavorite())
-            mFavoritesToggleButton.setChecked(true);
-        else
-            mFavoritesToggleButton.setChecked(false);
+
 
         //Set textviews with Movie details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
@@ -172,10 +193,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 Video video = mVideoListAdapter.getItem(position);
 
-                Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
-                        .appendPath(MovieDbAPI.PATH_WATCH)
-                        .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
-                        .build();
+                Uri youtubeUri = buildYoutubeUri(video);
 
                 Log.e(TAG, "Youtube path: " + youtubeUri.toString());
 
@@ -187,28 +205,90 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         mVideoLayout = (LinearLayout) view.findViewById(R.id.videosLayout);
 
-        if (mListView != null) {
-            if(Util.isNetworkAvailable(getActivity())) {
-                new FetchMovieTask().execute(mMovieId);
+        //If we just got the movie id, we need to go and fetch the data
+        if(mFetchData) {
+            if (mListView != null) {
+                if (Util.isNetworkAvailable(getActivity())) {
+                    new FetchMovieTask().execute(mMovieId);
+                } else {
+                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                    connectToast.show();
+                }
             }
-            else {
-                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                connectToast.show();
-            }
+        }
+        else {
+            //Got the entire Movie object passed to fragment. Just set the layout.
+            setLayout();
         }
 
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
+        //Dont' display the share menu option if there are no videos to share
+        if(mMovie.getVideos() != null) {
+            if (mMovie.getVideos().size() > 0) {
+                inflater.inflate(R.menu.menu_movie_detail, menu);
+
+                //Retrieve teh share menu item
+                MenuItem menuItem = menu.findItem(R.id.action_share);
+
+                //Get the provider and hold onto it to set/change the share intent.
+                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
+                        .getActionProvider(menuItem);
+
+                //Attach and intent to this ShareActionProvider
+                if (shareActionProvider != null) {
+                    shareActionProvider.setShareIntent(createShareVideoIntent());
+                } else {
+                    Log.e(TAG, "Share Action Provider is null!");
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param video
+     * @return
+     */
+    private Uri buildYoutubeUri(Video video) {
+
+        Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
+                .appendPath(MovieDbAPI.PATH_WATCH)
+                .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
+                .build();
+        Log.e(TAG,"Shareing video " + youtubeUri.toString());
+        return youtubeUri;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private Intent createShareVideoIntent() {
+
+        Video video = mMovie.getVideos().get(0);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        String subject = video.getType() + " " + getString(R.string.share_subject) +
+                " " + mMovie.getTitle();
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, (buildYoutubeUri(video)).toString());
+
+        return shareIntent;
+    }
     /**
      * Add this Movie to the Favorites DB
      */
     private void addMovieToFavoritesDb() {
 
-        ContentValues movieValues = new ContentValues();
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovieId);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, mMovie.getPosterPath());
+        ContentValues movieValues = mMovie.getContentValues();
 
         //Insert Movie data to the content provider
         Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
@@ -220,9 +300,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
     private void removeMovieFromDb() {
 
         //Put togeter SQL selection
-        String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
+        String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[1];
-        selectionArgs[0] = String.valueOf(mMovieId);
+        selectionArgs[0] = String.valueOf(mMovie.getId());
 
         //Remove movie data from the content provider
         int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
@@ -238,13 +318,13 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Get projection with Movie ID
         String[] projection =
                 {
-                        MovieContract.MovieEntry.COLUMN_MOVIE_ID
+                        MovieContract.MovieEntry.COLUMN_ID
                 };
 
         //Put together SQL selection
-        String selection = MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?";
+        String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[1];
-        selectionArgs[0] = String.valueOf(mMovieId);
+        selectionArgs[0] = String.valueOf(mMovie.getId());
 
         //Return cursor to the row that contains the movie
         Cursor cursor = getActivity().getContentResolver().query(
@@ -293,6 +373,56 @@ public class MovieDetailFragment extends Fragment implements Constants {
         Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 
+    private void setLayout() {
+
+        if (getActivity() != null && mListView != null) {
+            if (mMovie != null) {
+
+                //Got the data, can create share menu if there are videos
+                setHasOptionsMenu(true);
+                //Set title of Movie on Action Bar
+                getActivity().setTitle(mMovie.getTitle());
+
+                Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
+                Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
+
+                mTitleTextView.setText(mMovie.getTitle());
+                mReleaseYearTextView.setText(mMovie.getReleaseYear());
+                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
+                mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
+
+                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
+                        mMovie.getDirectorString());
+                mDirectorTextView.setText(director);
+
+                Util.setCastLinks(getActivity(), mMovie, mCastTextView, TYPE_MOVIE);
+
+                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
+                        Util.reverseDateString(mMovie.getReleaseDate()));
+                mReleaseDateTextView.setText(releaseDate);
+
+                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
+                        mMovie.getOverview());
+                mOverviewTextView.setText(synopsis);
+
+                Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
+                        mMovie.getGenreString());
+
+                mGenreTextView.setText(genre);
+
+                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
+                        mMovie.getRevenue());
+                mRevenueTextView.setText(revenue);
+
+                if (mMovie.getVideos().size() > 0) {
+                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
+                    mListView.setAdapter(mVideoListAdapter);
+                    setListViewSize(mListView);
+                } else
+                    mVideoLayout.setVisibility(View.GONE);
+            }
+        }
+    }
     /*********************************************************************/
     /*                         Inner Classes                             */
 
@@ -314,7 +444,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
             //Get ID of movie
             int movieId = params[0];
-
+             Log.e(TAG,"Fetch Movie TAsk doInBackground with movie id " + movieId);
             //Query and build Movie Object
             return MovieDbAPI.getMovie(movieId);
         }
@@ -325,51 +455,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
             //Done processing the movie query, kill Progress Dialog on main UI
             progressDialog.dismiss();
 
-            if (getActivity() != null && mListView != null) {
-                if (movie != null) {
-                    mMovie = movie;
-                    //Set title of Movie on Action Bar
-                    getActivity().setTitle(mMovie.getTitle());
+            mMovie = movie;
+            setLayout();
 
-                    Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
-                    Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
-                    mTitleTextView.setText(mMovie.getTitle());
-                    mReleaseYearTextView.setText(mMovie.getReleaseYear());
-                    mRuntimeTextView.setText(mMovie.getRuntime() + " min");
-                    mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
-
-                    Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
-                            mMovie.getDirectorString());
-                    mDirectorTextView.setText(director);
-
-                    Util.setCastLinks(getActivity(), mMovie, mCastTextView, TYPE_MOVIE);
-
-                    Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-                            Util.reverseDateString(mMovie.getReleaseDate()));
-                    mReleaseDateTextView.setText(releaseDate);
-
-                    Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
-                            mMovie.getOverview());
-                    mOverviewTextView.setText(synopsis);
-
-                    Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
-                            mMovie.getGenreString());
-
-                    mGenreTextView.setText(genre);
-
-                    Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
-                            mMovie.getRevenue());
-                    mRevenueTextView.setText(revenue);
-
-                    if (movie.getVideoList().size() > 0) {
-                        mVideoListAdapter = new VideosListAdapter(getActivity(), movie.getVideoList());
-                        mListView.setAdapter(mVideoListAdapter);
-                        setListViewSize(mListView);
-                    } else
-                        mVideoLayout.setVisibility(View.GONE);
-                }
-            }
         }
     }
 }

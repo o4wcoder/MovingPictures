@@ -16,7 +16,7 @@ import com.android.fourthwardcoder.popularmovies.data.MovieContract.MovieEntry;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -27,18 +27,35 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        /*
+         * Create Movie's Table
+         */
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
 
                 MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the movie entry associated with this movie data
-                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
-                MovieEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_ID + " INTEGER NOT NULL, " +
+                MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
+                MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
+                MovieEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
+                MovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
+                MovieEntry.COLUMN_RUNTIME + " TEXT, " +
+                MovieEntry.COLUMN_RATING + " REAL, " +
+                MovieEntry.COLUMN_REVENUE + " TEXT, " +
+                MovieEntry.COLUMN_GENRE_JSON + " TEXT, " +
+                MovieEntry.COLUMN_DIRECTOR_JSON + " TEXT, " +
+                MovieEntry.COLUMN_ACTOR_JSON + " TEXT, " +
+                MovieEntry.COLUMN_VIDEO_JSON + " TEXT, " +
 
-                " UNIQUE (" + MovieEntry.COLUMN_MOVIE_ID + ", " +
-                MovieEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
+
+                " UNIQUE (" + MovieEntry.COLUMN_ID + ", " +
+                MovieEntry.COLUMN_ID + ") ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
+
+
     }
 
     @Override

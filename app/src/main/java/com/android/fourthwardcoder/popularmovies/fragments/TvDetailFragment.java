@@ -206,7 +206,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                         mTvShow.getNetworksString());
                 mNetworksTextView.setText(networks);
 
-                mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideoList());
+                mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideos());
                 mListView.setAdapter(mVideoListAdapter);
             }
         }

@@ -1,6 +1,5 @@
 package com.android.fourthwardcoder.popularmovies.helpers;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -21,8 +19,8 @@ import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.activities.CastListActivity;
 import com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
+import com.android.fourthwardcoder.popularmovies.models.IdNamePair;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
-import com.android.fourthwardcoder.popularmovies.models.TvShow;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -129,10 +127,10 @@ public class Util implements Constants {
         final Context context = passContext;
 
         //If there are no cast members, don't show anything in the textview
-        if(movie.getActorIds() != null) {
+        if(movie.getActors() != null) {
             //If there are more than 3 actors, add the "More" link to get the rest of the cast
             Spanned cast;
-            if (movie.getActorIds().size() > 3) {
+            if (movie.getActors().size() > 3) {
                 cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
                         movie.getActorsString() + ", " + context.getString(R.string.more));
             } else {
@@ -146,14 +144,14 @@ public class Util implements Constants {
             //Only going to display 3 actors. If there are less than 3 actors in the movie/tv
             //show get the number in the list.
             int numOfActors = 3;
-            if (movie.getActorIds().size() < 3)
-                numOfActors = movie.getActorIds().size();
+            if (movie.getActors().size() < 3)
+                numOfActors = movie.getActors().size();
 
             int spanStart = 6;
             for (int i = 0; i < numOfActors; i++) {
-                ClickableSpan span = createClickablSpan(context, movie.getActorIds().get(i));
+                ClickableSpan span = createClickablSpan(context, movie.getActors().get(i).getId());
 
-                int spanEnd = spanStart + movie.getActorNames().get(i).length();
+                int spanEnd = spanStart + movie.getActors().get(i).getName().length();
 
                 castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 spanStart = spanEnd + 2;
@@ -174,7 +172,7 @@ public class Util implements Constants {
                 }
             };
 
-            if (movie.getActorIds().size() > 3) {
+            if (movie.getActors().size() > 3) {
                 int span4End = spanStart + context.getString(R.string.more).length();
                 castSS.setSpan(spanMore, spanStart, span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -195,6 +193,25 @@ public class Util implements Constants {
         //Set up display string of list
         for(int i = 0; i< list.size(); i++) {
             str += list.get(i) + ", ";
+        }
+
+        if(list.size() > 0)
+            str = str.substring(0,str.length() - 2);
+
+        return str;
+    }
+
+    /**
+     * Take and ArrayList of IdNamePair and combine them separated by a comma
+     * @param list ArrayList of strings
+     * @return     comma separated list of strings
+     */
+    public static String buildPersonListString(ArrayList<IdNamePair> list) {
+
+        String str = "";
+        //Set up display string of list
+        for(int i = 0; i< list.size(); i++) {
+            str += list.get(i).getName() + ", ";
         }
 
         if(list.size() > 0)

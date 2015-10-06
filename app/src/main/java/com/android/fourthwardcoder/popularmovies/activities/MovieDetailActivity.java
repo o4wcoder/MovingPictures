@@ -12,6 +12,7 @@ import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
+import com.android.fourthwardcoder.popularmovies.models.Movie;
 
 import java.util.Stack;
 
@@ -45,17 +46,26 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 
-        Bundle arguments = new Bundle();
-        int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID, 0);
-        arguments.putInt(EXTRA_MOVIE_ID, movieId);
+        if(savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
+                Log.e(TAG,"Got Movie Object in detail activity");
+                Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+                arguments.putParcelable(EXTRA_MOVIE, movie);
+            }
+            else {
+                //Must have just the id of the movie
+                int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
+                arguments.putInt(EXTRA_MOVIE_ID,movieId);
+                Log.e(TAG,"----- Got ID in detail activity. Will need to query movie details");
+            }
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            fragment.setArguments(arguments);
 
-        MovieDetailFragment fragment = new MovieDetailFragment();
-        fragment.setArguments(arguments);
-
-        Log.e(TAG, "onCreate got movie ID " + movieId);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.movie_detail_container, fragment)
-                .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, fragment)
+                    .commit();
+        }
 
     }
 

@@ -12,6 +12,7 @@ public interface Constants {
     //Extras for intents
     String EXTRA_MOVIE = "com.android.fourthwardcoder.popularmovies.extra_movie";
     String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
+    String EXTRA_MOVIE_LIST = "com.android.fourthwardcoder.popularmovies.extra_movie_list";
     String EXTRA_TITLE = "com.android.fourthwardcoder.popularmovies.extra_title";
     String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";
     String EXTRA_PERSON_NAME = "com.android.fourthwardcoder.popularmovies.extra_person_name";
@@ -20,6 +21,7 @@ public interface Constants {
     String EXTRA_PERSON_PHOTO_ID = "com.android.fourthwardcoder.popularmovies.extra_person_photo_id";
     String EXTRA_TV_ID = "com.android.fourthwardcoder.popularmovies.extra_tv_id";
     String EXTRA_ENT_TYPE = "com.android.fourthwardcoder.popularmovies.extra_ent_type";
+    String EXTRA_VIDEO_URI = "com.android.fourthwardcoder.popularmovies.extra_video_uri";
 
 
     //Names of filmography tabs

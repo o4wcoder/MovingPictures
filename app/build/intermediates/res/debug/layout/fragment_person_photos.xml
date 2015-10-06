@@ -1,0 +1,9 @@
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/personPhotoGridView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:numColumns="3"
+    android:stretchMode="columnWidth">
+</GridView>
+<!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMoviesClean/PopularMovies/app/src/main/res/layout/fragment_person_photos.xml -->
