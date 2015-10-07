@@ -43,7 +43,7 @@ project.properties
 build/
 
 # remove app/build directory
-app/build
+/app/build/
 
 # Don't store private API Keys
 app/src/main/java/com/android/fourthwardcoder/popularmovies/interfaces/APIKeys.java
