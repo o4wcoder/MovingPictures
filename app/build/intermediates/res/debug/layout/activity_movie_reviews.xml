@@ -17,4 +17,4 @@
     android:name="com.android.fourthwardcoder.popularmovies.fragments.ReviewsFragment"
     tools:layout="@layout/fragment_movie_reviews" android:layout_width="match_parent"
     android:layout_height="match_parent" />
-</LinearLayout><!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMoviesClean/PopularMovies/app/src/main/res/layout/activity_movie_reviews.xml -->
+</LinearLayout><!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_movie_reviews.xml -->

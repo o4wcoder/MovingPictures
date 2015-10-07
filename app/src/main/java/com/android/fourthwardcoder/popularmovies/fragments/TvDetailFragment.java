@@ -5,10 +5,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,8 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.R;
-import com.android.fourthwardcoder.popularmovies.activities.PersonFilmographyTabActivity;
-import com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity;
 import com.android.fourthwardcoder.popularmovies.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
@@ -129,6 +132,32 @@ public class TvDetailFragment extends Fragment implements Constants {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
+        //Dont' display the share menu option if there are no videos to share
+        if(mTvShow.getVideos() != null) {
+            if (mTvShow.getVideos().size() > 0) {
+                inflater.inflate(R.menu.menu_share, menu);
+
+                //Retrieve teh share menu item
+                MenuItem menuItem = menu.findItem(R.id.action_share);
+
+                //Get the provider and hold onto it to set/change the share intent.
+                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
+                        .getActionProvider(menuItem);
+
+                //Attach and intent to this ShareActionProvider
+                if (shareActionProvider != null) {
+                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(),mTvShow));
+                } else {
+                    Log.e(TAG, "Share Action Provider is null!");
+                }
+            }
+        }
+    }
+
     /**
      * Set a history string of a tv show from release till end data. Format will
      * be like (2000 - 2009)
@@ -171,6 +200,8 @@ public class TvDetailFragment extends Fragment implements Constants {
 
 
                 mTvShow = tvShow;
+                //Set share menu if there are videos
+                setHasOptionsMenu(true);
                 //Set title of Movie on Action Bar
                 String historyDate = getDateHistory(tvShow);
                 getActivity().setTitle(tvShow.getTitle() + " " + historyDate);

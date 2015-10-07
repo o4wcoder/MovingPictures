@@ -16,4 +16,4 @@
     android:name="com.android.fourthwardcoder.popularmovies.fragments.PersonSinglePhotoFragment"
     tools:layout="@layout/fragment_person_single_photo" android:layout_width="match_parent"
     android:layout_height="match_parent" />
-</LinearLayout><!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMoviesClean/PopularMovies/app/src/main/res/layout/activity_person_single_photo.xml -->
+</LinearLayout><!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/layout/activity_person_single_photo.xml -->

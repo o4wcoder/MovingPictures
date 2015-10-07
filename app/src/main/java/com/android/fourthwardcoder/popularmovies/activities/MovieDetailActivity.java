@@ -49,7 +49,7 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         if(savedInstanceState == null) {
             Bundle arguments = new Bundle();
             if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
-                Log.e(TAG,"Got Movie Object in detail activity");
+                //Get Movie object from Main Activity
                 Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
                 arguments.putParcelable(EXTRA_MOVIE, movie);
             }
@@ -57,7 +57,6 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
                 //Must have just the id of the movie
                 int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
                 arguments.putInt(EXTRA_MOVIE_ID,movieId);
-                Log.e(TAG,"----- Got ID in detail activity. Will need to query movie details");
             }
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);

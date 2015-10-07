@@ -36,7 +36,8 @@
     <string name="filmography_tab_movies">Movies</string>
     <string name="filmography_tab_tv">Televistion</string>
 
-    <string name="share_subject">from Movie</string>
+    <string name="share_movie_subject">from Movie</string>
+    <string name="share_tvshow_subject">from TV Show</string>
 
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>

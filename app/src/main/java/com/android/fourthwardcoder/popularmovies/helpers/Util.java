@@ -21,6 +21,8 @@ import com.android.fourthwardcoder.popularmovies.activities.PersonDetailActivity
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.IdNamePair;
 import com.android.fourthwardcoder.popularmovies.models.Movie;
+import com.android.fourthwardcoder.popularmovies.models.TvShow;
+import com.android.fourthwardcoder.popularmovies.models.Video;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -225,5 +227,28 @@ public class Util implements Constants {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    /**
+     * Create SharedIntent to share a video from movie
+     * @return
+     */
+    public static Intent createShareVideoIntent(Activity activity, Movie movie) {
+
+        Video video = movie.getVideos().get(0);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+
+        String strSubject = activity.getString(R.string.share_movie_subject);
+        if(movie instanceof TvShow)
+            strSubject = activity.getString(R.string.share_tvshow_subject);
+
+        String subject = video.getType() + " " + strSubject +
+                " " + movie.getTitle();
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, (MovieDbAPI.buildYoutubeUri(video)).toString());
+
+        return shareIntent;
     }
 }

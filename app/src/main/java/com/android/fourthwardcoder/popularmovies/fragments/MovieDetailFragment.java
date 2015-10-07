@@ -4,15 +4,12 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -108,12 +105,12 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Get Movie passed from Main Activity
         Bundle arguments = getArguments();
         if (arguments != null) {
-            Log.e(TAG, "Getting movie in bundle");
+
             if (arguments.containsKey(EXTRA_MOVIE)) {
-                Log.e(TAG,"Arguments: Got Movie Object");
+                //Got Movie Object from Main Activity
                 mMovie = arguments.getParcelable(EXTRA_MOVIE);
             } else {
-                Log.e(TAG,"Argumemnts: Got Movie id");
+                //Got Movie ID, will need to fetch data
                 mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
                 mFetchData = true;
 
@@ -191,12 +188,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                //Get youtube url from video and send it to view intent
                 Video video = mVideoListAdapter.getItem(position);
-
-                Uri youtubeUri = buildYoutubeUri(video);
-
-                Log.e(TAG, "Youtube path: " + youtubeUri.toString());
-
+                Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
                 Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
 
                 startActivity(i);
@@ -232,7 +226,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Dont' display the share menu option if there are no videos to share
         if(mMovie.getVideos() != null) {
             if (mMovie.getVideos().size() > 0) {
-                inflater.inflate(R.menu.menu_movie_detail, menu);
+                inflater.inflate(R.menu.menu_share, menu);
 
                 //Retrieve teh share menu item
                 MenuItem menuItem = menu.findItem(R.id.action_share);
@@ -243,7 +237,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 //Attach and intent to this ShareActionProvider
                 if (shareActionProvider != null) {
-                    shareActionProvider.setShareIntent(createShareVideoIntent());
+                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(), mMovie));
                 } else {
                     Log.e(TAG, "Share Action Provider is null!");
                 }
@@ -251,38 +245,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         }
     }
 
-    /**
-     *
-     * @param video
-     * @return
-     */
-    private Uri buildYoutubeUri(Video video) {
 
-        Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
-                .appendPath(MovieDbAPI.PATH_WATCH)
-                .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
-                .build();
-        Log.e(TAG,"Shareing video " + youtubeUri.toString());
-        return youtubeUri;
-    }
 
-    /**
-     *
-     * @return
-     */
-    private Intent createShareVideoIntent() {
 
-        Video video = mMovie.getVideos().get(0);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        shareIntent.setType("text/plain");
-        String subject = video.getType() + " " + getString(R.string.share_subject) +
-                " " + mMovie.getTitle();
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, (buildYoutubeUri(video)).toString());
-
-        return shareIntent;
-    }
     /**
      * Add this Movie to the Favorites DB
      */
@@ -373,6 +338,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
         Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 
+    /**
+     * Set the layout of the Fragment
+     */
     private void setLayout() {
 
         if (getActivity() != null && mListView != null) {
@@ -425,7 +393,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
     }
     /*********************************************************************/
     /*                         Inner Classes                             */
-
     /*********************************************************************/
     private class FetchMovieTask extends AsyncTask<Integer, Void, Movie> {
 

@@ -2317,7 +2317,7 @@ containing a value of this type.
     public static final class menu {
         public static final int menu_actor_detail=0x7f0f0000;
         public static final int menu_main=0x7f0f0001;
-        public static final int menu_movie_detail=0x7f0f0002;
+        public static final int menu_share=0x7f0f0002;
         public static final int menu_sort=0x7f0f0003;
         public static final int menu_tv_detail=0x7f0f0004;
     }
@@ -2391,24 +2391,25 @@ containing a value of this type.
         public static final int removed=0x7f07003f;
         public static final int revenue=0x7f070040;
         public static final int secondary_text_alpha_dark=0x7f070041;
-        public static final int share_subject=0x7f070042;
-        public static final int sort_popularity=0x7f070043;
-        public static final int sort_release_date=0x7f070044;
-        public static final int sort_revenue=0x7f070045;
-        public static final int status_bar_notification_info_overflow=0x7f070046;
-        public static final int synopsis=0x7f070047;
-        public static final int title_activity_actor_detail=0x7f070048;
-        public static final int title_activity_filmography=0x7f070049;
-        public static final int title_activity_movie_cast=0x7f07004a;
-        public static final int title_activity_movie_detail=0x7f07004b;
-        public static final int title_activity_movie_reviews=0x7f07004c;
-        public static final int title_activity_person_photos=0x7f07004d;
-        public static final int title_activity_person_single_photo=0x7f07004e;
-        public static final int title_activity_settings=0x7f07004f;
-        public static final int title_activity_tv_detail=0x7f070050;
-        public static final int to_favorites=0x7f070051;
-        public static final int toast_network_error=0x7f070052;
-        public static final int user_reviews=0x7f070053;
+        public static final int share_movie_subject=0x7f070042;
+        public static final int share_tvshow_subject=0x7f070043;
+        public static final int sort_popularity=0x7f070044;
+        public static final int sort_release_date=0x7f070045;
+        public static final int sort_revenue=0x7f070046;
+        public static final int status_bar_notification_info_overflow=0x7f070047;
+        public static final int synopsis=0x7f070048;
+        public static final int title_activity_actor_detail=0x7f070049;
+        public static final int title_activity_filmography=0x7f07004a;
+        public static final int title_activity_movie_cast=0x7f07004b;
+        public static final int title_activity_movie_detail=0x7f07004c;
+        public static final int title_activity_movie_reviews=0x7f07004d;
+        public static final int title_activity_person_photos=0x7f07004e;
+        public static final int title_activity_person_single_photo=0x7f07004f;
+        public static final int title_activity_settings=0x7f070050;
+        public static final int title_activity_tv_detail=0x7f070051;
+        public static final int to_favorites=0x7f070052;
+        public static final int toast_network_error=0x7f070053;
+        public static final int user_reviews=0x7f070054;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f090074;

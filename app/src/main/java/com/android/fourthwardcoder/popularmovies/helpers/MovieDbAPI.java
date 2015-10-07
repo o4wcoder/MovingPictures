@@ -342,13 +342,13 @@ public class MovieDbAPI implements Constants {
      */
     public static ArrayList<Credit> getPersonCreditList(int personId,int creditType) {
 
-        Uri creditUri = buildPersonCreditsUri(personId,creditType);
+        Uri creditUri = buildPersonCreditsUri(personId, creditType);
         String creditJsonStr = queryMovieDatabase(creditUri);
 
         if(creditJsonStr == null)
             return null;
         else
-            return parseJsonPersonCreditList(creditJsonStr,creditType);
+            return parseJsonPersonCreditList(creditJsonStr, creditType);
     }
 
     /**
@@ -385,6 +385,20 @@ public class MovieDbAPI implements Constants {
 
     }
 
+    /**
+     * Build Youtube URI for SharedPreferences
+     * @param video
+     * @return
+     */
+    public static Uri buildYoutubeUri(Video video) {
+
+        Uri youtubeUri = Uri.parse(BASE_YOUTUBE_URL).buildUpon()
+                .appendPath(PATH_WATCH)
+                .appendQueryParameter(PARAM_V, video.getKey())
+                .build();
+
+        return youtubeUri;
+    }
     /*************************************************************************/
     /*                         Private Methods                               */
     /*************************************************************************/

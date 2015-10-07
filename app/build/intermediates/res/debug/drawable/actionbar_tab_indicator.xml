@@ -37,4 +37,4 @@
         android:state_pressed="true"
         android:drawable="@drawable/tab_selected_pressed" />
 </selector>
-<!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMoviesClean/PopularMovies/app/src/main/res/drawable/actionbar_tab_indicator.xml -->
+<!-- From: file:/C:/Users/Chris%20Hare/AndroidStudioProjects/PopularMovies/app/src/main/res/drawable/actionbar_tab_indicator.xml -->
