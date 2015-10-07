@@ -222,6 +222,11 @@ public class Util implements Constants {
         return str;
     }
 
+    /**
+     * Detect is there is a network connection
+     * @param context Context testing connectivity
+     * @return        Return status of network connectivity
+     */
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
