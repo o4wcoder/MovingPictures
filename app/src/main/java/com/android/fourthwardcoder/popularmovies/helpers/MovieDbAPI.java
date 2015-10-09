@@ -160,14 +160,18 @@ public class MovieDbAPI implements Constants {
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
+
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
             }
+
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
+
+
             while ((line = reader.readLine()) != null) {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
@@ -179,10 +183,12 @@ public class MovieDbAPI implements Constants {
                 // Stream was empty.  No point in parsing.
                 return null;
             }
+
             moviesJsonStr = buffer.toString();
-            ;
+
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG,"queryMovieDB() Exeception: " + e.toString());
+            e.printStackTrace();
             return null;
         } finally {
             if (urlConnection != null) {

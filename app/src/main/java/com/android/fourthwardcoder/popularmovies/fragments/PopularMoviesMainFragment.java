@@ -75,6 +75,8 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
     ArrayList<Movie> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
+    //ProgressDialog to be displayed while the data is being fetched and parsed
+    ProgressDialog mProgressDialog;
 
     /**************************************************/
     /*               Override Methods                 */
@@ -154,6 +156,16 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             }
         }
         return view;
+    }
+
+    @Override
+         public void onPause() {
+        super.onPause();
+        //Done processing the movie query, kill Progress Dialog on main UI
+        if(mProgressDialog != null){
+            if(mProgressDialog.isShowing())
+                mProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -324,14 +336,12 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
      */
     private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<Movie>> {
 
-        //ProgressDialog to be displayed while the data is being fetched and parsed
-        private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
 
             //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
+            mProgressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
         }
 
         @Override
@@ -341,52 +351,56 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
             //We only pass one param for the sort order, so get the first one.
             int sortPos = params[0];
 
-            //Get the sord order parameter from the sort order type
-            Resources res = getResources();
-            String[] sortList = res.getStringArray(R.array.sort_url_list);
-            String sortOrder = sortList[sortPos];
+            //Get the sort order parameter from the sort order type
+            if(getActivity() != null) {
+                Resources res = getResources();
+                String[] sortList = res.getStringArray(R.array.sort_url_list);
+                String sortOrder = sortList[sortPos];
 
-            switch (sortPos) {
+                switch (sortPos) {
 
-                //Sort by Popularity
-                case 0:
-                    //Build URI String to query the database for a list of popular movies
-                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(MovieDbAPI.PATH_MOVIE)
-                            .appendPath(MovieDbAPI.PATH_POPULAR)
-                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                            .build();
-                    break;
-                //Sort by Upcoming
-                case 1:
-                    //Build URI String to query the database for a list of upcoming movies
-                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(MovieDbAPI.PATH_MOVIE)
-                            .appendPath(MovieDbAPI.PATH_UPCOMING)
-                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                            .build();
-                    break;
-                //Sort by Now Playing
-                case 2:
-                    //Build URI String to query the database for a list of now playing movies
-                    movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                            .appendPath(MovieDbAPI.PATH_MOVIE)
-                            .appendPath(MovieDbAPI.PATH_NOW_PLAYING)
-                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                            .build();
-                    break;
-                //Sort by All Time Top Grossing
-                case 3:
-                    //Build URI String to query the database for the list of top grossing movies
-                    movieUri = Uri.parse(MovieDbAPI.BASE_DISCOVER_URL).buildUpon()
-                            .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                            .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                            .build();
-                    break;
+                    //Sort by Popularity
+                    case 0:
+                        //Build URI String to query the database for a list of popular movies
+                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                                .appendPath(MovieDbAPI.PATH_MOVIE)
+                                .appendPath(MovieDbAPI.PATH_POPULAR)
+                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+                                .build();
+                        break;
+                    //Sort by Upcoming
+                    case 1:
+                        //Build URI String to query the database for a list of upcoming movies
+                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                                .appendPath(MovieDbAPI.PATH_MOVIE)
+                                .appendPath(MovieDbAPI.PATH_UPCOMING)
+                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+                                .build();
+                        break;
+                    //Sort by Now Playing
+                    case 2:
+                        //Build URI String to query the database for a list of now playing movies
+                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+                                .appendPath(MovieDbAPI.PATH_MOVIE)
+                                .appendPath(MovieDbAPI.PATH_NOW_PLAYING)
+                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+                                .build();
+                        break;
+                    //Sort by All Time Top Grossing
+                    case 3:
+                        //Build URI String to query the database for the list of top grossing movies
+                        movieUri = Uri.parse(MovieDbAPI.BASE_DISCOVER_URL).buildUpon()
+                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
+                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+                                .build();
+                        break;
+                }
             }
+            else
+               Log.e(TAG,"!!!Activity is null! Can't get sort type!!!");
 
             return MovieDbAPI.getMovieList(getActivity(), movieUri);
         }
@@ -395,7 +409,10 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         protected void onPostExecute(ArrayList<Movie> movieList) {
 
             //Done processing the movie query, kill Progress Dialog on main UI
-            progressDialog.dismiss();
+            if(mProgressDialog != null){
+                if(mProgressDialog.isShowing())
+                   mProgressDialog.dismiss();
+            }
 
             if ((getActivity() != null) && (movieList != null))
                 setMovieAdapter(movieList);
