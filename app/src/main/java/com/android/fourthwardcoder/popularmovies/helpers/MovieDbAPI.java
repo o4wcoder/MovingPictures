@@ -158,6 +158,7 @@ public class MovieDbAPI implements Constants {
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
+
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
 
@@ -187,8 +188,7 @@ public class MovieDbAPI implements Constants {
             moviesJsonStr = buffer.toString();
 
         } catch (IOException e) {
-            Log.e(TAG,"queryMovieDB() Exeception: " + e.toString());
-            Log.e(TAG,"Error stream " + urlConnection.getErrorStream());
+            Log.e(TAG,"queryMovieDB() Exception: " + e.toString());
             e.printStackTrace();
             return null;
         } finally {
