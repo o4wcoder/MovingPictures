@@ -188,6 +188,7 @@ public class MovieDbAPI implements Constants {
 
         } catch (IOException e) {
             Log.e(TAG,"queryMovieDB() Exeception: " + e.toString());
+            Log.e(TAG,"Error stream " + urlConnection.getErrorStream());
             e.printStackTrace();
             return null;
         } finally {
