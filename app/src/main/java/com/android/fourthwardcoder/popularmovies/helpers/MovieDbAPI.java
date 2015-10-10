@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 //import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
+import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
 import com.android.fourthwardcoder.popularmovies.models.Credit;
 import com.android.fourthwardcoder.popularmovies.models.IdNamePair;
@@ -49,7 +50,7 @@ public class MovieDbAPI implements Constants {
     public static final String NUM_QUERY_PAGES = "3";
 
     //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
-    public static final String API_KEY_MOVIE_DB = "e80f27e43348054952d67e7d0353ac38";
+    public static final String API_KEY_MOVIE_DB = APIKeys.MOVIE_DB_API_KEY;
     //Base URLs
     public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES;
     //Full URLs for the movie DB
@@ -171,7 +172,6 @@ public class MovieDbAPI implements Constants {
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
-
 
             while ((line = reader.readLine()) != null) {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
