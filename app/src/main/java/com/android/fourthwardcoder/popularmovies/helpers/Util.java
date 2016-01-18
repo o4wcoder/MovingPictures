@@ -166,10 +166,10 @@ public class Util implements Constants {
                     Intent i = new Intent(context, CastListActivity.class);
                     i.putExtra(EXTRA_MOVIE_ID, movie.getId());
                     i.putExtra(EXTRA_TITLE, movie.getTitle());
-                    if (entType == TYPE_MOVIE)
-                        i.putExtra(EXTRA_ENT_TYPE, TYPE_MOVIE);
+                    if (entType == ENT_TYPE_MOVIE)
+                        i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
                     else
-                        i.putExtra(EXTRA_ENT_TYPE, TYPE_TV);
+                        i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);
                     context.startActivity(i);
                 }
             };

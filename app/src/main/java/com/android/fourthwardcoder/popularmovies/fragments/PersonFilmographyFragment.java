@@ -88,7 +88,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
                 Credit credit = (Credit) mAdapter.getItem(position);
                 Intent i;
-                if (mEntType == TYPE_MOVIE) {
+                if (mEntType == ENT_TYPE_MOVIE) {
                     i = new Intent(getActivity(), MovieDetailActivity.class);
                     i.putExtra(EXTRA_MOVIE_ID, credit.getId());
                 } else {

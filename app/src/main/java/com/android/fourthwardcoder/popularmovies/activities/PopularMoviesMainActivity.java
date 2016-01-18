@@ -40,10 +40,8 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Set Toolbar
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
+
+
 
         Util.setStatusBarColor(this);
 

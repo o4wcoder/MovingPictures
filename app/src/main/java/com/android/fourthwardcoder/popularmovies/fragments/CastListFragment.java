@@ -91,7 +91,7 @@ public class CastListFragment extends Fragment implements Constants {
             int id = params[0];
             int entType = params[1];
 
-            if (entType == TYPE_MOVIE)
+            if (entType == ENT_TYPE_MOVIE)
                 return MovieDbAPI.getMovieCastList(id);
             else
                 return MovieDbAPI.getTvCastList(id);

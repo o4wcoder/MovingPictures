@@ -176,7 +176,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), ReviewsActivity.class);
                 i.putExtra(EXTRA_MOVIE_ID, mMovie.getId());
-                i.putExtra(EXTRA_ENT_TYPE, TYPE_MOVIE);
+                i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
                 startActivity(i);
             }
         });
@@ -354,16 +354,19 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
                 Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
+                mFavoritesToggleButton.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
                 mTitleTextView.setText(mMovie.getTitle());
                 mReleaseYearTextView.setText(mMovie.getReleaseYear());
+
                 mRuntimeTextView.setText(mMovie.getRuntime() + " min");
                 mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
+                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating,mMovie.getRating(),"10"));
 
                 Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
                         mMovie.getDirectorString());
                 mDirectorTextView.setText(director);
 
-                Util.setCastLinks(getActivity(), mMovie, mCastTextView, TYPE_MOVIE);
+                Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 
                 Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
                         Util.reverseDateString(mMovie.getReleaseDate()));

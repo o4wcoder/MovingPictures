@@ -457,7 +457,7 @@ public class MovieDbAPI implements Constants {
     private static Uri buildReviewsUri(int id, int entType) {
 
         String entTypePath = "";
-        if(entType == TYPE_MOVIE)
+        if(entType == ENT_TYPE_MOVIE)
             entTypePath = PATH_MOVIE;
         else
             entTypePath = PATH_TV;
@@ -480,7 +480,7 @@ public class MovieDbAPI implements Constants {
     private static Uri buildVideoUri(int id, int entType) {
 
         String entTypePath = "";
-        if(entType == TYPE_MOVIE)
+        if(entType == ENT_TYPE_MOVIE)
             entTypePath = PATH_MOVIE;
         else
             entTypePath = PATH_TV;
@@ -557,7 +557,7 @@ public class MovieDbAPI implements Constants {
     private static Uri buildPersonCreditsUri(int personId,int entType) {
 
         String entTypePath = "";
-        if(entType == TYPE_MOVIE)
+        if(entType == ENT_TYPE_MOVIE)
             entTypePath = PATH_MOVIE_CREDIT;
         else
             entTypePath = PATH_TV_CREDIT;
@@ -677,7 +677,7 @@ public class MovieDbAPI implements Constants {
                 //Different release and title tags between movies and tv filmography
                 String releaseTag = TAG_RELEASE_DATE;
                 String titleTag = TAG_TITLE;
-                if(entType == TYPE_TV) {
+                if(entType == ENT_TYPE_TV) {
                     releaseTag = TAG_FIRST_AIR_DATE;
                     titleTag = TAG_NAME;
                 }
@@ -787,7 +787,7 @@ public class MovieDbAPI implements Constants {
                     }
 
                     //Get Videos
-                    movie.setVideos(getVideoList(movie.getId(), TYPE_MOVIE));
+                    movie.setVideos(getVideoList(movie.getId(), ENT_TYPE_MOVIE));
 
                 }
             }
@@ -867,7 +867,7 @@ public class MovieDbAPI implements Constants {
                 }
 
                 //Get Videos
-                tvShow.setVideos(getVideoList(tvShow.getId(), TYPE_TV));
+                tvShow.setVideos(getVideoList(tvShow.getId(), ENT_TYPE_TV));
             }
         }
         catch (JSONException e) {

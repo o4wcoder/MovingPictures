@@ -64,6 +64,8 @@ public class MovieImageAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
         //Log.e(TAG, "Setting movie position " + position + " name: " + movie.getTitle());
 
+        //Set Accesability Info
+        holder.imageView.setContentDescription(movie.getTitle());
         //Call Picasso to load it into the imageView
         Picasso.with(mContext).load(movie.getPosterPath()).into(holder.imageView);
 

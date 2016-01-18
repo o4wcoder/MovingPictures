@@ -1,5 +1,10 @@
 package com.android.fourthwardcoder.popularmovies.interfaces;
 
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Interface Constants
  * Author: Chris Hare
@@ -24,9 +29,12 @@ public interface Constants {
     String EXTRA_VIDEO_URI = "com.android.fourthwardcoder.popularmovies.extra_video_uri";
 
 
-    //Names of filmography tabs
-    int TYPE_MOVIE = 0;
-    int TYPE_TV = 1;
+    //Entertainment type Annotations
+    @Retention(RetentionPolicy.SOURCE)
+            @IntDef({ENT_TYPE_MOVIE,ENT_TYPE_TV})
+            @interface EntertainmentType {}
+    int ENT_TYPE_MOVIE = 0;
+    int ENT_TYPE_TV = 1;
 
 
 

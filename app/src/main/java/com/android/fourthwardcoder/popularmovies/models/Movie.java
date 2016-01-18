@@ -234,7 +234,8 @@ public class Movie implements Parcelable {
         movieValues.put(MovieContract.MovieEntry.COLUMN_REVENUE, this.revenue);
 
         //Store Array lists as JSON Strings. No need to create complicated SQL tabels
-        //ass these values will never change once the data has been fetched.
+        //a
+        // s these values will never change once the data has been fetched.
         movieValues.put(MovieContract.MovieEntry.COLUMN_GENRE_JSON,new Gson().toJson(genres));
         movieValues.put(MovieContract.MovieEntry.COLUMN_DIRECTOR_JSON, new Gson().toJson(directors));
         movieValues.put(MovieContract.MovieEntry.COLUMN_ACTOR_JSON, new Gson().toJson(actors));
