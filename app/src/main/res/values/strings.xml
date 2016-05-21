@@ -62,4 +62,7 @@
     <string name="acc_movie_details_favorite_button">Favorites</string>
     <string name="acc_movie_rating">Rating: <xliff:g id="rating">%1$s</xliff:g>out of <xliff:g id="rating">%1$s</xliff:g></string>
 
+    <!-- Transitions -->
+    <string name="trans_movie_poster">trans_movie_poster</string>
+
 </resources>

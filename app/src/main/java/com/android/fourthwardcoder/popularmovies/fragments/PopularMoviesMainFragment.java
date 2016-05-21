@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.R;
@@ -122,7 +123,10 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
                 // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
                 //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
                 //startActivity(i);
-                ((Callback) getActivity()).onItemSelected(movie);
+                Log.e(TAG,"onClick() for movie list. Try and get imageview");
+                ImageView posterImageView = (ImageView)view.findViewById(R.id.movie_imageView);
+                Log.e(TAG,"onClick() got image, callback to activity to start detail activity");
+                ((Callback) getActivity()).onItemSelected(movie,posterImageView);
             }
         });
 
@@ -428,7 +432,7 @@ public class PopularMoviesMainFragment extends Fragment implements LoaderManager
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(Movie movie);
+        void onItemSelected(Movie movie,ImageView imageView);
 
         void onLoadFinished(Movie movie);
     }

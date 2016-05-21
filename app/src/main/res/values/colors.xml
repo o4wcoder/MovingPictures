@@ -3,7 +3,7 @@
 
     <color name="appPrimaryColor">@color/materialRed500Primary</color>
     <color name="appDarkPrimaryColor">@color/materialRed700DarkPrimary</color>
-
+    <color name="appAccentColor">#7C4DFF</color>
     <color name="materialBlue500_linkColor">#2196F3</color>
 
     <!-- Material Primary Colors -->

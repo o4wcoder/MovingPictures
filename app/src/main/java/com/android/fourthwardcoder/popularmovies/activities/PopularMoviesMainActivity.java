@@ -2,11 +2,15 @@ package com.android.fourthwardcoder.popularmovies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.android.fourthwardcoder.popularmovies.R;
 import com.android.fourthwardcoder.popularmovies.fragments.MovieDetailFragment;
@@ -91,7 +95,7 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
 
 
     @Override
-    public void onItemSelected(Movie movie) {
+    public void onItemSelected(Movie movie, ImageView imageView) {
 
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
@@ -110,7 +114,15 @@ public class PopularMoviesMainActivity extends AppCompatActivity implements Popu
         } else {
             Intent i = new Intent(this, MovieDetailActivity.class);
             i.putExtra(EXTRA_MOVIE, movie);
-            startActivity(i);
+
+
+            //Start shared element transition for the movie poster
+            ActivityOptionsCompat activityOptions =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                            new Pair<View, String>(imageView, getString(R.string.trans_movie_poster)));
+
+            startActivity(i,activityOptions.toBundle());
+
         }
     }
 
