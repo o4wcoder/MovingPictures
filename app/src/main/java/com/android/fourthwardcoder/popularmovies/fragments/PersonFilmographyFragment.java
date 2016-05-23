@@ -3,12 +3,16 @@ package com.android.fourthwardcoder.popularmovies.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -95,7 +99,15 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
                     i = new Intent(getActivity(), TvDetailActivity.class);
                     i.putExtra(EXTRA_TV_ID, credit.getId());
                 }
-                startActivity(i);
+
+                ImageView imageView = (ImageView)view.findViewById(R.id.posterImageView);
+                //Start shared element transition for the movie poster
+                ActivityOptionsCompat activityOptions =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                                new Pair<View, String>(imageView, getString(R.string.trans_movie_poster)));
+
+                startActivity(i,activityOptions.toBundle());
+                //startActivity(i);
 
             }
         });

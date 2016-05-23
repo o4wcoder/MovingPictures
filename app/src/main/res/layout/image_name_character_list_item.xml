@@ -13,7 +13,8 @@
             android:id="@+id/posterImageView"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:transitionName="@string/trans_movie_poster"/>
 
         <LinearLayout
             android:orientation="vertical"

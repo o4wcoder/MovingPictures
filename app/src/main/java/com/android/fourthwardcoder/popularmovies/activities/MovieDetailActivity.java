@@ -38,10 +38,10 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         //Change status bar color
-        Util.setStatusBarColor(this);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // Util.setStatusBarColor(this);
+      //  final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Start postpone element transition
         supportPostponeEnterTransition();

@@ -19,12 +19,12 @@
 
     <style name="AppTheme.MovieDetails" parent="@style/AppTheme"></style>
 
+    <!--
     <style name="MyActionBarTabs" parent="@style/Widget.AppCompat.ActionBar.TabView">
         <item name="android:background">@drawable/actionbar_tab_indicator</item>
         <item name="background">@drawable/actionbar_tab_indicator</item>
     </style>
-    <color name="material_teal">#009688</color>
-    <color name="material_text_white">#ffffff</color>
+    -->
 
     <style name="headerTextView">
         <item name="android:gravity">left</item>
@@ -36,9 +36,7 @@
         <item name="android:gravity">left</item>
         <item name="android:padding">2dp</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
-        <!--
-        <item name="android:textColor">@color/link_text_material_light</item>
-        -->
+        <item name="android:textColor">@color/appAccentColor</item>
     </style>
 
     <style name="detailLayoutSection">

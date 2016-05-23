@@ -4,14 +4,21 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.popularmovies.data.MovieContract;
+import com.android.fourthwardcoder.popularmovies.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.popularmovies.helpers.Util;
 import com.android.fourthwardcoder.popularmovies.interfaces.Constants;
@@ -57,7 +65,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
     /*                        Constants                              */
     /*****************************************************************/
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
-
+    private static final int IMAGE_FADE_DURATION = 500;
+    private int mMutedColor = 0xFF333333;
     /*****************************************************************/
     /*                        Local Data                             */
     /*****************************************************************/
@@ -81,6 +90,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mReviewsTextView;
     LinearLayout mVideoLayout;
     CheckBox mFavoritesToggleButton;
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private NestedScrollView mNestedScrollView;
 
     boolean mFetchData = false;
 
@@ -119,10 +130,24 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         }
 
+        //Get CollapsingToolbarLayout
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);
+        //Get NestedScrollView;
+        mNestedScrollView = (NestedScrollView)view.findViewById(R.id.scrollview);
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            mBackdropImageView.setAlpha(0f);
+//            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
+//                @Override
+//                public void onTransitionEnd(Transition transition) {
+//                    mBackdropImageView.animate().setDuration(IMAGE_FADE_DURATION).alpha(1f);
+//                }
+//            });
+//        }
         mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
+
 
         mFavoritesToggleButton = (CheckBox) view.findViewById(R.id.favoritesToggleButton);
 
@@ -349,13 +374,33 @@ public class MovieDetailFragment extends Fragment implements Constants {
             if (mMovie != null) {
 
                 //Got the data, can create share menu if there are videos
-                setHasOptionsMenu(true);
+             //   setHasOptionsMenu(true);
                 //Set title of Movie on Action Bar
                 getActivity().setTitle(mMovie.getTitle());
 
                 Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView, new Callback() {
                     @Override
                     public void onSuccess() {
+
+                        Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
+
+                        if(bitmap != null) {
+                            Palette p = Palette.generate(bitmap, 12);
+                            mMutedColor = p.getDarkMutedColor(0xFF333333);
+
+                            //Set title and colors for collapsing toolbar
+                            mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
+                            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+                            //Set content descriptioni for toolbar/title
+                            mCollapsingToolbarLayout.setContentDescription(mMovie.getTitle());
+
+                            //Set pallet colors when toolbar is collapsed
+                            int primaryColor = getResources().getColor(R.color.appPrimaryColor);
+                            int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
+                            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
+                            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+                        }
                         Log.e(TAG,"onSuccess() Got background image. Call support startPostponedEnterTransition");
                         startPostponedEnterTransition();
 
@@ -409,6 +454,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
             }
         }
+
     }
 
     private void startPostponedEnterTransition() {
