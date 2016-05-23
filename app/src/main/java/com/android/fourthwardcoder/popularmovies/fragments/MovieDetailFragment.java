@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -39,6 +40,7 @@ import com.android.fourthwardcoder.popularmovies.models.Video;
 import com.android.fourthwardcoder.popularmovies.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.popularmovies.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 
@@ -351,7 +353,19 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 //Set title of Movie on Action Bar
                 getActivity().setTitle(mMovie.getTitle());
 
-                Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView);
+                Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.e(TAG,"onSuccess() Got background image. Call support startPostponedEnterTransition");
+                        startPostponedEnterTransition();
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });;
                 Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
                 mFavoritesToggleButton.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
@@ -391,8 +405,25 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     setListViewSize(mListView);
                 } else
                     mVideoLayout.setVisibility(View.GONE);
+
+
             }
         }
+    }
+
+    private void startPostponedEnterTransition() {
+        mPosterImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
+                mPosterImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                //Must call this inside a PreDrawListener or the Enter Transition will not work
+                //Need to make sure imageview is ready before starting transition.
+                getActivity().supportStartPostponedEnterTransition();
+                return true;
+            }
+        });
     }
     /*********************************************************************/
     /*                         Inner Classes                             */

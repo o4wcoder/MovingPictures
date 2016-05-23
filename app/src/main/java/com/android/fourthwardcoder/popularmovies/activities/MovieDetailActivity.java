@@ -43,6 +43,9 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Start postpone element transition
+        supportPostponeEnterTransition();
+
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 

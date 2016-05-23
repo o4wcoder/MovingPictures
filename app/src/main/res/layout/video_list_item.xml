@@ -25,7 +25,6 @@
         android:alpha="@string/primary_text_alpha_dark"
         android:padding="2dp"
         android:textSize="20dp"
-        android:textColor="@color/link_text_material_light"
         android:id="@+id/videoNameTextView" />
 
     <TextView

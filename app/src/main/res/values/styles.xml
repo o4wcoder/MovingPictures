@@ -36,7 +36,9 @@
         <item name="android:gravity">left</item>
         <item name="android:padding">2dp</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <!--
         <item name="android:textColor">@color/link_text_material_light</item>
+        -->
     </style>
 
     <style name="detailLayoutSection">
