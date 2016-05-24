@@ -16,6 +16,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.transition.Transition;
@@ -37,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.popularmovies.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.popularmovies.data.MovieContract;
 import com.android.fourthwardcoder.popularmovies.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.popularmovies.helpers.MovieDbAPI;
@@ -183,7 +185,19 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG,"Back pressed");
 
+                    //Kill this activity
+                    getActivity().finish();
+                }
+            });
+        }
 
         //Set textviews with Movie details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
