@@ -58,6 +58,7 @@ public class MovieDbAPI implements Constants {
     //Base URL for movie images
     public static final String BASE_MOVIE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     public static final String BASE_YOUTUBE_URL = "https://www.youtube.com/";
+    public static final String BASE_YOUTUBE_THUMB_URL = "http://img.youtube.com/vi/";
 
     //Movie image sizes
     public static final String IMAGE_185_SIZE = "w185/";
@@ -88,7 +89,7 @@ public class MovieDbAPI implements Constants {
 
     //Extra append params for youtbue
     public static final String PARAM_V = "v";
-    //private static final String PARM_CERT_COUNTRY = "certification_country";
+    public static final String YOUTUBE_THUMB_SIZE = "0.jpg";
 
     //JSON TAGS
     public static final String TAG_RESULTS = "results";
@@ -403,7 +404,17 @@ public class MovieDbAPI implements Constants {
                 .appendPath(PATH_WATCH)
                 .appendQueryParameter(PARAM_V, video.getKey())
                 .build();
+        Log.e(TAG,"Youtube = " + youtubeUri.toString());
+        return youtubeUri;
+    }
 
+    public static Uri buildYoutubeThumbnailUri(Video video) {
+
+        Uri youtubeUri = Uri.parse(BASE_YOUTUBE_THUMB_URL).buildUpon()
+                .appendPath(video.getKey())
+                .appendPath(YOUTUBE_THUMB_SIZE)
+                .build();
+        Log.e(TAG,"Youtube thumb = " + youtubeUri.toString());
         return youtubeUri;
     }
     /*************************************************************************/
