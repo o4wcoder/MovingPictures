@@ -13,7 +13,7 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 <fragment
     android:id="@+id/fragment_main"
-    android:name="com.android.fourthwardcoder.popularmovies.fragments.PopularMoviesMainFragment"
+    android:name="com.android.fourthwardcoder.movingpictures.fragments.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 </LinearLayout>

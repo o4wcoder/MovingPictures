@@ -55,98 +55,117 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:background="@color/grey">
 
-            <LinearLayout
-                style="@style/detailLayoutSection"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/posterImageView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:transitionName="@string/trans_movie_poster" />
+                android:layout_marginBottom="4dp">
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
                     android:orientation="vertical">
+                <RelativeLayout
+                    style="@style/detailLayoutSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    
-                    <TextView
-                        android:id="@+id/titleTextView"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/posterImageView"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:padding="2dp"
-                        android:textAlignment="center"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:transitionName="@string/trans_movie_poster"
+                        android:adjustViewBounds="true"
+                        android:layout_marginRight="4dp"
+                        android:scaleType="fitCenter"/>
+
+                        <TextView
+                            android:id="@+id/titleTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:layout_marginTop="4dp"
+                            android:textAlignment="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:layout_toRightOf="@+id/posterImageView"/>
+
+                        <TextView
+                            android:id="@+id/releaseYearTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:layout_toRightOf="@+id/posterImageView"
+                            android:layout_below="@+id/titleTextView"/>
+
+                        <TextView
+                            android:id="@+id/runtimeTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:layout_toRightOf="@+id/posterImageView"
+                            android:layout_below="@+id/releaseYearTextView"/>
+
+                        <TextView
+                            android:id="@+id/directorTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:layout_toRightOf="@+id/posterImageView"
+                            android:layout_below="@+id/runtimeTextView"/>
+
+                        <TextView
+                            android:id="@+id/castTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:layout_toRightOf="@+id/posterImageView"
+                            android:layout_below="@+id/directorTextView"/>
+
+
+                </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/posterImageView"
+                        android:id="@+id/divider"
+                        android:background="?android:attr/listDivider"
+                        android:layout_marginTop="4dp" />
 
                     <TextView
-                        android:id="@+id/releaseYearTextView"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/ratingTextView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="2dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                    <TextView
-                        android:id="@+id/runtimeTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="2dp" />
-
-                    <TextView
-                        android:id="@+id/directorTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="2dp" />
-
-                    <TextView
-                        android:id="@+id/castTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="2dp" />
-
+                        android:gravity="center"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:layout_below="@+id/divider"
+                        style="@style/detailLayoutSection"/>
                 </LinearLayout>
-            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-
-            <LinearLayout
-                style="@style/detailLayoutSection"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
 
-                <TextView
-                    android:id="@+id/ratingTextView"
-                    android:layout_width="fill_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/detailLayoutSection"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical">
-
-
-                <com.ms.square.android.expandabletextview.ExpandableTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    style="@style/detailLayoutSection"
+                    android:orientation="vertical">
+                <com.ms.square.android.expandabletextview.ExpandableTextView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/overviewContentExpandableTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     expandableTextView:animDuration="300"
-                    expandableTextView:maxCollapsedLines="4">
+                    expandableTextView:maxCollapsedLines="4"
+                   >
 
                     <TextView
                         android:id="@id/expandable_text"
@@ -163,8 +182,13 @@
                         android:layout_margin="8dp"
                         android:background="@android:color/transparent" />
                 </com.ms.square.android.expandabletextview.ExpandableTextView>
-            </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
             <LinearLayout
                 style="@style/detailLayoutSection"
                 android:layout_width="match_parent"
@@ -189,6 +213,7 @@
                     android:layout_height="wrap_content"
                     android:padding="2dp" />
             </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <LinearLayout
                 style="@style/detailLayoutSection"
@@ -220,7 +245,7 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-
+<!--
     <CheckBox
         android:id="@+id/favoritesToggleButton"
         android:layout_width="wrap_content"
@@ -230,14 +255,15 @@
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
         android:button="@android:drawable/btn_star" />
+        -->
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/map_fab"
+        android:id="@+id/favorites_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:src="@android:drawable/btn_star"
-        android:tint="@android:color/white"
+        android:tint="@color/white"
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:layout_anchor="@id/app_bar_layout"

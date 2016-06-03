@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">Moving Pictures</string>
     <string name="hello_world">Hello world!</string>
     <string name="dialog_sort">Sort By</string>
     <string name="title_activity_movie_detail">MovieDetail</string>
@@ -35,6 +35,7 @@
     <string name="more">More</string>
     <string name="filmography_tab_movies">Movies</string>
     <string name="filmography_tab_tv">Televistion</string>
+    <string name="menu_search">Search</string>
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>
