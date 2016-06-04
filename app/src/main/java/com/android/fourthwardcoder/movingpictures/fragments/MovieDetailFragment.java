@@ -452,39 +452,31 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     @Override
                     public void onSuccess() {
 
-                        Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
-
-                        if(bitmap != null) {
-                            Palette p = Palette.generate(bitmap, 12);
-                         //   mMutedColor = p.getDarkMutedColor(0xFF333333);
-
-                            //Set title and colors for collapsing toolbar
-                            mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
-                            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-
-                            //Set content descriptioni for toolbar/title
-                            mCollapsingToolbarLayout.setContentDescription(mMovie.getTitle());
-
-                            //Set pallet colors when toolbar is collapsed
-                            int primaryColor = getResources().getColor(R.color.appPrimaryColor);
-                            int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
-                            int accentColor = getResources().getColor(R.color.appAccentColor);
-                            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
-                            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
-
-                            mDetailLayout.setBackgroundColor(p.getMutedColor(primaryColor));
-                            mDetailCardView.setCardBackgroundColor(p.getMutedColor(primaryColor));
-                            mFavoritesFAB.setBackgroundTintList(ColorStateList.valueOf(p.getVibrantColor(accentColor)));
-
-
-                        }
-                        Log.e(TAG,"onSuccess() Got background image. Call support startPostponedEnterTransition");
+                        //Set up color scheme
+                        setPaletteColors();
+                        //Start Shared Image transition now that we have the backdrop
                         startPostponedEnterTransition();
 
                     }
 
                     @Override
                     public void onError() {
+                        //Just get the default image since there was not backdrop image available
+                        Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                //set up color scheme
+                                setPaletteColors();
+                                //Still want to start shared transition even it the backdrop image was not loaded.
+                                startPostponedEnterTransition();
+                            }
+
+                            @Override
+                            public void onError() {
+                                //If we failed here, it's bad. Just do the shared transition as to not freeze up the UI
+                                startPostponedEnterTransition();
+                            }
+                        });
 
                     }
                 });;
@@ -534,6 +526,35 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     }
 
+    private void setPaletteColors() {
+
+        Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
+
+        if(bitmap != null) {
+            Palette p = Palette.generate(bitmap, 12);
+            //   mMutedColor = p.getDarkMutedColor(0xFF333333);
+
+            //Set title and colors for collapsing toolbar
+            mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
+            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+            //Set content descriptioni for toolbar/title
+            mCollapsingToolbarLayout.setContentDescription(mMovie.getTitle());
+
+            //Set pallet colors when toolbar is collapsed
+            int primaryColor = getResources().getColor(R.color.appPrimaryColor);
+            int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
+            int accentColor = getResources().getColor(R.color.appAccentColor);
+            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
+            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+
+            mDetailLayout.setBackgroundColor(p.getMutedColor(primaryColor));
+            mDetailCardView.setCardBackgroundColor(p.getMutedColor(primaryColor));
+            mFavoritesFAB.setBackgroundTintList(ColorStateList.valueOf(p.getVibrantColor(accentColor)));
+
+
+        }
+    }
     private void startPostponedEnterTransition() {
         mPosterImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
