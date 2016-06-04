@@ -3,6 +3,7 @@ package com.android.fourthwardcoder.movingpictures.fragments;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,10 +17,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -35,10 +40,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -66,7 +73,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     /*****************************************************************/
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
     private static final int IMAGE_FADE_DURATION = 500;
-    private int mMutedColor = 0xFF333333;
+   // private int mMutedColor = 0xFF333333;
     /*****************************************************************/
     /*                        Local Data                             */
     /*****************************************************************/
@@ -93,6 +100,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
+    RelativeLayout mDetailLayout;
+    CardView mDetailCardView;
 
     boolean mFetchData = false;
 
@@ -138,16 +147,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mBackdropImageView.setAlpha(0f);
-//            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
-//                @Override
-//                public void onTransitionEnd(Transition transition) {
-//                    mBackdropImageView.animate().setDuration(IMAGE_FADE_DURATION).alpha(1f);
-//                }
-//            });
-//        }
+
         mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
+
+        mDetailCardView = (CardView)view.findViewById(R.id.movie_detail_cardview);
+        mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
 
         mFavoritesFAB = (FloatingActionButton)view.findViewById(R.id.favorites_fab);
         mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
@@ -179,8 +183,25 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-//        mFavoritesToggleButton = (CheckBox) view.findViewById(R.id.favoritesToggleButton);
-//
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
+
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    Log.e(TAG,"Tansition start");
+                   mFavoritesFAB.setVisibility(View.GONE);
+                }
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    Log.e(TAG,"Transition end. Scan in FAB");
+                  mFavoritesFAB.setVisibility(View.VISIBLE);
+                    Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
+                            R.anim.scale_in_image);
+                    mFavoritesFAB.startAnimation(scaleAnimation);
+                }
+            });
+        }
 //        //See if this is a favorite movie and set the state of the star button
         if (mMovie != null) {
             if (checkIfFavorite()) {
@@ -435,7 +456,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                         if(bitmap != null) {
                             Palette p = Palette.generate(bitmap, 12);
-                            mMutedColor = p.getDarkMutedColor(0xFF333333);
+                         //   mMutedColor = p.getDarkMutedColor(0xFF333333);
 
                             //Set title and colors for collapsing toolbar
                             mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
@@ -447,8 +468,15 @@ public class MovieDetailFragment extends Fragment implements Constants {
                             //Set pallet colors when toolbar is collapsed
                             int primaryColor = getResources().getColor(R.color.appPrimaryColor);
                             int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
+                            int accentColor = getResources().getColor(R.color.appAccentColor);
                             mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
                             mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+
+                            mDetailLayout.setBackgroundColor(p.getMutedColor(primaryColor));
+                            mDetailCardView.setCardBackgroundColor(p.getMutedColor(primaryColor));
+                            mFavoritesFAB.setBackgroundTintList(ColorStateList.valueOf(p.getVibrantColor(accentColor)));
+
+
                         }
                         Log.e(TAG,"onSuccess() Got background image. Call support startPostponedEnterTransition");
                         startPostponedEnterTransition();

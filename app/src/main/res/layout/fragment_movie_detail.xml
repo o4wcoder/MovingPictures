@@ -61,16 +61,16 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="4dp">
+                android:layout_marginBottom="4dp"
+                android:id="@+id/movie_detail_cardview"
+                app:cardCornerRadius="0dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+
                 <RelativeLayout
                     style="@style/detailLayoutSection"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:id="@+id/layout_movie_detail">
 
                     <ImageView
                         android:id="@+id/posterImageView"
@@ -83,58 +83,45 @@
 
                         <TextView
                             android:id="@+id/titleTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
+                            style="@style/detailTextView"
                             android:layout_marginTop="4dp"
                             android:textAlignment="center"
                             android:textSize="20sp"
                             android:textStyle="bold"
-                            android:layout_toRightOf="@+id/posterImageView"/>
+                            android:layout_toRightOf="@+id/posterImageView" />
 
                         <TextView
                             android:id="@+id/releaseYearTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
+                            style="@style/detailTextView"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/titleTextView"/>
+                            android:layout_below="@+id/titleTextView" />
 
                         <TextView
                             android:id="@+id/runtimeTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
+                            style="@style/detailTextView"
                             android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/releaseYearTextView"/>
+                            android:layout_below="@+id/releaseYearTextView" />
 
                         <TextView
                             android:id="@+id/directorTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
+                            style="@style/detailTextView"
                             android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/runtimeTextView"/>
+                            android:layout_below="@+id/runtimeTextView" />
 
                         <TextView
                             android:id="@+id/castTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
+                            style="@style/detailTextView"
                             android:layout_toRightOf="@+id/posterImageView"
                             android:layout_below="@+id/directorTextView"/>
 
-
                 </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/posterImageView"
-                        android:id="@+id/divider"
-                        android:background="?android:attr/listDivider"
-                        android:layout_marginTop="4dp" />
+            </android.support.v7.widget.CardView>
 
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp">
                     <TextView
                         android:id="@+id/ratingTextView"
                         android:layout_width="match_parent"
@@ -144,8 +131,8 @@
                         android:textStyle="bold"
                         android:layout_below="@+id/divider"
                         style="@style/detailLayoutSection"/>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                </android.support.v7.widget.CardView>
+
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
