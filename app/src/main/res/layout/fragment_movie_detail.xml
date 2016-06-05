@@ -62,79 +62,75 @@
             android:layout_marginRight="@dimen/detail_horizontal_margin">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/movie_detail_cardview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="4dp"
-                android:id="@+id/movie_detail_cardview"
                 app:cardCornerRadius="0dp">
 
 
                 <RelativeLayout
+                    android:id="@+id/layout_movie_detail"
                     style="@style/detailLayoutSection"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/layout_movie_detail">
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/posterImageView"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:transitionName="@string/trans_movie_poster"
-                        android:adjustViewBounds="true"
                         android:layout_marginRight="4dp"
-                        android:scaleType="fitCenter"/>
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:transitionName="@string/trans_movie_poster" />
+
+                    <TextView
+                        android:id="@+id/titleTextView"
+                        style="@style/detailTextView"
+                        android:layout_marginTop="4dp"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/releaseYearTextView"
+                        style="@style/detailTextView"
+                        android:layout_below="@+id/titleTextView"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
+
+                    <TextView
+                        android:id="@+id/runtimeTextView"
+                        style="@style/detailTextView"
+                        android:layout_below="@+id/releaseYearTextView" />
+
+                    <TextView
+                        android:id="@+id/directorTextView"
+                        style="@style/detailTextView"
+                        android:layout_below="@+id/runtimeTextView" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/directorTextView"
+                        android:layout_toRightOf="@+id/posterImageView"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_star"
+                            android:tint="@color/yellow"/>
 
                         <TextView
-                            android:id="@+id/titleTextView"
+                            android:id="@+id/ratingTextView"
                             style="@style/detailTextView"
-                            android:layout_marginTop="4dp"
-                            android:textAlignment="center"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:layout_toRightOf="@+id/posterImageView" />
-
-                        <TextView
-                            android:id="@+id/releaseYearTextView"
-                            style="@style/detailTextView"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/titleTextView" />
-
-                        <TextView
-                            android:id="@+id/runtimeTextView"
-                            style="@style/detailTextView"
-                            android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/releaseYearTextView" />
-
-                        <TextView
-                            android:id="@+id/directorTextView"
-                            style="@style/detailTextView"
-                            android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/runtimeTextView" />
-
-                        <TextView
-                            android:id="@+id/castTextView"
-                            style="@style/detailTextView"
-                            android:layout_toRightOf="@+id/posterImageView"
-                            android:layout_below="@+id/directorTextView"/>
+                            android:layout_gravity="center|left"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
+                    </LinearLayout>
 
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp">
-                    <TextView
-                        android:id="@+id/ratingTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textSize="30sp"
-                        android:textStyle="bold"
-                        android:layout_below="@+id/divider"
-                        style="@style/detailLayoutSection"/>
-                </android.support.v7.widget.CardView>
 
 
             <android.support.v7.widget.CardView
@@ -232,7 +228,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/castTextView"
+                    style="@style/detailTextView"
+                    android:layout_toRightOf="@+id/posterImageView"
+                    android:layout_below="@+id/directorTextView"/>
+
+            </android.support.v7.widget.CardView>
         </LinearLayout>
+
+
     </android.support.v4.widget.NestedScrollView>
 
 <!--
@@ -252,7 +263,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:src="@android:drawable/btn_star"
+        android:src="@drawable/ic_favorite_white"
         android:tint="@color/white"
         app:borderWidth="0dp"
         app:elevation="6dp"

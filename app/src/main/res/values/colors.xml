@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="appPrimaryColor">@color/materialRed500Primary</color>
-    <color name="appDarkPrimaryColor">@color/materialRed700DarkPrimary</color>
-    <color name="appAccentColor">#7C4DFF</color>
+    <color name="appPrimaryColor">@color/materialDeepPurplePrimary</color>
+    <color name="appDarkPrimaryColor">@color/materialDeepPurpleDarkPrimary</color>
+    <color name="appAccentColor">@color/materialRedAccent</color>
     <color name="materialBlue500_linkColor">#2196F3</color>
 
     <!-- Material Primary Colors -->
@@ -17,6 +17,9 @@
     <color name="materialSecondaryText">#727272</color>
     <color name="materialCyanAccent">#00BCD4</color>
     <color name="materialIndigoAccent">#536DFE</color>
+    <color name="materialDeepPurpleDarkPrimary">#512DA8</color>
+    <color name="materialDeepPurplePrimary">#673AB7</color>
+    <color name="materialRedAccent">#FF5252</color>
 
     <color name="white">#ffffff</color>
     <color name="grey">#e6e6e6</color>
