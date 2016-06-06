@@ -270,7 +270,7 @@ public class MovieDbAPI implements Constants {
 
         Uri uri = buildPersonUri(id);
         String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
-
+        Log.e(TAG,"Person = " + jsonStr);
         if(jsonStr == null)
             return null;
         else

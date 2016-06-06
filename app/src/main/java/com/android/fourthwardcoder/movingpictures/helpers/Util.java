@@ -85,7 +85,7 @@ public class Util implements Constants {
      * @param context context of calling activity
      * @param id      id of person
      */
-    private static void startActorDetailActivity(Context context, int id) {
+    public static void startActorDetailActivity(Context context, int id) {
 
         Intent i = new Intent(context,PersonDetailActivity.class);
         i.putExtra(EXTRA_PERSON_ID,id);
@@ -114,6 +114,17 @@ public class Util implements Constants {
 
     }
 
+    public static void showCastListActivity(Context context, Movie movie, final int entType) {
+
+        Intent i = new Intent(context, CastListActivity.class);
+        i.putExtra(EXTRA_MOVIE_ID, movie.getId());
+        i.putExtra(EXTRA_TITLE, movie.getTitle());
+        if (entType == ENT_TYPE_MOVIE)
+            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
+        else
+            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);
+        context.startActivity(i);
+    }
     /**
      * Create clickable links on the names of the cast. When clicked, it will go to that Person's
      * detail page activity.
@@ -163,14 +174,7 @@ public class Util implements Constants {
             ClickableSpan spanMore = new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    Intent i = new Intent(context, CastListActivity.class);
-                    i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-                    i.putExtra(EXTRA_TITLE, movie.getTitle());
-                    if (entType == ENT_TYPE_MOVIE)
-                        i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
-                    else
-                        i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);
-                    context.startActivity(i);
+                    showCastListActivity(context,movie,entType);
                 }
             };
 

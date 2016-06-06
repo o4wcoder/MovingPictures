@@ -38,14 +38,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         mContext = context;
         mVideoList = videoList;
         mClickHandler = clickHandler;
-        Log.e(TAG,"VideoListAdapter constructor()");
+
     }
     @Override
     public VideoListAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.video_list_item,parent,false);
         final VideoListAdapterViewHolder vh = new VideoListAdapterViewHolder(view);
-         Log.e(TAG,"VideoListAdapterViewHolder onCreateViewHolder()");
         return vh;
     }
 
@@ -55,7 +54,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         Video video = mVideoList.get(position);
         Picasso.with(mContext).load(MovieDbAPI.buildYoutubeThumbnailUri(video)).into(holder.videoThumbImageView);
         holder.nameTextView.setText(video.getName());
-        Log.e(TAG,"onBindViewHolder() setting video at position " + position);
+
     }
 
     @Override

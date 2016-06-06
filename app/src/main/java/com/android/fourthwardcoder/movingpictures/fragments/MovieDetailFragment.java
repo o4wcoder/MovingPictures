@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
@@ -47,6 +48,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
@@ -55,11 +57,14 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 
 /**
@@ -100,14 +105,26 @@ public class MovieDetailFragment extends Fragment implements Constants,
     TextView mGenreTextView;
     TextView mRevenueTextView;
     TextView mReviewsTextView;
-    CardView mVideoLayout;
+
+    TextView mCastShowAllTextView;
    // CheckBox mFavoritesToggleButton;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
     RelativeLayout mDetailLayout;
+
+    CardView mVideoLayout;
     CardView mDetailCardView;
+    CardView mCastCardView;
     RecyclerView mVideosRecylerView;
+
+    //Cast Image and Text
+    ImageView mCast1ImageView;
+    ImageView mCast2ImageView;
+    ImageView mCast3ImageView;
+    TextView mCast1TextView;
+    TextView mCast2TextView;
+    TextView mCast3TextView;
 
     boolean mFetchData = false;
 
@@ -241,6 +258,14 @@ public class MovieDetailFragment extends Fragment implements Constants,
         mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
         mRevenueTextView = (TextView) view.findViewById(R.id.revenueTextView);
         mReviewsTextView = (TextView) view.findViewById(R.id.reviewsTextView);
+        mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
+        mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Util.showCastListActivity(getActivity(),mMovie,ENT_TYPE_MOVIE);
+            }
+        });
 
         mReviewsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,21 +277,6 @@ public class MovieDetailFragment extends Fragment implements Constants,
             }
         });
 
-//        mListView = (ListView) view.findViewById(R.id.videosListView);
-//        mListView.setScrollContainer(false);
-//
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                //Get youtube url from video and send it to view intent
-//                Video video = mVideoListAdapter.getItem(position);
-//                Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-//                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-//
-//                startActivity(i);
-//            }
-//        });
 
         mVideoLayout = (CardView) view.findViewById(R.id.videosLayout);
 
@@ -286,6 +296,37 @@ public class MovieDetailFragment extends Fragment implements Constants,
             //Got the entire Movie object passed to fragment. Just set the layout.
             setLayout();
         }
+
+        View.OnClickListener castClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (v.equals(mCast1ImageView)) {
+                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId());
+                } else if (v.equals(mCast2ImageView)) {
+                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId());
+                } else if (v.equals(mCast3ImageView)) {
+                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId());
+                }
+            }
+        };
+
+        //Get the 3 Top Billed Cast layouts and child views
+        mCastCardView = (CardView)view.findViewById(R.id.castLayout);
+        View cast1View = view.findViewById(R.id.detail_cast_layout1);
+        mCast1ImageView = (ImageView)cast1View.findViewById(R.id.cast_thumb_image_view);
+        mCast1ImageView.setOnClickListener(castClickListener);
+        mCast1TextView = (TextView)cast1View.findViewById(R.id.cast_thumb_text_view);
+
+        View cast2View = view.findViewById(R.id.detail_cast_layout2);
+        mCast2ImageView = (ImageView)cast2View.findViewById(R.id.cast_thumb_image_view);
+        mCast2ImageView.setOnClickListener(castClickListener);
+        mCast2TextView = (TextView)cast2View.findViewById(R.id.cast_thumb_text_view);
+
+        View cast3View = view.findViewById(R.id.detail_cast_layout3);
+        mCast3ImageView = (ImageView)cast3View.findViewById(R.id.cast_thumb_image_view);
+        mCast3ImageView.setOnClickListener(castClickListener);
+        mCast3TextView = (TextView)cast3View.findViewById(R.id.cast_thumb_text_view);
 
         return view;
     }
@@ -315,9 +356,6 @@ public class MovieDetailFragment extends Fragment implements Constants,
             }
         }
     }
-
-
-
 
     /**
      * Add this Movie to the Favorites DB
@@ -469,7 +507,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
                         mMovie.getDirectorString());
                 mDirectorTextView.setText(director);
 
-                Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
+                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 
                 Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
                         Util.reverseDateString(mMovie.getReleaseDate()));
@@ -514,6 +552,8 @@ public class MovieDetailFragment extends Fragment implements Constants,
                     mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
                 }
 
+                Log.e(TAG,"Start up FetchPersonTask!!!");
+                new FetchPersonTask().execute(mMovie);
             }
         }
 
@@ -572,6 +612,22 @@ public class MovieDetailFragment extends Fragment implements Constants,
 
         startActivity(i);
     }
+
+    private void getCastThumbnails(String uri, final ImageView imageView) {
+
+        Picasso.with(getActivity()).load(uri).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+
+                imageView.setImageResource(R.drawable.person_no_pic_thumnail);
+            }
+        });
+    }
     /*********************************************************************/
     /*                         Inner Classes                             */
     /*********************************************************************/
@@ -608,5 +664,65 @@ public class MovieDetailFragment extends Fragment implements Constants,
 
 
         }
+    }
+
+    private class FetchPersonTask extends AsyncTask<Movie, Void, ArrayList<Person>> {
+
+        @Override
+        protected ArrayList<Person> doInBackground(Movie... params) {
+
+            ArrayList<Person> personList = null;
+            //Get ID of movie
+            Movie movie = params[0];
+            int numOfActors = 3;
+
+            if(movie.getActors() != null) {
+                if (movie.getActors().size() < 3)
+                    numOfActors = movie.getActors().size();
+
+                personList = new ArrayList<>(numOfActors);
+                for (int i = 0; i < numOfActors; i++) {
+                    Person person = MovieDbAPI.getPerson(movie.getActors().get(i).getId());
+                    if (person != null)
+                        personList.add(person);
+
+                }
+
+                return personList;
+            }
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Person> personList) {
+
+            Log.e(TAG,"Set cast image and textviews");
+
+            if(personList != null) {
+                if (personList.size() == 3) {
+                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
+                    getCastThumbnails(personList.get(2).getProfileImagePath(), mCast3ImageView);
+                    mCast1TextView.setText(personList.get(0).getName());
+                    mCast2TextView.setText(personList.get(1).getName());
+                    mCast3TextView.setText(personList.get(2).getName());
+                } else if (personList.size() == 2) {
+                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
+                    mCast1TextView.setText(personList.get(0).getName());
+                    mCast2TextView.setText(personList.get(1).getName());
+                } else if (personList.size() == 3) {
+                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+                    mCast1TextView.setText(personList.get(0).getName());
+                }
+            } else {
+                //Did not return any cast. Don't show cast card.
+                mCastCardView.setVisibility(View.GONE);
+            }
+
+        }
+
     }
 }

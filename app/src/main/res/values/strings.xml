@@ -37,6 +37,8 @@
     <string name="filmography_tab_tv">Televistion</string>
     <string name="menu_search">Search</string>
     <string name="videos">Videos</string>
+    <string name="top_cast">Top Billed Cast</string>
+    <string name="show_all_cast">SHOW ALL CAST</string>
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>
