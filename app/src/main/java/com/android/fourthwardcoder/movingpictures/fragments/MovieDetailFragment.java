@@ -18,9 +18,12 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Layout;
 import android.text.Spanned;
 import android.transition.Transition;
 import android.util.Log;
@@ -44,6 +47,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
@@ -52,7 +56,6 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Video;
-import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
@@ -66,7 +69,8 @@ import com.squareup.picasso.Picasso;
  * <p/>
  * Fragment to show the details of a particular movie
  */
-public class MovieDetailFragment extends Fragment implements Constants {
+public class MovieDetailFragment extends Fragment implements Constants,
+        VideoListAdapter.VideoListAdapterOnClickHandler{
 
     /*****************************************************************/
     /*                        Constants                              */
@@ -79,8 +83,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
     /*****************************************************************/
     Movie mMovie;
     int mMovieId;
-    ListView mListView;
-    VideosListAdapter mVideoListAdapter;
+    //ListView mListView;
+    //VideosListAdapter mVideoListAdapter;
+    VideoListAdapter mVideoListAdapter;
 
     ImageView mBackdropImageView;
     ImageView mPosterImageView;
@@ -95,13 +100,14 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mGenreTextView;
     TextView mRevenueTextView;
     TextView mReviewsTextView;
-    LinearLayout mVideoLayout;
+    CardView mVideoLayout;
    // CheckBox mFavoritesToggleButton;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
     RelativeLayout mDetailLayout;
     CardView mDetailCardView;
+    RecyclerView mVideosRecylerView;
 
     boolean mFetchData = false;
 
@@ -202,44 +208,12 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 }
             });
         }
-//        //See if this is a favorite movie and set the state of the star button
-        if (mMovie != null) {
-            if (checkIfFavorite()) {
-              //  mFavoritesToggleButton.setChecked(true);
-                mFavoritesFAB.setTag(true);
-                mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
-            } else {
-              //  mFavoritesToggleButton.setChecked(false);
-                mFavoritesFAB.setTag(false);
-                mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
-            }
-        }
-//
-//
-//        mFavoritesToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//                if (mMovie != null) {
-//                    String toastStr = "";
-//                    if (isChecked) {
-//
-//                        toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
-//                                + getString(R.string.to_favorites);
-//                        addMovieToFavoritesDb();
-//
-//                    } else {
-//                        toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
-//                                + getString(R.string.from_favorites);
-//                        removeMovieFromDb();
-//                    }
-//                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-//                            toastStr, Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
-//            }
-//        });
 
+
+        //Set up Video RecyclerView for Horizontal Scrolling
+        mVideosRecylerView = (RecyclerView)view.findViewById(R.id.movie_detail_video_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        mVideosRecylerView.setLayoutManager(layoutManager);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
@@ -278,27 +252,27 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-        mListView = (ListView) view.findViewById(R.id.videosListView);
-        mListView.setScrollContainer(false);
+//        mListView = (ListView) view.findViewById(R.id.videosListView);
+//        mListView.setScrollContainer(false);
+//
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                //Get youtube url from video and send it to view intent
+//                Video video = mVideoListAdapter.getItem(position);
+//                Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+//                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+//
+//                startActivity(i);
+//            }
+//        });
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //Get youtube url from video and send it to view intent
-                Video video = mVideoListAdapter.getItem(position);
-                Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-
-                startActivity(i);
-            }
-        });
-
-        mVideoLayout = (LinearLayout) view.findViewById(R.id.videosLayout);
+        mVideoLayout = (CardView) view.findViewById(R.id.videosLayout);
 
         //If we just got the movie id, we need to go and fetch the data
         if(mFetchData) {
-            if (mListView != null) {
+            if (mVideosRecylerView != null) {
                 if (Util.isNetworkAvailable(getActivity())) {
                     new FetchMovieTask().execute(mMovieId);
                 } else {
@@ -414,37 +388,37 @@ public class MovieDetailFragment extends Fragment implements Constants {
      *
      * @param myListView listview of Videos
      */
-    private void setListViewSize(ListView myListView) {
-        ListAdapter myListAdapter = myListView.getAdapter();
-        if (myListAdapter == null) {
-            //do nothing return null
-            return;
-        }
-        //set listAdapter in loop for getting final size
-        int totalHeight = 0;
-        for (int size = 0; size < myListAdapter.getCount(); size++) {
-            View listItem = myListAdapter.getView(size, null, myListView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        //setting listview item in adapter
-        ViewGroup.LayoutParams params = myListView.getLayoutParams();
-        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
-        myListView.setLayoutParams(params);
-        // print height of adapter on log
-        Log.i("height of listItem:", String.valueOf(totalHeight));
-    }
+//    private void setListViewSize(ListView myListView) {
+//        ListAdapter myListAdapter = myListView.getAdapter();
+//        if (myListAdapter == null) {
+//            //do nothing return null
+//            return;
+//        }
+//        //set listAdapter in loop for getting final size
+//        int totalHeight = 0;
+//        for (int size = 0; size < myListAdapter.getCount(); size++) {
+//            View listItem = myListAdapter.getView(size, null, myListView);
+//            listItem.measure(0, 0);
+//            totalHeight += listItem.getMeasuredHeight();
+//        }
+//        //setting listview item in adapter
+//        ViewGroup.LayoutParams params = myListView.getLayoutParams();
+//        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
+//        myListView.setLayoutParams(params);
+//        // print height of adapter on log
+//        Log.i("height of listItem:", String.valueOf(totalHeight));
+//    }
 
     /**
      * Set the layout of the Fragment
      */
     private void setLayout() {
 
-        if (getActivity() != null && mListView != null) {
+        if (getActivity() != null && mVideosRecylerView != null) {
             if (mMovie != null) {
 
                 //Got the data, can create share menu if there are videos
-             //   setHasOptionsMenu(true);
+                //   setHasOptionsMenu(true);
                 //Set title of Movie on Action Bar
                 getActivity().setTitle(mMovie.getTitle());
 
@@ -479,7 +453,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
                         });
 
                     }
-                });;
+                });
+                ;
                 Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
                 mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
@@ -488,7 +463,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 mRuntimeTextView.setText(mMovie.getRuntime() + " min");
                 mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
-                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating,mMovie.getRating(),"10"));
+                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getRating(), "10"));
 
                 Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
                         mMovie.getDirectorString());
@@ -514,12 +489,30 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 mRevenueTextView.setText(revenue);
 
                 if (mMovie.getVideos().size() > 0) {
-                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
-                    mListView.setAdapter(mVideoListAdapter);
-                    setListViewSize(mListView);
+                    Log.e(TAG, "setLayout(): Got some videos, setup adapters");
+//                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
+//                    mListView.setAdapter(mVideoListAdapter);
+//                    setListViewSize(mListView);
+
+                    mVideoListAdapter = new VideoListAdapter(getActivity(), mMovie.getVideos(), this);
+                    mVideosRecylerView.setAdapter(mVideoListAdapter);
                 } else
                     mVideoLayout.setVisibility(View.GONE);
 
+
+                //        //See if this is a favorite movie and set the state of the star button
+                Log.e(TAG, "Check if favorite movie");
+                if (checkIfFavorite()) {
+                    //  mFavoritesToggleButton.setChecked(true);
+                    Log.e(TAG, "Already favorite, set tag to true");
+                    mFavoritesFAB.setTag(true);
+                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
+                } else {
+                    //  mFavoritesToggleButton.setChecked(false);
+                    Log.e(TAG, "Not favorite, set tag to false");
+                    mFavoritesFAB.setTag(false);
+                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
+                }
 
             }
         }
@@ -568,6 +561,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+
+        //Get youtube url from video and send it to view intent
+        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+
+        startActivity(i);
     }
     /*********************************************************************/
     /*                         Inner Classes                             */

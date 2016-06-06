@@ -224,6 +224,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             prefsEditor.putInt(PREF_SORT, mSortOrder);
             prefsEditor.commit();
 
+            Resources res = getResources();
+            String[] sortList = res.getStringArray(R.array.sort_list);
+            String sortOrder = sortList[mSortOrder];
+            getActivity().setTitle(sortOrder);
             //Fetch new set of movies based on sort order
             if (mGridView != null)
                 if (mSortOrder == 4) {

@@ -414,7 +414,7 @@ public class MovieDbAPI implements Constants {
                 .appendPath(video.getKey())
                 .appendPath(YOUTUBE_THUMB_SIZE)
                 .build();
-        Log.e(TAG,"Youtube thumb = " + youtubeUri.toString());
+       // Log.e(TAG,"Youtube thumb = " + youtubeUri.toString());
         return youtubeUri;
     }
     /*************************************************************************/

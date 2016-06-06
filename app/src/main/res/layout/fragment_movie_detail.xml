@@ -1,5 +1,4 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,10 +26,10 @@
                 android:id="@+id/backdropImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                app:layout_collapseMode="parallax"/>
+                app:layout_collapseMode="parallax" />
 
 
             <android.support.v7.widget.Toolbar
@@ -55,11 +54,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:focusableInTouchMode="true"
-
             android:layout_marginLeft="@dimen/detail_horizontal_margin"
-            android:layout_marginRight="@dimen/detail_horizontal_margin">
+            android:layout_marginRight="@dimen/detail_horizontal_margin"
+
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/movie_detail_cardview"
@@ -86,7 +85,7 @@
 
                     <TextView
                         android:id="@+id/titleTextView"
-                        style="@style/detailTextView"
+                        style="@style/detailDarkBackgroundTextView"
                         android:layout_marginTop="4dp"
                         android:textAlignment="center"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
@@ -94,18 +93,18 @@
 
                     <TextView
                         android:id="@+id/releaseYearTextView"
-                        style="@style/detailTextView"
+                        style="@style/detailDarkBackgroundTextView"
                         android:layout_below="@+id/titleTextView"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
                     <TextView
                         android:id="@+id/runtimeTextView"
-                        style="@style/detailTextView"
+                        style="@style/detailDarkBackgroundTextView"
                         android:layout_below="@+id/releaseYearTextView" />
 
                     <TextView
                         android:id="@+id/directorTextView"
-                        style="@style/detailTextView"
+                        style="@style/detailDarkBackgroundTextView"
                         android:layout_below="@+id/runtimeTextView" />
 
                     <LinearLayout
@@ -120,11 +119,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_star"
-                            android:tint="@color/yellow"/>
+                            android:tint="@color/yellow" />
 
                         <TextView
                             android:id="@+id/ratingTextView"
-                            style="@style/detailTextView"
+                            style="@style/detailDarkBackgroundTextView"
                             android:layout_gravity="center|left"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
                     </LinearLayout>
@@ -139,66 +138,76 @@
                 android:layout_marginBottom="4dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     style="@style/detailLayoutSection"
-                    android:orientation="vertical">
-                <com.ms.square.android.expandabletextview.ExpandableTextView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/overviewContentExpandableTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    expandableTextView:animDuration="300"
-                    expandableTextView:maxCollapsedLines="4"
-                   >
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@id/expandable_text"
+                    <com.ms.square.android.expandabletextview.ExpandableTextView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/overviewContentExpandableTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp" />
+                        expandableTextView:animDuration="300"
+                        expandableTextView:maxCollapsedLines="4">
 
-                    <ImageButton
-                        android:id="@id/expand_collapse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right|bottom"
-                        android:layout_margin="8dp"
-                        android:background="@android:color/transparent" />
-                </com.ms.square.android.expandabletextview.ExpandableTextView>
+                        <TextView
+                            android:id="@id/expandable_text"
+                            style="@style/detailLightBackgroundTextView" />
+
+
+                        <ImageButton
+                            android:id="@id/expand_collapse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right|bottom"
+                            android:layout_margin="4dp"
+                            android:background="@android:color/transparent" />
+                    </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+                    <TextView
+                        android:id="@+id/genreTextView"
+                        style="@style/detailLightBackgroundTextView" />
+
+                    <TextView
+                        android:id="@+id/releaseDateTextView"
+                        style="@style/detailLightBackgroundTextView" />
+
+                    <TextView
+                        android:id="@+id/revenueTextView"
+                        style="@style/detailLightBackgroundTextView" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/videosLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp">
-            <LinearLayout
-                style="@style/detailLayoutSection"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/genreTextView"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="2dp" />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/releaseDateTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp" />
+                    <TextView
+                        style="@style/headerLinkTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/videos" />
 
-                <TextView
-                    android:id="@+id/revenueTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp" />
-            </LinearLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/movie_detail_video_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <LinearLayout
@@ -215,20 +224,6 @@
                     android:text="@string/user_reviews" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/videosLayout"
-                style="@style/detailLayoutSection"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-
-                <ListView
-                    android:id="@+id/videosListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -237,26 +232,14 @@
                 <TextView
                     android:id="@+id/castTextView"
                     style="@style/detailTextView"
-                    android:layout_toRightOf="@+id/posterImageView"
-                    android:layout_below="@+id/directorTextView"/>
+                    android:layout_below="@+id/directorTextView"
+                    android:layout_toRightOf="@+id/posterImageView" />
 
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
 
     </android.support.v4.widget.NestedScrollView>
-
-<!--
-    <CheckBox
-        android:id="@+id/favoritesToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/backdropImageView"
-        android:layout_alignRight="@+id/backdropImageView"
-        android:layout_marginBottom="12dp"
-        android:layout_marginRight="12dp"
-        android:button="@android:drawable/btn_star" />
-        -->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/favorites_fab"
@@ -269,6 +252,6 @@
         app:elevation="6dp"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end"
-        app:pressedTranslationZ="12dp"/>
+        app:pressedTranslationZ="12dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/thumb_image_frame">
 
         <ImageView
             android:id="@+id/videoThumbImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:layout_margin="2dp"/>
 
         <ImageView
             android:id="@+id/volumeStartImageView"
@@ -24,26 +25,18 @@
             android:src="@drawable/ic_play_circle_outline_white" />
     </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="2dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:alpha="@string/primary_text_alpha_dark"
-        android:padding="2dp"
-        android:textSize="20dp"
-        android:id="@+id/videoNameTextView" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="New Text"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
         android:alpha="@string/secondary_text_alpha_dark"
         android:padding="2dp"
-        android:id="@+id/videoInfoTextView" />
-    </LinearLayout>
-</LinearLayout>
+        android:id="@+id/videoNameTextView"
+        android:layout_alignRight="@id/thumb_image_frame"
+        android:layout_alignLeft="@id/thumb_image_frame"
+        android:layout_below="@+id/thumb_image_frame"/>
+
+
+
+
+</RelativeLayout>

@@ -35,9 +35,11 @@
     <style name="headerLinkTextView">
         <item name="android:gravity">left</item>
         <item name="android:padding">2dp</item>
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-        <item name="android:textColor">@color/appAccentColor</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Subhead</item>
     </style>
+
+
+
 
     <style name="detailLayoutSection">
         <item name="android:background">#ffffff</item>
@@ -50,8 +52,16 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="detailDarkBackgroundTextView" parent="detailTextView">
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_toRightOf">@+id/posterImageView</item>
+    </style>
+
+    <style name="detailLightBackgroundTextView" parent="detailTextView">
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Body1</item>
+        <item name="android:alpha">@string/primary_text_alpha_dark</item>
     </style>
 </resources>

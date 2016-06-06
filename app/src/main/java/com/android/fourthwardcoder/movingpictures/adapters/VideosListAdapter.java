@@ -52,7 +52,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
             //Get Video TextView info
             holder.videoThumbImageView = (ImageView)convertView.findViewById(R.id.videoThumbImageView);
             holder.nameTextView = (TextView) convertView.findViewById(R.id.videoNameTextView);
-            holder.infoTextView = (TextView) convertView.findViewById(R.id.videoInfoTextView);
+            //holder.infoTextView = (TextView) convertView.findViewById(R.id.videoInfoTextView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
