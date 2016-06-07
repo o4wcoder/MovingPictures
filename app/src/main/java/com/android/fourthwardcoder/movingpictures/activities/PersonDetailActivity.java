@@ -31,15 +31,15 @@ public class PersonDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Change status bar color
-        Util.setStatusBarColor(this);
+       // Util.setStatusBarColor(this);
 
         //Add parent that called Movie Activity to stack
         parents.push(getClass());
 
         setContentView(R.layout.activity_actor_detail);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

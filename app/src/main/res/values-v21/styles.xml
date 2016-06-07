@@ -11,4 +11,7 @@
         <item name="android:windowTranslucentStatus">true</item>
 
     </style>
+
+    <style name="AppTheme.PersonDetail" parent="@style/AppTheme.MovieDetails">
+    </style>
 </resources>

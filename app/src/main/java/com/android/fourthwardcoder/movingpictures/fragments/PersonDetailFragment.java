@@ -1,22 +1,34 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.graphics.Palette;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.transition.Transition;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -25,6 +37,7 @@ import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 
@@ -41,6 +54,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
     /*                          Constants                                */
     /*********************************************************************/
     private static final String TAG = PersonDetailFragment.class.getSimpleName();
+    private static final int TEXT_FADE_DURATION = 500;
 
     /*********************************************************************/
     /*                          Local Data                               */
@@ -55,6 +69,9 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mFilmographyTextView;
     TextView mPhotosTextView;
     Person mPerson;
+
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private NestedScrollView mNestedScrollView;
 
     public PersonDetailFragment() {
     }
@@ -73,10 +90,15 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
         final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
 
+        //Get CollapsingToolbarLayout
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);
+        //Get NestedScrollView;
+        mNestedScrollView = (NestedScrollView)view.findViewById(R.id.scrollview);
+
         //Person Profile Image
         mProfileImageView = (ImageView) view.findViewById(R.id.profileImageView);
         //Person Name
-        mNameTextView = (TextView) view.findViewById(R.id.nameTextView);
+        mNameTextView = (TextView) view.findViewById(R.id.detail_person_name_text_view);
         //Person Birth Date
         mBornDateTextView = (TextView) view.findViewById(R.id.bornDateTextView);
         //Person Birth Place
@@ -85,7 +107,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
         mDeathDateTextView = (TextView) view.findViewById(R.id.deathDateTextView);
 
         //Person Biography Content
-        mBiographyContentTextView = (ExpandableTextView) view.findViewById(R.id.biographyContentExpandableTextView);
+        mBiographyContentTextView = (ExpandableTextView) view.findViewById(R.id.person_biography_exp_text_view);
 
         mWebpageTextView = (TextView) view.findViewById(R.id.webPageTextView);
         //Person Filmography
@@ -121,6 +143,22 @@ public class PersonDetailFragment extends Fragment implements Constants {
             connectToast.show();
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
+
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    mNameTextView.setAlpha(0f);
+                }
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    Log.e(TAG,"Transition end. Scan in FAB");
+                    mNameTextView.animate().setDuration(TEXT_FADE_DURATION).alpha(1f);
+                }
+            });
+        }
         return view;
     }
 
@@ -146,7 +184,38 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
                 //Store local copy of Person object
                 mPerson = person;
-                Picasso.with(getActivity()).load(person.getProfileImagePath()).into(mProfileImageView);
+                Picasso.with(getActivity()).load(person.getProfileImagePath()).into(mProfileImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable)mProfileImageView.getDrawable()).getBitmap();
+
+                        if(bitmap != null) {
+                            Palette p = Palette.generate(bitmap, 12);
+                            //   mMutedColor = p.getDarkMutedColor(0xFF333333);
+
+                            //Set title and colors for collapsing toolbar
+                            mCollapsingToolbarLayout.setTitle(mPerson.getName());
+                            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+                            //Set content descriptioni for toolbar/title
+                            mCollapsingToolbarLayout.setContentDescription(mPerson.getName());
+
+                            //Set pallet colors when toolbar is collapsed
+                            int primaryColor = getResources().getColor(R.color.appPrimaryColor);
+                            int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
+                            int accentColor = getResources().getColor(R.color.appAccentColor);
+                            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
+                            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
 
                 //Set title of Movie on Action Bar
                 getActivity().setTitle(person.getName());
@@ -166,28 +235,32 @@ public class PersonDetailFragment extends Fragment implements Constants {
                             Util.reverseDateString(mPerson.getDeathday()));
                     mDeathDateTextView.setText(deathDate);
                 } else {
-                    mDeathDateTextView.setVisibility(View.INVISIBLE);
+                    mDeathDateTextView.setVisibility(View.GONE);
                 }
 
                 Spanned biography = Html.fromHtml("<b>" + getString(R.string.biography) + "</b>" + " " +
                         mPerson.getBiography());
                 mBiographyContentTextView.setText(biography);
 
-                SpannableString pageSS = new SpannableString(mPerson.getHomepage());
+                if(!(mPerson.getHomepage()).equals("")) {
+                    SpannableString pageSS = new SpannableString(mPerson.getHomepage());
 
-                ClickableSpan span = new ClickableSpan() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
-                        // Verify that the intent will resolve to an activity
-                        if (i.resolveActivity(getActivity().getPackageManager()) != null)
-                            startActivity(i);
-                    }
-                };
+                    ClickableSpan span = new ClickableSpan() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
+                            // Verify that the intent will resolve to an activity
+                            if (i.resolveActivity(getActivity().getPackageManager()) != null)
+                                startActivity(i);
+                        }
+                    };
 
-                pageSS.setSpan(span, 0, mPerson.getHomepage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                mWebpageTextView.setText(pageSS);
-                mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    pageSS.setSpan(span, 0, mPerson.getHomepage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    mWebpageTextView.setText(pageSS);
+                    mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                } else {
+                    mWebpageTextView.setVisibility(View.GONE);
+                }
             }
         }
     }

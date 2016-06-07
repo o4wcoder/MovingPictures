@@ -1,0 +1,22 @@
+<com.ms.square.android.expandabletextview.ExpandableTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/expandableTextView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    expandableTextView:animDuration="300"
+    expandableTextView:maxCollapsedLines="4">
+
+    <TextView
+        android:id="@id/expandable_text"
+        style="@style/detailLightBackgroundTextView" />
+
+
+    <ImageButton
+        android:id="@id/expand_collapse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="4dp"
+        android:background="@android:color/transparent" />
+</com.ms.square.android.expandabletextview.ExpandableTextView>

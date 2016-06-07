@@ -68,5 +68,6 @@
 
     <!-- Transitions -->
     <string name="trans_movie_poster">trans_movie_poster</string>
+    <string name="trans_person_poster">trans_person_poster</string>
 
 </resources>

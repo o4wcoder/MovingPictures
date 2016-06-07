@@ -143,28 +143,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.ms.square.android.expandabletextview.ExpandableTextView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/overviewContentExpandableTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        expandableTextView:animDuration="300"
-                        expandableTextView:maxCollapsedLines="4">
-
-                        <TextView
-                            android:id="@id/expandable_text"
-                            style="@style/detailLightBackgroundTextView" />
-
-
-                        <ImageButton
-                            android:id="@id/expand_collapse"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right|bottom"
-                            android:layout_margin="4dp"
-                            android:background="@android:color/transparent" />
-                    </com.ms.square.android.expandabletextview.ExpandableTextView>
+                    <include layout="@layout/expandable_text_view"
+                        android:id="@+id/detail_overview_exp_text_view"/>
 
                     <TextView
                         android:id="@+id/genreTextView"
@@ -301,6 +281,7 @@
                 <TextView
                     android:id="@+id/castTextView"
                     style="@style/detailTextView"
+
                     android:layout_below="@+id/directorTextView"
                     android:layout_toRightOf="@+id/posterImageView" />
 

@@ -254,7 +254,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
         mDirectorTextView = (TextView) view.findViewById(R.id.directorTextView);
         mCastTextView = (TextView) view.findViewById(R.id.castTextView);
         mReleaseDateTextView = (TextView) view.findViewById(R.id.releaseDateTextView);
-        mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.overviewContentExpandableTextView);
+        mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.detail_overview_exp_text_view);
         mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
         mRevenueTextView = (TextView) view.findViewById(R.id.revenueTextView);
         mReviewsTextView = (TextView) view.findViewById(R.id.reviewsTextView);
@@ -302,11 +302,11 @@ public class MovieDetailFragment extends Fragment implements Constants,
             public void onClick(View v) {
 
                 if (v.equals(mCast1ImageView)) {
-                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId());
+                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId(),mCast1ImageView);
                 } else if (v.equals(mCast2ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId());
+                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId(),mCast2ImageView);
                 } else if (v.equals(mCast3ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId());
+                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId(),mCast3ImageView);
                 }
             }
         };
@@ -458,7 +458,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
                 //Got the data, can create share menu if there are videos
                 //   setHasOptionsMenu(true);
                 //Set title of Movie on Action Bar
-                getActivity().setTitle(mMovie.getTitle());
+              //  getActivity().setTitle(mMovie.getTitle());
 
                 Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView, new Callback() {
                     @Override

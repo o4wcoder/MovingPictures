@@ -4,4 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="detail_horizontal_margin">0dp</dimen>
+
+    <!-- Detail UI margins -->
+    <dimen name="detail_title_vert_padding">16dp</dimen>
+    <dimen name="detail_title_horiz_padding">16dp</dimen>
+    <dimen name="detail_title_horiz_padding_right">80dp</dimen>
 </resources>

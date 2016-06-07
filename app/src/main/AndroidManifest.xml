@@ -37,6 +37,7 @@
             android:name="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity"
             android:label="@string/title_activity_actor_detail"
             android:launchMode="singleTop"
+            android:theme="@style/AppTheme.PersonDetail"
             android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -100,6 +101,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity" />
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d7b07e10152213ba68ccb9155de07f4ee46527b0" />
     </application>
 
 </manifest>

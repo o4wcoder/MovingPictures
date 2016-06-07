@@ -1,133 +1,145 @@
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.android.fourthwardcoder.movingpictures.fragments.PersonDetailFragment"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#e6e6e6">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".fragments.PersonDetailFragment">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="4dp">
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        style="@style/detailLayoutSection">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/profileImageView"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:layout_weight="2" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:id="@+id/nameTextView"
-                android:textSize="20dp"
-                android:textAlignment="center"
-                android:padding="2dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="Born Date"
-                android:id="@+id/bornDateTextView" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:text="Born Place"
-                android:id="@+id/bornPlaceTextView" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Death Date"
-                android:id="@+id/deathDateTextView"
-                android:padding="2dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/webPageTextView"
-                android:padding="2dp" />
-
-        </LinearLayout>
-    </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            style="@style/detailLayoutSection">
+            android:layout_height="match_parent"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.ms.square.android.expandabletextview.ExpandableTextView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/biographyContentExpandableTextView"
+
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:adjustViewBounds="true"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:transitionName="@string/trans_person_poster"/>
+
+            <TextView
+                android:id="@+id/detail_person_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:fontFamily="sans-serif-condensed"
+                android:lineSpacingMultiplier="0.9"
+                android:paddingBottom="@dimen/detail_title_vert_padding"
+                android:paddingLeft="@dimen/detail_title_horiz_padding"
+                android:paddingRight="@dimen/detail_title_horiz_padding_right"
+                android:paddingStart="@dimen/detail_title_horiz_padding"
+                android:paddingEnd="@dimen/detail_title_horiz_padding_right"
+                android:paddingTop="@dimen/detail_title_vert_padding"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:shadowColor="#000"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="20"/>
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                expandableTextView:maxCollapsedLines="4"
-                expandableTextView:animDuration="300">
+                android:layout_marginBottom="4dp">
+
+            <LinearLayout
+                style="@style/detailLayoutSection"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+
+                <include layout="@layout/expandable_text_view"
+                    android:id="@+id/person_biography_exp_text_view"></include>
 
                 <TextView
-                    android:id="@id/expandable_text"
-                    android:layout_width="match_parent"
+                    android:id="@+id/bornDateTextView"
+                    style="@style/detailLightBackgroundTextView"/>
+
+                <TextView
+                    android:id="@+id/bornPlaceTextView"
+                    style="@style/detailLightBackgroundTextView" />
+
+                <TextView
+                    android:id="@+id/deathDateTextView"
+                    style="@style/detailLightBackgroundTextView" />
+
+                <TextView
+                    android:id="@+id/webPageTextView"
+                    style="@style/detailLightBackgroundTextView" />
+            </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                style="@style/detailLayoutSection"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/filmographyTextView"
+                    style="@style/headerLinkTextView"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp" />
-                <ImageButton
-                    android:id="@id/expand_collapse"
-                    android:layout_width="wrap_content"
+                    android:text="@string/filmography" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/detailLayoutSection"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/photosTextView"
+                    style="@style/headerLinkTextView"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="right|bottom"
-                    android:background="@android:color/transparent"/>
-            </com.ms.square.android.expandabletextview.ExpandableTextView>
+                    android:text="@string/photos" />
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            style="@style/detailLayoutSection">
+    </android.support.v4.widget.NestedScrollView>
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/filmography"
-                android:id="@+id/filmographyTextView"
-                style="@style/headerLinkTextView"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            style="@style/detailLayoutSection">
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/photos"
-                android:id="@+id/photosTextView"
-                style="@style/headerLinkTextView"/>
-        </LinearLayout>
-</LinearLayout>
-
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

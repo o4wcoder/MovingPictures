@@ -216,7 +216,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                         tvShow.getCreatedByString());
                 mCreatedByTextView.setText(createdBy);
 
-                Util.setCastLinks(getActivity(), mTvShow, mCastTextView, ENT_TYPE_TV);
+               // Util.setCastLinks(getActivity(), mTvShow, mCastTextView, ENT_TYPE_TV);
 
                 mRatingTextView.setText(String.valueOf(mTvShow.getRating()) + "/10");
 

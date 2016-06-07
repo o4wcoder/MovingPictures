@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -13,6 +15,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
@@ -85,11 +88,16 @@ public class Util implements Constants {
      * @param context context of calling activity
      * @param id      id of person
      */
-    public static void startActorDetailActivity(Context context, int id) {
+    public static void startActorDetailActivity(Activity context, int id, ImageView imageView) {
 
         Intent i = new Intent(context,PersonDetailActivity.class);
         i.putExtra(EXTRA_PERSON_ID,id);
-        context.startActivity(i);
+
+        ActivityOptionsCompat activityOptions =
+                ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+                        new Pair<View, String>(imageView, context.getString(R.string.trans_person_poster)));
+
+        context.startActivity(i,activityOptions.toBundle());
     }
 
     /**
@@ -98,21 +106,21 @@ public class Util implements Constants {
      * @param passId      id of movie/tv show
      * @return            Clickable span for the cast name
      */
-    private static ClickableSpan createClickablSpan(Context passContext, int passId) {
-
-        final Context context = passContext;
-        final int id = passId;
-        ClickableSpan span = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-
-                startActorDetailActivity(context,id);
-            }
-        };
-
-        return span;
-
-    }
+//    private static ClickableSpan createClickablSpan(Context passContext, int passId) {
+//
+//        final Context context = passContext;
+//        final int id = passId;
+//        ClickableSpan span = new ClickableSpan() {
+//            @Override
+//            public void onClick(View textView) {
+//
+//                startActorDetailActivity(context,id);
+//            }
+//        };
+//
+//        return span;
+//
+//    }
 
     public static void showCastListActivity(Context context, Movie movie, final int entType) {
 
@@ -161,14 +169,14 @@ public class Util implements Constants {
                 numOfActors = movie.getActors().size();
 
             int spanStart = 6;
-            for (int i = 0; i < numOfActors; i++) {
-                ClickableSpan span = createClickablSpan(context, movie.getActors().get(i).getId());
-
-                int spanEnd = spanStart + movie.getActors().get(i).getName().length();
-
-                castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spanStart = spanEnd + 2;
-            }
+//            for (int i = 0; i < numOfActors; i++) {
+//                ClickableSpan span = createClickablSpan(context, movie.getActors().get(i).getId());
+//
+//                int spanEnd = spanStart + movie.getActors().get(i).getName().length();
+//
+//                castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                spanStart = spanEnd + 2;
+//            }
 
             //More link to the full list of cast members
             ClickableSpan spanMore = new ClickableSpan() {
