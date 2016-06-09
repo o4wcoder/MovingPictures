@@ -14,5 +14,6 @@
 
     <style name="AppTheme.PersonDetail" parent="@style/AppTheme.MovieDetails">
     </style>
-    
+
+    <style name="AppTheme.PersonPhotoDetail" parent="@style/AppTheme.MovieDetails"></style>
 </resources>

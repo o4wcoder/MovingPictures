@@ -18,6 +18,8 @@
     <style name="AppTheme.Main" parent="@style/AppTheme"></style>
 
     <style name="AppTheme.MovieDetails" parent="@style/AppTheme"></style>
+    <style name="AppTheme.PersonDetail" parent="@style/AppTheme"></style>
+    <style name="AppTheme.PersonPhotoDetail" parent="@style/AppTheme"></style>
 
     <!--
     <style name="MyActionBarTabs" parent="@style/Widget.AppCompat.ActionBar.TabView">

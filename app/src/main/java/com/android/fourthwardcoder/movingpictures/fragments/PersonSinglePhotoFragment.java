@@ -56,7 +56,7 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.movie_image, container, false);
+        View view = inflater.inflate(R.layout.person_image, container, false);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.movie_imageView);
 

@@ -41,12 +41,12 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_pager);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Change status bar color
-        Util.setStatusBarColor(this);
+      //  Util.setStatusBarColor(this);
 
         mPhotoList = getIntent().getParcelableArrayListExtra(EXTRA_PERSON_PHOTO);
         String personName = getIntent().getStringExtra(EXTRA_PERSON_NAME);

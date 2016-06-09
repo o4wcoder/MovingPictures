@@ -20,7 +20,7 @@ public class PersonPhotosActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         //Change status bar color
-        Util.setStatusBarColor(this);
+        //Util.setStatusBarColor(this);
 
         setContentView(R.layout.activity_person_photos);
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
