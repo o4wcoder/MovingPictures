@@ -14,6 +14,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +29,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.adapters.MovieImageAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.MovieImageListViewAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.MovieListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
@@ -69,7 +72,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     /**************************************************/
     /*                Local Data                      */
     /**************************************************/
-    GridView mGridView;
+  //  GridView mGridView;
+    RecyclerView mRecyclerView;
     ArrayList<Movie> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
@@ -109,26 +113,28 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
 
         //Get main Gridview and set up click listener
-        mGridView = (GridView) view.findViewById(R.id.gridView);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //Get selected movie from the GridView
-                Movie movie = mMovieList.get(position);
-                //Start intent to bring up Details Activity
-                // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
-                //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-                //startActivity(i);
-                Log.e(TAG,"onClick() for movie list. Try and get imageview");
-                ImageView posterImageView = (ImageView)view.findViewById(R.id.movie_imageView);
-                Log.e(TAG,"onClick() got image, callback to activity to start detail activity");
-                ((Callback) getActivity()).onItemSelected(movie,posterImageView);
-            }
-        });
-
+//        mGridView = (GridView) view.findViewById(R.id.gridView);
+//        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                //Get selected movie from the GridView
+//                Movie movie = mMovieList.get(position);
+//                //Start intent to bring up Details Activity
+//                // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
+//                //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
+//                //startActivity(i);
+//                Log.e(TAG,"onClick() for movie list. Try and get imageview");
+//                ImageView posterImageView = (ImageView)view.findViewById(R.id.movie_imageView);
+//                Log.e(TAG,"onClick() got image, callback to activity to start detail activity");
+//                ((Callback) getActivity()).onItemSelected(movie,posterImageView);
+//            }
+//        });
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.movie_list_recycler_view);
+        //Set Layout Manager for RecyclerView
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         //Make sure we have a gridview
-        if (mGridView != null) {
+        if (mRecyclerView != null) {
 
             //We don't have any movies, go fetch them
             if (mMovieList == null)
@@ -229,7 +235,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             String sortOrder = sortList[mSortOrder];
             getActivity().setTitle(sortOrder);
             //Fetch new set of movies based on sort order
-            if (mGridView != null)
+            if (mRecyclerView != null)
                 if (mSortOrder == 4) {
                     //Get Favorites
                     getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
@@ -298,7 +304,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private void setMovieAdapter(ArrayList<Movie> movieList) {
 
-        if (getActivity() != null && mGridView != null) {
+        if (getActivity() != null && mRecyclerView != null) {
 
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
@@ -306,8 +312,21 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                 //Store global copy
                 mMovieList = movieList;
-                MovieImageAdapter adapter = new MovieImageAdapter(getActivity().getApplicationContext(), movieList);
-                mGridView.setAdapter(adapter);
+                //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
+                MovieListAdapter adapter = new MovieListAdapter(getActivity(), mMovieList, new MovieListAdapter.MovieListAdapterOnClickHandler() {
+                    @Override
+                    public void onMovieClick(Movie movie, MovieListAdapter.MovieListAdapterViewHolder vh) {
+                        Log.e(TAG, "onClick RecyclerView movie list");
+                        //                //Get selected movie from the GridView
+                        //Start intent to bring up Details Activity
+
+                        Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
+                        ((Callback) getActivity()).onItemSelected(movie,vh.movieThumbImageView);
+                    }
+                });
+
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.scheduleLayoutAnimation();
                 Log.e(TAG,"Movie list not null, if there is anthing in the list set 1st pos");
                 //If we are in two pane mode, set the first movie in the details fragment
                 if (mMovieList.size() > 0) {

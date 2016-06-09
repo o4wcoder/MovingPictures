@@ -23,8 +23,8 @@ public class PersonPhotosActivity extends ActionBarActivity {
         Util.setStatusBarColor(this);
 
         setContentView(R.layout.activity_person_photos);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

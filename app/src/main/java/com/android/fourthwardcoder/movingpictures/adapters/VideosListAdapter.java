@@ -63,7 +63,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
 
         Picasso.with(mContext).load(MovieDbAPI.buildYoutubeThumbnailUri(video)).into(holder.videoThumbImageView);
         holder.nameTextView.setText(video.getName());
-        holder.infoTextView.setText(video.getType() + ": " + String.valueOf(video.getSize()) + "p");
+//        holder.infoTextView.setText(video.getType() + ": " + String.valueOf(video.getSize()) + "p");
 
         return convertView;
     }

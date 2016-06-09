@@ -219,9 +219,11 @@ public class MovieDetailFragment extends Fragment implements Constants,
                 public void onTransitionEnd(Transition transition) {
                     Log.e(TAG,"Transition end. Scan in FAB");
                   mFavoritesFAB.setVisibility(View.VISIBLE);
-                    Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
-                            R.anim.scale_in_image);
-                    mFavoritesFAB.startAnimation(scaleAnimation);
+                    if(getActivity() != null) {
+                        Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
+                                R.anim.scale_in_image);
+                        mFavoritesFAB.startAnimation(scaleAnimation);
+                    }
                 }
             });
         }

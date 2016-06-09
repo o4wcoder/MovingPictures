@@ -14,24 +14,24 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- * Class MovieImageAdapter
+ * Class MovieImageListViewAdapter
  * Author: Chris Hare
  * Created: 8/27/2015
  * <p/>
  * ArrayAdapter used for the GridView that displays the movie posters on the main activity
  */
-public class MovieImageAdapter extends ArrayAdapter<Movie> {
+public class MovieImageListViewAdapter extends ArrayAdapter<Movie> {
 
     /****************************************************************/
     /*                       Constants                              */
     /****************************************************************/
-    private static final String TAG = MovieImageAdapter.class.getSimpleName();
+    private static final String TAG = MovieImageListViewAdapter.class.getSimpleName();
     /****************************************************************/
     /*                       Local Data                             */
     /****************************************************************/
     Context mContext;
 
-    public MovieImageAdapter(Context context, ArrayList<Movie> movies) {
+    public MovieImageListViewAdapter(Context context, ArrayList<Movie> movies) {
         super(context, 0, movies);
 
         mContext = context;
