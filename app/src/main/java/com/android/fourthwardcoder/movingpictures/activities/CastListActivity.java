@@ -12,7 +12,7 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
  * Author: Chris Hare
  * Created: 9/25/15
  *
- * Activity to hold the Cast List of a Movie or TV show
+ * Activity to hold the Cast List of a MovieOld or TV show
  */
 public class CastListActivity extends ActionBarActivity {
 

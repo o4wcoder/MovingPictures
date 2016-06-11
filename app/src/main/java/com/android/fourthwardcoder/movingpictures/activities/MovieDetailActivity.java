@@ -3,12 +3,14 @@ package com.android.fourthwardcoder.movingpictures.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.util.Stack;
 
@@ -42,21 +44,23 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         //Start postpone element transition
         supportPostponeEnterTransition();
 
-        //Add parent that called Movie Activity to stack
+        //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 
         if(savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
-                //Get Movie object from Main Activity
-                Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-                arguments.putParcelable(EXTRA_MOVIE, movie);
-            }
-            else {
+//            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
+//                Log.e(TAG,"--------------- Getting whol object movie");
+//                //Get MovieOld object from Main Activity
+//                Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+//                arguments.putParcelable(EXTRA_MOVIE, movie);
+//            }
+//            else {
+                Log.e(TAG,"-----Just have the id");
                 //Must have just the id of the movie
                 int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
                 arguments.putInt(EXTRA_MOVIE_ID,movieId);
-            }
+      //      }
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
 

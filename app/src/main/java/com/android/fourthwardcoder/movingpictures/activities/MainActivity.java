@@ -18,6 +18,7 @@ import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
 
     @Override
-    public void onItemSelected(Movie movie, ImageView imageView) {
+    public void onItemSelected(int movieId, ImageView imageView) {
 
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             //transaction
             Log.e(TAG,"onItemSelected(): with twoPane");
             Bundle args = new Bundle();
-            args.putParcelable(EXTRA_MOVIE, movie);
+            args.putInt(EXTRA_MOVIE_ID, movieId);
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                     .commit();
         } else {
             Intent i = new Intent(this, MovieDetailActivity.class);
-            i.putExtra(EXTRA_MOVIE, movie);
+            i.putExtra(EXTRA_MOVIE_ID,movieId);
 
 
             //Start shared element transition for the movie poster

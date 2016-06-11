@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 9/2/2015.
  * <p/>
- * Adapter to display a Movie or TV shows Credit info in a listview of the Filmography
+ * Adapter to display a MovieOld or TV shows Credit info in a listview of the Filmography
  */
 public class CreditListAdapter extends ArrayAdapter<Credit> {
 
@@ -61,7 +61,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //Get each Movie using the position in the ArrayAdapter
+        //Get each MovieOld using the position in the ArrayAdapter
         Credit credit = getItem(position);
 
         //Call Picasso to load it into the imageView

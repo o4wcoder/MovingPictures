@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
@@ -24,7 +23,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Layout;
 import android.text.Spanned;
 import android.transition.Transition;
 import android.util.Log;
@@ -37,18 +35,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
@@ -56,6 +47,8 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.Video;
@@ -65,6 +58,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 /**
@@ -148,20 +144,23 @@ public class MovieDetailFragment extends Fragment implements Constants,
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-        //Get Movie passed from Main Activity
+        //Get MovieOld passed from Main Activity
         Bundle arguments = getArguments();
         if (arguments != null) {
 
-            if (arguments.containsKey(EXTRA_MOVIE)) {
-                //Got Movie Object from Main Activity
-                mMovie = arguments.getParcelable(EXTRA_MOVIE);
-            } else {
-                //Got Movie ID, will need to fetch data
+//            if (arguments.containsKey(EXTRA_MOVIE)) {
+//                //Got MovieOld Object from Main Activity
+//                mMovie = arguments.getParcelable(EXTRA_MOVIE);
+//                Log.e(TAG,"Got movie id from args = "+ mMovie.getId());
+//            } else {
+                //Got MovieOld ID, will need to fetch data
                 mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+            Log.e(TAG,"onCreateView(): got movie id = " + mMovieId);
                 mFetchData = true;
 
-            }
+          //  }
         }
+
 
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);
@@ -248,7 +247,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
             });
         }
 
-        //Set textviews with Movie details
+        //Set textviews with MovieOld details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
         mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
         mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
@@ -286,7 +285,8 @@ public class MovieDetailFragment extends Fragment implements Constants,
         if(mFetchData) {
             if (mVideosRecylerView != null) {
                 if (Util.isNetworkAvailable(getActivity())) {
-                    new FetchMovieTask().execute(mMovieId);
+                   // new FetchMovieTask().execute(mMovieId);
+                    getMovie(mMovieId);
                 } else {
                     Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
                             getString(R.string.toast_network_error), Toast.LENGTH_LONG);
@@ -295,7 +295,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
             }
         }
         else {
-            //Got the entire Movie object passed to fragment. Just set the layout.
+            //Got the entire MovieOld object passed to fragment. Just set the layout.
             setLayout();
         }
 
@@ -303,13 +303,13 @@ public class MovieDetailFragment extends Fragment implements Constants,
             @Override
             public void onClick(View v) {
 
-                if (v.equals(mCast1ImageView)) {
-                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId(),mCast1ImageView);
-                } else if (v.equals(mCast2ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId(),mCast2ImageView);
-                } else if (v.equals(mCast3ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId(),mCast3ImageView);
-                }
+//                if (v.equals(mCast1ImageView)) {
+//                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId(),mCast1ImageView);
+//                } else if (v.equals(mCast2ImageView)) {
+//                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId(),mCast2ImageView);
+//                } else if (v.equals(mCast3ImageView)) {
+//                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId(),mCast3ImageView);
+//                }
             }
         };
 
@@ -333,45 +333,76 @@ public class MovieDetailFragment extends Fragment implements Constants,
         return view;
     }
 
+    private void getMovie(int id){
+
+        Log.e(TAG,"getMovie() with movie id = " + id);
+        Call<Movie> call = MovieDbAPI.getMovieApiService().getMovie(id, MovieDbAPI.API_KEY_MOVIE_DB);
+
+        Log.e(TAG,"Call url = " + call.request().url());
+
+        call.enqueue(new retrofit2.Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+
+                if (response.isSuccessful()) {
+                   Log.e(TAG, "onResponse()");
+                    mMovie = response.body();
+                    setLayout();
+
+                } else {
+
+                    //!!!TODO. Do something with the failed response
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+                Log.e(TAG, "onFailure() " + t.getMessage());
+
+            }
+        });
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 
-        //Dont' display the share menu option if there are no videos to share
-        if(mMovie.getVideos() != null) {
-            if (mMovie.getVideos().size() > 0) {
-                inflater.inflate(R.menu.menu_share, menu);
-
-                //Retrieve teh share menu item
-                MenuItem menuItem = menu.findItem(R.id.action_share);
-
-                //Get the provider and hold onto it to set/change the share intent.
-                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
-                        .getActionProvider(menuItem);
-
-                //Attach and intent to this ShareActionProvider
-                if (shareActionProvider != null) {
-                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(), mMovie));
-                } else {
-                    Log.e(TAG, "Share Action Provider is null!");
-                }
-            }
-        }
+//        //Dont' display the share menu option if there are no videos to share
+//        if(mMovie.getVideos() != null) {
+//            if (mMovie.getVideos().size() > 0) {
+//                inflater.inflate(R.menu.menu_share, menu);
+//
+//                //Retrieve teh share menu item
+//                MenuItem menuItem = menu.findItem(R.id.action_share);
+//
+//                //Get the provider and hold onto it to set/change the share intent.
+//                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
+//                        .getActionProvider(menuItem);
+//
+//                //Attach and intent to this ShareActionProvider
+//                if (shareActionProvider != null) {
+//                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(), mMovie));
+//                } else {
+//                    Log.e(TAG, "Share Action Provider is null!");
+//                }
+//            }
+//        }
     }
 
+
     /**
-     * Add this Movie to the Favorites DB
+     * Add this MovieOld to the Favorites DB
      */
     private void addMovieToFavoritesDb() {
 
-        ContentValues movieValues = mMovie.getContentValues();
-
-        //Insert Movie data to the content provider
-        Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
+//        ContentValues movieValues = mMovie.getContentValues();
+//
+//        //Insert MovieOld data to the content provider
+//        Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
     }
 
     /**
-     * Remove this Movie from the Favorites DB
+     * Remove this MovieOld from the Favorites DB
      */
     private void removeMovieFromDb() {
 
@@ -391,7 +422,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
      */
     private boolean checkIfFavorite() {
 
-        //Get projection with Movie ID
+        //Get projection with MovieOld ID
         String[] projection =
                 {
                         MovieContract.MovieEntry.COLUMN_ID
@@ -454,18 +485,19 @@ public class MovieDetailFragment extends Fragment implements Constants,
      */
     private void setLayout() {
 
+        Log.e(TAG,"setLayout()");
         if (getActivity() != null && mVideosRecylerView != null) {
-            if (mMovie != null) {
-
+          //  if (mMovie != null) {
+                 //  Log.e(TAG,"movie ")
                 //Got the data, can create share menu if there are videos
                 //   setHasOptionsMenu(true);
-                //Set title of Movie on Action Bar
+                //Set title of MovieOld on Action Bar
               //  getActivity().setTitle(mMovie.getTitle());
 
-                Picasso.with(getActivity()).load(mMovie.getBackdropPath()).into(mBackdropImageView, new Callback() {
+                Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
                     @Override
                     public void onSuccess() {
-
+                         Log.e(TAG,"Loaded backdrop");
                         //Set up color scheme
                         setPaletteColors();
                         //Start Shared Image transition now that we have the backdrop
@@ -497,67 +529,67 @@ public class MovieDetailFragment extends Fragment implements Constants,
                 ;
                 Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
-                mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
-                mTitleTextView.setText(mMovie.getTitle());
-                mReleaseYearTextView.setText(mMovie.getReleaseYear());
-
-                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
-                mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
-                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getRating(), "10"));
-
-                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
-                        mMovie.getDirectorString());
-                mDirectorTextView.setText(director);
-
-                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
-
-                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-                        Util.reverseDateString(mMovie.getReleaseDate()));
-                mReleaseDateTextView.setText(releaseDate);
-
-                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
-                        mMovie.getOverview());
-                mOverviewTextView.setText(synopsis);
-
-                Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
-                        mMovie.getGenreString());
-
-                mGenreTextView.setText(genre);
-
-                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
-                        mMovie.getRevenue());
-                mRevenueTextView.setText(revenue);
-
-                if (mMovie.getVideos().size() > 0) {
-                    Log.e(TAG, "setLayout(): Got some videos, setup adapters");
-//                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
-//                    mListView.setAdapter(mVideoListAdapter);
-//                    setListViewSize(mListView);
-
-                    mVideoListAdapter = new VideoListAdapter(getActivity(), mMovie.getVideos(), this);
-                    mVideosRecylerView.setAdapter(mVideoListAdapter);
-                } else
-                    mVideoLayout.setVisibility(View.GONE);
-
-
-                //        //See if this is a favorite movie and set the state of the star button
-                Log.e(TAG, "Check if favorite movie");
-                if (checkIfFavorite()) {
-                    //  mFavoritesToggleButton.setChecked(true);
-                    Log.e(TAG, "Already favorite, set tag to true");
-                    mFavoritesFAB.setTag(true);
-                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
-                } else {
-                    //  mFavoritesToggleButton.setChecked(false);
-                    Log.e(TAG, "Not favorite, set tag to false");
-                    mFavoritesFAB.setTag(false);
-                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
-                }
-
-                Log.e(TAG,"Start up FetchPersonTask!!!");
-                new FetchPersonTask().execute(mMovie);
+//                mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
+//                mTitleTextView.setText(mMovie.getTitle());
+//                mReleaseYearTextView.setText(mMovie.getReleaseYear());
+//
+//                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
+//                mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
+//                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getRating(), "10"));
+//
+//                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
+//                        mMovie.getDirectorString());
+//                mDirectorTextView.setText(director);
+//
+//                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
+//
+//                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
+//                        Util.reverseDateString(mMovie.getReleaseDate()));
+//                mReleaseDateTextView.setText(releaseDate);
+//
+//                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
+//                        mMovie.getOverview());
+//                mOverviewTextView.setText(synopsis);
+//
+//                Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
+//                        mMovie.getGenreString());
+//
+//                mGenreTextView.setText(genre);
+//
+//                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
+//                        mMovie.getRevenue());
+//                mRevenueTextView.setText(revenue);
+//
+//                if (mMovie.getVideos().size() > 0) {
+//                    Log.e(TAG, "setLayout(): Got some videos, setup adapters");
+////                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
+////                    mListView.setAdapter(mVideoListAdapter);
+////                    setListViewSize(mListView);
+//
+//                    mVideoListAdapter = new VideoListAdapter(getActivity(), mMovie.getVideos(), this);
+//                    mVideosRecylerView.setAdapter(mVideoListAdapter);
+//                } else
+//                    mVideoLayout.setVisibility(View.GONE);
+//
+//
+//                //        //See if this is a favorite movie and set the state of the star button
+//                Log.e(TAG, "Check if favorite movie");
+//                if (checkIfFavorite()) {
+//                    //  mFavoritesToggleButton.setChecked(true);
+//                    Log.e(TAG, "Already favorite, set tag to true");
+//                    mFavoritesFAB.setTag(true);
+//                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
+//                } else {
+//                    //  mFavoritesToggleButton.setChecked(false);
+//                    Log.e(TAG, "Not favorite, set tag to false");
+//                    mFavoritesFAB.setTag(false);
+//                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
+//                }
+//
+//                Log.e(TAG,"Start up FetchPersonTask!!!");
+//                new FetchPersonTask().execute(mMovie);
             }
-        }
+       // }
 
     }
 
@@ -633,98 +665,98 @@ public class MovieDetailFragment extends Fragment implements Constants,
     /*********************************************************************/
     /*                         Inner Classes                             */
     /*********************************************************************/
-    private class FetchMovieTask extends AsyncTask<Integer, Void, Movie> {
+//    private class FetchMovieTask extends AsyncTask<Integer, Void, MovieOld> {
+//
+//        //ProgressDialog to be displayed while the data is being fetched and parsed
+//        private ProgressDialog progressDialog;
+//
+//        @Override
+//        protected void onPreExecute() {
+//
+//            //Start ProgressDialog on Main Thread UI before precessing begins
+//            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
+//        }
+//
+//        @Override
+//        protected MovieOld doInBackground(Integer... params) {
+//
+//            //Get ID of movie
+//            int movieId = params[0];
+//             Log.e(TAG,"Fetch MovieOld TAsk doInBackground with movie id " + movieId);
+//            //Query and build MovieOld Object
+//            return MovieDbAPI.getMovie(movieId);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(MovieOld movie) {
+//
+//            //Done processing the movie query, kill Progress Dialog on main UI
+//            progressDialog.dismiss();
+//
+//            mMovie = movie;
+//            setLayout();
+//
+//
+//        }
+//    }
 
-        //ProgressDialog to be displayed while the data is being fetched and parsed
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-
-            //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
-        }
-
-        @Override
-        protected Movie doInBackground(Integer... params) {
-
-            //Get ID of movie
-            int movieId = params[0];
-             Log.e(TAG,"Fetch Movie TAsk doInBackground with movie id " + movieId);
-            //Query and build Movie Object
-            return MovieDbAPI.getMovie(movieId);
-        }
-
-        @Override
-        protected void onPostExecute(Movie movie) {
-
-            //Done processing the movie query, kill Progress Dialog on main UI
-            progressDialog.dismiss();
-
-            mMovie = movie;
-            setLayout();
-
-
-        }
-    }
-
-    private class FetchPersonTask extends AsyncTask<Movie, Void, ArrayList<Person>> {
-
-        @Override
-        protected ArrayList<Person> doInBackground(Movie... params) {
-
-            ArrayList<Person> personList = null;
-            //Get ID of movie
-            Movie movie = params[0];
-            int numOfActors = 3;
-
-            if(movie.getActors() != null) {
-                if (movie.getActors().size() < 3)
-                    numOfActors = movie.getActors().size();
-
-                personList = new ArrayList<>(numOfActors);
-                for (int i = 0; i < numOfActors; i++) {
-                    Person person = MovieDbAPI.getPerson(movie.getActors().get(i).getId());
-                    if (person != null)
-                        personList.add(person);
-
-                }
-
-                return personList;
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Person> personList) {
-
-            Log.e(TAG,"Set cast image and textviews");
-
-            if(personList != null) {
-                if (personList.size() == 3) {
-                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
-                    getCastThumbnails(personList.get(2).getProfileImagePath(), mCast3ImageView);
-                    mCast1TextView.setText(personList.get(0).getName());
-                    mCast2TextView.setText(personList.get(1).getName());
-                    mCast3TextView.setText(personList.get(2).getName());
-                } else if (personList.size() == 2) {
-                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
-                    mCast1TextView.setText(personList.get(0).getName());
-                    mCast2TextView.setText(personList.get(1).getName());
-                } else if (personList.size() == 3) {
-                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-                    mCast1TextView.setText(personList.get(0).getName());
-                }
-            } else {
-                //Did not return any cast. Don't show cast card.
-                mCastCardView.setVisibility(View.GONE);
-            }
-
-        }
-
-    }
+//    private class FetchPersonTask extends AsyncTask<MovieOld, Void, ArrayList<Person>> {
+//
+//        @Override
+//        protected ArrayList<Person> doInBackground(MovieOld... params) {
+//
+//            ArrayList<Person> personList = null;
+//            //Get ID of movie
+//            MovieOld movie = params[0];
+//            int numOfActors = 3;
+//
+//            if(movie.getActors() != null) {
+//                if (movie.getActors().size() < 3)
+//                    numOfActors = movie.getActors().size();
+//
+//                personList = new ArrayList<>(numOfActors);
+//                for (int i = 0; i < numOfActors; i++) {
+//                    Person person = MovieDbAPI.getPerson(movie.getActors().get(i).getId());
+//                    if (person != null)
+//                        personList.add(person);
+//
+//                }
+//
+//                return personList;
+//            }
+//
+//            return null;
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Person> personList) {
+//
+//            Log.e(TAG,"Set cast image and textviews");
+//
+//            if(personList != null) {
+//                if (personList.size() == 3) {
+//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+//                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
+//                    getCastThumbnails(personList.get(2).getProfileImagePath(), mCast3ImageView);
+//                    mCast1TextView.setText(personList.get(0).getName());
+//                    mCast2TextView.setText(personList.get(1).getName());
+//                    mCast3TextView.setText(personList.get(2).getName());
+//                } else if (personList.size() == 2) {
+//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+//                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
+//                    mCast1TextView.setText(personList.get(0).getName());
+//                    mCast2TextView.setText(personList.get(1).getName());
+//                } else if (personList.size() == 3) {
+//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
+//                    mCast1TextView.setText(personList.get(0).getName());
+//                }
+//            } else {
+//                //Did not return any cast. Don't show cast card.
+//                mCastCardView.setVisibility(View.GONE);
+//            }
+//
+//        }
+//
+//    }
 }

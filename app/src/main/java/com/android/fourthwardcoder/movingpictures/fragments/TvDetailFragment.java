@@ -201,7 +201,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                 mTvShow = tvShow;
                 //Set share menu if there are videos
                 setHasOptionsMenu(true);
-                //Set title of Movie on Action Bar
+                //Set title of MovieOld on Action Bar
                 String historyDate = getDateHistory(tvShow);
                 getActivity().setTitle(tvShow.getTitle() + " " + historyDate);
 

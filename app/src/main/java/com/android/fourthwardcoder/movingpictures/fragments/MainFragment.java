@@ -23,21 +23,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.adapters.MovieImageListViewAdapter;
 import com.android.fourthwardcoder.movingpictures.adapters.MovieListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
+import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Class MainFragment
@@ -65,7 +72,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     //Default sort type
     private static final int DEFAULT_SORT = 0;
 
-    //ID for Movie Favorites Loader
+    //ID for MovieOld Favorites Loader
     private static final int MOVIE_FAVORITES_LOADER = 0;
 
 
@@ -74,6 +81,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     /**************************************************/
   //  GridView mGridView;
     RecyclerView mRecyclerView;
+   // ArrayList<MovieOld> mMovieList = null;
     ArrayList<Movie> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
@@ -111,25 +119,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.e(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        //Get main Gridview and set up click listener
-//        mGridView = (GridView) view.findViewById(R.id.gridView);
-//        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                //Get selected movie from the GridView
-//                Movie movie = mMovieList.get(position);
-//                //Start intent to bring up Details Activity
-//                // Intent i = new Intent(getActivity(),MovieDetailActivity.class);
-//                //i.putExtra(EXTRA_MOVIE_ID, movie.getId());
-//                //startActivity(i);
-//                Log.e(TAG,"onClick() for movie list. Try and get imageview");
-//                ImageView posterImageView = (ImageView)view.findViewById(R.id.movie_imageView);
-//                Log.e(TAG,"onClick() got image, callback to activity to start detail activity");
-//                ((Callback) getActivity()).onItemSelected(movie,posterImageView);
-//            }
-//        });
+        //Set Up RecyclerView in Grid Layout
         mRecyclerView = (RecyclerView)view.findViewById(R.id.movie_list_recycler_view);
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
@@ -147,7 +137,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
                     if (Util.isNetworkAvailable(getActivity())) {
-                        new FetchPhotosTask().execute(mSortOrder);
+                        //new FetchPhotosTask().execute(mSortOrder);
+                        getMovieList(mSortOrder);
                     } else {
                         Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
                                 getString(R.string.toast_network_error), Toast.LENGTH_LONG);
@@ -241,7 +232,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
                     if(Util.isNetworkAvailable(getActivity())) {
-                        new FetchPhotosTask().execute(mSortOrder);
+                        //new FetchPhotosTask().execute(mSortOrder);
+                        getMovieList(mSortOrder);
                     }
                     else {
                         Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
@@ -270,7 +262,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         Log.e(TAG, "inside onLoadFinished");
-        setMovieAdapter(convertCursorToMovieList(cursor));
+      //  setMovieAdapter(convertCursorToMovieList(cursor));
     }
 
     @Override
@@ -278,13 +270,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-    private ArrayList<Movie> convertCursorToMovieList(Cursor cursor) {
+    private ArrayList<MovieOld> convertCursorToMovieList(Cursor cursor) {
 
         if(cursor != null) {
-            ArrayList<Movie> movieList = new ArrayList<>(cursor.getCount());
+            ArrayList<MovieOld> movieList = new ArrayList<>(cursor.getCount());
 
             while (cursor.moveToNext()) {
-                Movie movie = Movie.convertCursorToMovie(cursor);
+                MovieOld movie = MovieOld.convertCursorToMovie(cursor);
                 Log.e(TAG, "Conver favorite movie " + movie.getTitle());
                 movieList.add(movie);
             }
@@ -297,6 +289,45 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
+    private void getMovieList(int sortPos) {
+
+
+        if(getActivity() != null) {
+            Resources res = getResources();
+            String[] sortList = res.getStringArray(R.array.sort_url_list);
+            String sortOrder = sortList[sortPos];
+
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(MovieDbAPI.MOVIE_DB_URL)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+//            MovieService service = retrofit.create(MovieService.class);
+
+            Call<MovieList> call = MovieDbAPI.getMovieApiService().getMovieList(getSortType(sortPos), sortOrder, MovieDbAPI.API_KEY_MOVIE_DB);
+            Log.e(TAG, "Call url = " + call.request().url());
+
+            call.enqueue(new retrofit2.Callback<MovieList>() {
+                @Override
+                public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+
+                    if (response.isSuccessful()) {
+                        Log.e(TAG, "onResponse()");
+                        setMovieAdapter((ArrayList)response.body().getMovies());
+                    } else {
+
+                        //!!!TODO. Do something with the failed response
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MovieList> call, Throwable t) {
+                    Log.e(TAG, "onFailure() " + t.getMessage());
+
+                }
+            });
+        }
+    }
     /**
      * Set the adapter of the movie list
      *
@@ -304,12 +335,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private void setMovieAdapter(ArrayList<Movie> movieList) {
 
+        Log.e(TAG,"setMovieAdapter() Inside");
         if (getActivity() != null && mRecyclerView != null) {
 
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
             if (movieList != null) {
-
+                 Log.e(TAG,"setMovieAdapter(): Movie list is not null. Set adapter");
                 //Store global copy
                 mMovieList = movieList;
                 //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
@@ -321,13 +353,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         //Start intent to bring up Details Activity
 
                         Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
-                        ((Callback) getActivity()).onItemSelected(movie,vh.movieThumbImageView);
+                        ((Callback) getActivity()).onItemSelected(movie.getId(),vh.movieThumbImageView);
                     }
                 });
 
                 mRecyclerView.setAdapter(adapter);
                 mRecyclerView.scheduleLayoutAnimation();
-                Log.e(TAG,"Movie list not null, if there is anthing in the list set 1st pos");
+                Log.e(TAG,"MovieOld list not null, if there is anthing in the list set 1st pos");
                 //If we are in two pane mode, set the first movie in the details fragment
                 if (mMovieList.size() > 0) {
                     Log.e(TAG, "Calling on loadfinished");
@@ -349,105 +381,22 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST, mMovieList);
         super.onSaveInstanceState(savedInstanceState);
     }
-    /*****************************************************/
-    /*                Inner Classes                      */
-    /*****************************************************/
-    /**
-     * Class FetchPhotosTask
-     * <p/>
-     * Inner-class that extend AysncTask to pull movie data over the network.
-     * That data is return from the Movie DB API as JSON data. It is then parsed
-     * and stored in Movie objects that are put into and ArrayList. This is then displayed
-     * on a GridView.
-     * <p/>
-     * Input: Integer sort type
-     * Return: ArrayList of Movies
-     */
-    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<Movie>> {
 
 
-        @Override
-        protected void onPreExecute() {
+    private String getSortType(int sortType) {
 
-            //Start ProgressDialog on Main Thread UI before precessing begins
-            mProgressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
-        }
+        switch(sortType) {
 
-        @Override
-        protected ArrayList<Movie> doInBackground(Integer... params) {
-
-            Uri movieUri = null;
-            //We only pass one param for the sort order, so get the first one.
-            int sortPos = params[0];
-
-            //Get the sort order parameter from the sort order type
-            if(getActivity() != null) {
-                Resources res = getResources();
-                String[] sortList = res.getStringArray(R.array.sort_url_list);
-                String sortOrder = sortList[sortPos];
-
-                switch (sortPos) {
-
-                    //Sort by Popularity
-                    case 0:
-                        //Build URI String to query the database for a list of popular movies
-                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                                .appendPath(MovieDbAPI.PATH_MOVIE)
-                                .appendPath(MovieDbAPI.PATH_POPULAR)
-                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                                .build();
-                        break;
-                    //Sort by Upcoming
-                    case 1:
-                        //Build URI String to query the database for a list of upcoming movies
-                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                                .appendPath(MovieDbAPI.PATH_MOVIE)
-                                .appendPath(MovieDbAPI.PATH_UPCOMING)
-                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                                .build();
-                        break;
-                    //Sort by Now Playing
-                    case 2:
-                        //Build URI String to query the database for a list of now playing movies
-                        movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                                .appendPath(MovieDbAPI.PATH_MOVIE)
-                                .appendPath(MovieDbAPI.PATH_NOW_PLAYING)
-                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                                .build();
-                        break;
-                    //Sort by All Time Top Grossing
-                    case 3:
-                        //Build URI String to query the database for the list of top grossing movies
-                        movieUri = Uri.parse(MovieDbAPI.BASE_DISCOVER_URL).buildUpon()
-                                .appendQueryParameter(MovieDbAPI.PARAM_SORT, sortOrder)
-                                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                                .build();
-                        break;
-                }
-            }
-            else
-               Log.e(TAG,"!!!Activity is null! Can't get sort type!!!");
-
-            return MovieDbAPI.getMovieList(getActivity(), movieUri);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movieList) {
-
-            //Done processing the movie query, kill Progress Dialog on main UI
-            if(mProgressDialog != null){
-                if(mProgressDialog.isShowing())
-                   mProgressDialog.dismiss();
-            }
-
-            if ((getActivity() != null) && (movieList != null))
-                setMovieAdapter(movieList);
+            case 0:
+                return MovieDbAPI.PATH_POPULAR;
+            case 1:
+                return MovieDbAPI.PATH_UPCOMING;
+            case 2:
+                return MovieDbAPI.PATH_NOW_PLAYING;
+            default:
+                return MovieDbAPI.PATH_POPULAR;
         }
     }
-
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -457,7 +406,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(Movie movie,ImageView imageView);
+        void onItemSelected(int movieId, ImageView imageView);
 
         void onLoadFinished(Movie movie);
     }

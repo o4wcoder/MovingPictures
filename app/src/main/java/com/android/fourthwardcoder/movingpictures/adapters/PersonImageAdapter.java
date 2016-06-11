@@ -57,7 +57,7 @@ public class PersonImageAdapter extends ArrayAdapter<PersonPhoto> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //Get each Movie using the position in the ArrayAdapter
+        //Get each MovieOld using the position in the ArrayAdapter
         PersonPhoto photo = getItem(position);
 
         //Call Picasso to load it into the imageView

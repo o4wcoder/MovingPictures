@@ -217,7 +217,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     }
                 });
 
-                //Set title of Movie on Action Bar
+                //Set title of MovieOld on Action Bar
                 getActivity().setTitle(person.getName());
                 mNameTextView.setText(person.getName());
 

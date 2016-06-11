@@ -24,6 +24,7 @@ import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivit
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 
@@ -139,62 +140,62 @@ public class Util implements Constants {
      * @param passContext context of calling activity
      * @param passMovie   movie/tv object
      * @param textView    TextView to set the list of links
-     * @param entType     Entertainment type; Movie or TV Show.
+     * @param entType     Entertainment type; MovieOld or TV Show.
      */
-    public static void setCastLinks(Context passContext, Movie passMovie, TextView textView, final int entType) {
-
-        //Since this is a static method, need to create local versions of variables.
-        final Movie movie = passMovie;
-        final Context context = passContext;
-
-        //If there are no cast members, don't show anything in the textview
-        if(movie.getActors() != null) {
-            //If there are more than 3 actors, add the "More" link to get the rest of the cast
-            Spanned cast;
-            if (movie.getActors().size() > 3) {
-                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
-                        movie.getActorsString() + ", " + context.getString(R.string.more));
-            } else {
-                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
-                        movie.getActorsString());
-            }
-
-            //Get spannable string that links will be set to.
-            SpannableString castSS = new SpannableString(cast);
-
-            //Only going to display 3 actors. If there are less than 3 actors in the movie/tv
-            //show get the number in the list.
-            int numOfActors = 3;
-            if (movie.getActors().size() < 3)
-                numOfActors = movie.getActors().size();
-
-            int spanStart = 6;
-//            for (int i = 0; i < numOfActors; i++) {
-//                ClickableSpan span = createClickablSpan(context, movie.getActors().get(i).getId());
+//    public static void setCastLinks(Context passContext, Movie passMovie, TextView textView, final int entType) {
 //
-//                int spanEnd = spanStart + movie.getActors().get(i).getName().length();
+//        //Since this is a static method, need to create local versions of variables.
+//        final Movie movie = passMovie;
+//        final Context context = passContext;
 //
-//                castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                spanStart = spanEnd + 2;
+//        //If there are no cast members, don't show anything in the textview
+//        if(movie.getActors() != null) {
+//            //If there are more than 3 actors, add the "More" link to get the rest of the cast
+//            Spanned cast;
+//            if (movie.getActors().size() > 3) {
+//                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
+//                        movie.getActorsString() + ", " + context.getString(R.string.more));
+//            } else {
+//                cast = Html.fromHtml("<b>" + context.getString(R.string.cast) + "</b>" + " " +
+//                        movie.getActorsString());
 //            }
-
-            //More link to the full list of cast members
-            ClickableSpan spanMore = new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    showCastListActivity(context,movie,entType);
-                }
-            };
-
-            if (movie.getActors().size() > 3) {
-                int span4End = spanStart + context.getString(R.string.more).length();
-                castSS.setSpan(spanMore, spanStart, span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-
-            textView.setText(castSS);
-            textView.setMovementMethod(LinkMovementMethod.getInstance());
-        }
-    }
+//
+//            //Get spannable string that links will be set to.
+//            SpannableString castSS = new SpannableString(cast);
+//
+//            //Only going to display 3 actors. If there are less than 3 actors in the movie/tv
+//            //show get the number in the list.
+//            int numOfActors = 3;
+//            if (movie.getActors().size() < 3)
+//                numOfActors = movie.getActors().size();
+//
+//            int spanStart = 6;
+////            for (int i = 0; i < numOfActors; i++) {
+////                ClickableSpan span = createClickablSpan(context, movie.getActors().get(i).getId());
+////
+////                int spanEnd = spanStart + movie.getActors().get(i).getName().length();
+////
+////                castSS.setSpan(span, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+////                spanStart = spanEnd + 2;
+////            }
+//
+//            //More link to the full list of cast members
+//            ClickableSpan spanMore = new ClickableSpan() {
+//                @Override
+//                public void onClick(View widget) {
+//                    showCastListActivity(context,movie,entType);
+//                }
+//            };
+//
+//            if (movie.getActors().size() > 3) {
+//                int span4End = spanStart + context.getString(R.string.more).length();
+//                castSS.setSpan(spanMore, spanStart, span4End, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            }
+//
+//            textView.setText(castSS);
+//            textView.setMovementMethod(LinkMovementMethod.getInstance());
+//        }
+//    }
 
     /**
      * Take and ArrayList of stings and combine them separated by a comma
@@ -250,7 +251,7 @@ public class Util implements Constants {
      * Create SharedIntent to share a video from movie
      * @return
      */
-    public static Intent createShareVideoIntent(Activity activity, Movie movie) {
+    public static Intent createShareVideoIntent(Activity activity, MovieOld movie) {
 
         Video video = movie.getVideos().get(0);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);

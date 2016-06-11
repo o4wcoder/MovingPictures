@@ -8,9 +8,10 @@ import android.util.Log;
 //import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
 import com.android.fourthwardcoder.movingpictures.interfaces.APIKeys;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
+import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 import com.android.fourthwardcoder.movingpictures.models.Credit;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.Review;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
@@ -30,13 +31,16 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 /**
  * Class MovieDbAPI
  * Author: Chris Hare
  * Created: 8/25/2015.
  *
  * Helper class for doing all access to the Movies DB API. This contains all defines for URLs,
- * paths, and JSON tags. Contains helper methods polling the Movie DB and returning data.
+ * paths, and JSON tags. Contains helper methods polling the MovieOld DB and returning data.
  */
 public class MovieDbAPI implements Constants {
 
@@ -52,6 +56,7 @@ public class MovieDbAPI implements Constants {
     //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
     public static final String API_KEY_MOVIE_DB = APIKeys.MOVIE_DB_API_KEY;
     //Base URLs
+    public static final String MOVIE_DB_URL = "http://api.themoviedb.org/";
     public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES;
     //Full URLs for the movie DB
     public static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES + "/discover/movie";
@@ -60,7 +65,7 @@ public class MovieDbAPI implements Constants {
     public static final String BASE_YOUTUBE_URL = "https://www.youtube.com/";
     public static final String BASE_YOUTUBE_THUMB_URL = "http://img.youtube.com/vi/";
 
-    //Movie image sizes
+    //MovieOld image sizes
     public static final String IMAGE_185_SIZE = "w185/";
     public static final String IMAGE_342_SIZE = "w342/";
     public static final String IMAGE_500_SIZE = "w500/";
@@ -215,12 +220,13 @@ public class MovieDbAPI implements Constants {
      * Get list of movies. Uri is required as the sort parameter
      * @param context   Context of calling Activity
      * @param movieUri  URI string use to poll data from movie database
-     * @return          ArralyList of Simple Movies
+     * @return          ArrayList of Simple Movies
      */
-    public static ArrayList<Movie> getMovieList(Context context, Uri movieUri) {
+    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
 
+        Log.e(TAG,"MovieURI: " + movieUri);
         String movieJsonStr = queryMovieDatabase(movieUri);
-
+        Log.e(TAG,movieJsonStr);
         //Error pulling movies, return null
         if(movieJsonStr == null)
             return null;
@@ -231,10 +237,10 @@ public class MovieDbAPI implements Constants {
 
     /**
      * Get single movie
-     * @param id Movie id
-     * @return   Movie object
+     * @param id MovieOld id
+     * @return   MovieOld object
      */
-    public static Movie getMovie(int id) {
+    public static MovieOld getMovie(int id) {
 
         Uri uri = buildMovieUri(id);
         String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
@@ -278,8 +284,8 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of videos from a Movie or TV Show
-     * @param id Movie id
+     * Get list of videos from a MovieOld or TV Show
+     * @param id MovieOld id
      * @return   ArrayList of Videos
      */
     public static ArrayList<Review> getReviewList(int id, int entType) {
@@ -294,8 +300,8 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of videos from a Movie
-     * @param movieId Movie id
+     * Get list of videos from a MovieOld
+     * @param movieId MovieOld id
      * @return        ArrayList of Videos
      */
     public static ArrayList<Video> getVideoList(int movieId, int entType) {
@@ -310,8 +316,8 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of cast from a Movie
-     * @param movieId Movie id
+     * Get list of cast from a MovieOld
+     * @param movieId MovieOld id
      * @return        ArrayList of credits
      */
     public static ArrayList<Credit> getMovieCastList(int movieId) {
@@ -327,8 +333,8 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of cast from a Movie
-     * @param movieId Movie id
+     * Get list of cast from a MovieOld
+     * @param movieId MovieOld id
      * @return        ArrayList of credits
      */
     public static ArrayList<Credit> getTvCastList(int movieId) {
@@ -374,7 +380,7 @@ public class MovieDbAPI implements Constants {
     /**
      * Get poster resolution of poster depending on screen size
      * @param context Context of calling activity
-     * @return        Poster size to be polled from Movie DB
+     * @return        Poster size to be polled from MovieOld DB
      */
     public static String getPosterSize(Context context) {
 
@@ -460,10 +466,10 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Build URI to get the reviews of a Movie or TV show
+     * Build URI to get the reviews of a MovieOld or TV show
      * @param id      Id of the movie or TV show
-     * @param entType Type of entertainment; Movie or TV
-     * @return        Uri to the reviews of the Movie or TV show
+     * @param entType Type of entertainment; MovieOld or TV
+     * @return        Uri to the reviews of the MovieOld or TV show
      */
     private static Uri buildReviewsUri(int id, int entType) {
 
@@ -483,10 +489,10 @@ public class MovieDbAPI implements Constants {
         return reviewsUri;
     }
     /**
-     * Build URI to get the videos of a Movie or TV show
+     * Build URI to get the videos of a MovieOld or TV show
      * @param id      Id of the movie or TV show
-     * @param entType Type of entertainment; Movie or TV
-     * @return        Uri to the videos of the Movie or TV show
+     * @param entType Type of entertainment; MovieOld or TV
+     * @return        Uri to the videos of the MovieOld or TV show
      */
     private static Uri buildVideoUri(int id, int entType) {
 
@@ -523,9 +529,9 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Build Uri to Movie credits
+     * Build Uri to MovieOld credits
      * @param movieId Id of movie
-     * @return        Uri to Movie credits
+     * @return        Uri to MovieOld credits
      */
     private static Uri buildMovieCreditsUri(int movieId) {
 
@@ -662,12 +668,12 @@ public class MovieDbAPI implements Constants {
     /**
      * Parse JSON String of a Person's credits
      * @param personCreditsJsonStr JSON String of Person's credits
-     * @param entType              Type of entertainment; Movie or TV
+     * @param entType              Type of entertainment; MovieOld or TV
      * @return                     ArrayList of Person's credits
      */
     private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr,int entType) {
 
-        //List of Reviews that get parsed from Movie DB JSON return
+        //List of Reviews that get parsed from MovieOld DB JSON return
         ArrayList<Credit> creditList = null;
 
         try {
@@ -720,22 +726,22 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Parse JSON String of Movie
-     * @param movieJsonStr JSON String of Movie
-     * @return             Movie object
+     * Parse JSON String of MovieOld
+     * @param movieJsonStr JSON String of MovieOld
+     * @return             MovieOld object
      */
-    private static Movie parseJsonMovie(String movieJsonStr) {
+    private static MovieOld parseJsonMovie(String movieJsonStr) {
 
-        Movie movie = null;
+        MovieOld movie = null;
 
         try {
             if (movieJsonStr != null) {
-                //Log.e(TAG, "Movie: " + movieJsonStr);
+                //Log.e(TAG, "MovieOld: " + movieJsonStr);
 
 
                 JSONObject movieObj = new JSONObject(movieJsonStr);
 
-                movie = new Movie(movieObj.getInt(MovieDbAPI.TAG_ID));
+                movie = new MovieOld(movieObj.getInt(MovieDbAPI.TAG_ID));
                 movie.setTitle(movieObj.getString(MovieDbAPI.TAG_TITLE));
                 movie.setOverview(movieObj.getString(MovieDbAPI.TAG_OVERVIEW));
                 movie.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + movieObj.getString(MovieDbAPI.TAG_POSTER_PATH));
@@ -889,17 +895,17 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Parses the JSON String returned from the query to the Movie DB. Pulls data out for
-     * a each movie returned and puts that data into a Movie object. These movie objects are
+     * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
+     * a each movie returned and puts that data into a MovieOld object. These movie objects are
      * returned in an ARRAYList
      * @param context       Context of the calling Activity
      * @param moviesJsonStr Full return JSON String of movie data
      * @return              ArrayList of Movies
      */
-    private static ArrayList<Movie> parseJsonMovieList(Context context, String moviesJsonStr) {
+    private static ArrayList<MovieOld> parseJsonMovieList(Context context, String moviesJsonStr) {
 
-        //List of Movies that get parsed Movie DB JSON return
-        ArrayList<Movie> movieList = null;
+        //List of Movies that get parsed MovieOld DB JSON return
+        ArrayList<MovieOld> movieList = null;
 
         try {
             JSONObject obj = new JSONObject(moviesJsonStr);
@@ -915,13 +921,13 @@ public class MovieDbAPI implements Constants {
             //Loop through all of the movies returned in the query
             for(int i=0;i <resultsArray.length(); i++) {
 
-                //Get Movie result. Create movie object and pull out particular data for
+                //Get MovieOld result. Create movie object and pull out particular data for
                 //that movie.
                 JSONObject result = resultsArray.getJSONObject(i);
                // Log.e(TAG,"MOVIE Result: " + result.toString());
 
                  int movieId = result.getInt(MovieDbAPI.TAG_ID);
-                 Movie movie = getMovie(movieId);
+                 MovieOld movie = getMovie(movieId);
 
                 //Add movie to movie list array.
                 if(movie != null)
@@ -944,7 +950,7 @@ public class MovieDbAPI implements Constants {
      */
     private static ArrayList<Review> parseJsonReviewList(String reviewsJsonStr) {
 
-        //List of Reviews that get parsed from Movie DB JSON return
+        //List of Reviews that get parsed from MovieOld DB JSON return
         ArrayList<Review> reviewList = null;
         //Log.e(TAG,"REviewJson: " +reviewsJsonStr);
         try {
@@ -972,7 +978,7 @@ public class MovieDbAPI implements Constants {
         return reviewList;
     }
     /**
-     * Parses the JSON String returned from the query to the Movie DB. Pulls data out for
+     * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
      * a each video/trailers returned and puts that data into a Video object. These video objects are
      * returned in an ARRAYList
      *
@@ -1034,5 +1040,24 @@ public class MovieDbAPI implements Constants {
         }
 
         return list;
+    }
+
+    public static String getFullPosterPath(String imageFile) {
+
+        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + imageFile;
+    }
+
+    public static String getFullBackdropPath(String imageFile) {
+
+        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile;
+    }
+
+    public static MovieService getMovieApiService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MovieDbAPI.MOVIE_DB_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(MovieService.class);
     }
 }

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 9/25/15
  * <p/>
- * Fragment to hold the Cast List of a Movie or TV show
+ * Fragment to hold the Cast List of a MovieOld or TV show
  */
 public class CastListFragment extends Fragment implements Constants {
 

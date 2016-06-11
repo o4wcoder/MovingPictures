@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 8/15/15
  * <p/>
- * Fragment to hold reviews of a Movie/TV show.
+ * Fragment to hold reviews of a MovieOld/TV show.
  */
 public class ReviewsFragment extends Fragment implements Constants {
 

@@ -12,7 +12,7 @@ import com.android.fourthwardcoder.movingpictures.activities.MainActivity;
  * Author:  Chris Hare
  * Created: 9/18/2015.
  * <p/>
- * Contract Provider Movie Contract
+ * Contract Provider MovieOld Contract
  */
 public class MovieContract {
 
@@ -37,7 +37,7 @@ public class MovieContract {
     public static final int COL_MOVIE_ACTOR_JSON = 12;
     public static final int COL_MOVIE_VIDEO_JSON = 13;
 
-    //Content provider authority for Movie DB
+    //Content provider authority for MovieOld DB
     public static final String CONTENT_AUTHORITY = "com.android.fourthwardcoder.movingpictures";
 
     //Base URI for content provider
@@ -60,7 +60,7 @@ public class MovieContract {
                 CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
         /*
-         * DB Movie Table Entries
+         * DB MovieOld Table Entries
          */
         public static final String TABLE_NAME = "movie";
 

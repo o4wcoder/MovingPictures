@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 8/28/2015
  * <p/>
- * List Adapater for Videos of a Movie or TV Show.
+ * List Adapater for Videos of a MovieOld or TV Show.
  */
 public class VideosListAdapter extends ArrayAdapter<Video> {
 
@@ -58,7 +58,7 @@ public class VideosListAdapter extends ArrayAdapter<Video> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //Get each Movie using the position in the ArrayAdapter
+        //Get each MovieOld using the position in the ArrayAdapter
         Video video = getItem(position);
 
         Picasso.with(mContext).load(MovieDbAPI.buildYoutubeThumbnailUri(video)).into(holder.videoThumbImageView);

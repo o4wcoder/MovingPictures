@@ -33,7 +33,7 @@ public class PersonDetailActivity extends AppCompatActivity {
         //Change status bar color
        // Util.setStatusBarColor(this);
 
-        //Add parent that called Movie Activity to stack
+        //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 
         setContentView(R.layout.activity_actor_detail);

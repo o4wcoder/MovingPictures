@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * <p/>
  * ArrayAdapter used for the GridView that displays the movie posters on the main activity
  */
-public class MovieImageListViewAdapter extends ArrayAdapter<Movie> {
+public class MovieImageListViewAdapter extends ArrayAdapter<MovieOld> {
 
     /****************************************************************/
     /*                       Constants                              */
@@ -31,7 +31,7 @@ public class MovieImageListViewAdapter extends ArrayAdapter<Movie> {
     /****************************************************************/
     Context mContext;
 
-    public MovieImageListViewAdapter(Context context, ArrayList<Movie> movies) {
+    public MovieImageListViewAdapter(Context context, ArrayList<MovieOld> movies) {
         super(context, 0, movies);
 
         mContext = context;
@@ -58,8 +58,8 @@ public class MovieImageListViewAdapter extends ArrayAdapter<Movie> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //Get each Movie using the position in the ArrayAdapter
-        Movie movie = getItem(position);
+        //Get each MovieOld using the position in the ArrayAdapter
+        MovieOld movie = getItem(position);
         //Log.e(TAG, "Setting movie position " + position + " name: " + movie.getTitle());
 
         //Set Accesability Info

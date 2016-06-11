@@ -9,9 +9,9 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 9/25/2015.
  *
- * Class to hold TV Show data. Most fields come form the Movie class
+ * Class to hold TV Show data. Most fields come form the MovieOld class
  */
-public class TvShow extends Movie {
+public class TvShow extends MovieOld {
 
     ArrayList<String> createdBy;
     String createdByString;

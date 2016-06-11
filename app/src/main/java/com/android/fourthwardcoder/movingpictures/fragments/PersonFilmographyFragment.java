@@ -145,7 +145,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
             //Get ID of person
             int personId = params[0];
-            //Get Entertainment type; Movie or TV
+            //Get Entertainment type; MovieOld or TV
             int entType = params[1];
 
             //return list of a person credits from a movie or tv show

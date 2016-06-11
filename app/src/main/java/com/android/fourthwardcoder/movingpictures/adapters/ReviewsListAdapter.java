@@ -56,7 +56,7 @@ public class ReviewsListAdapter extends ArrayAdapter<Review> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        //Get each Movie using the position in the ArrayAdapter
+        //Get each MovieOld using the position in the ArrayAdapter
         Review review = getItem(position);
 
         Spanned reviewStr = Html.fromHtml("<b>" + mContext.getString(R.string.author) + "</b>" + " " +
