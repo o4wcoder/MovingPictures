@@ -2,7 +2,9 @@ package com.android.fourthwardcoder.movingpictures.interfaces;
 
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.VideoList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -21,6 +23,10 @@ public interface MovieService {
     @GET("/3/movie/{id}")
     Call<Movie> getMovie(@Path("id") int id,
                          @Query(MovieDbAPI.PARAM_API_KEY) String apiKey);
+
+    @GET("3/movie/{id}/videos")
+    Call<VideoList> getVideoList(@Path("id") int id,
+                                 @Query(MovieDbAPI.PARAM_API_KEY) String apiKey);
 
 
 }

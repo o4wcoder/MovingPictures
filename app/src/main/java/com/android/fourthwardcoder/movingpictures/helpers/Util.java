@@ -8,25 +8,21 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
+import com.android.fourthwardcoder.movingpictures.models.Genre;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
+import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -142,10 +138,10 @@ public class Util implements Constants {
      * @param textView    TextView to set the list of links
      * @param entType     Entertainment type; MovieOld or TV Show.
      */
-//    public static void setCastLinks(Context passContext, Movie passMovie, TextView textView, final int entType) {
+//    public static void setCastLinks(Context passContext, MovieBasic passMovie, TextView textView, final int entType) {
 //
 //        //Since this is a static method, need to create local versions of variables.
-//        final Movie movie = passMovie;
+//        final MovieBasic movie = passMovie;
 //        final Context context = passContext;
 //
 //        //If there are no cast members, don't show anything in the textview
@@ -216,6 +212,20 @@ public class Util implements Constants {
         return str;
     }
 
+    public static String buildGenreString(ArrayList<Genre> list) {
+
+        String str = "";
+        //Set up display string of list
+        for(int i = 0; i< list.size(); i++) {
+            str += list.get(i).getName() + ", ";
+        }
+
+        if(list.size() > 0)
+            str = str.substring(0,str.length() - 2);
+
+        return str;
+    }
+
     /**
      * Take and ArrayList of IdNamePair and combine them separated by a comma
      * @param list ArrayList of strings
@@ -251,22 +261,22 @@ public class Util implements Constants {
      * Create SharedIntent to share a video from movie
      * @return
      */
-    public static Intent createShareVideoIntent(Activity activity, MovieOld movie) {
-
-        Video video = movie.getVideos().get(0);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        shareIntent.setType("text/plain");
-
-        String strSubject = activity.getString(R.string.share_movie_subject);
-        if(movie instanceof TvShow)
-            strSubject = activity.getString(R.string.share_tvshow_subject);
-
-        String subject = video.getType() + " " + strSubject +
-                " " + movie.getTitle();
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, (MovieDbAPI.buildYoutubeUri(video)).toString());
-
-        return shareIntent;
-    }
+//    public static Intent createShareVideoIntent(Activity activity, Movie movie) {
+//
+//        Video video = movie.getVideos().get(0);
+//        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+//        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//        shareIntent.setType("text/plain");
+//
+//        String strSubject = activity.getString(R.string.share_movie_subject);
+//        if(movie instanceof TvShow)
+//            strSubject = activity.getString(R.string.share_tvshow_subject);
+//
+//        String subject = video.getType() + " " + strSubject +
+//                " " + movie.getTitle();
+//        shareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
+//        shareIntent.putExtra(Intent.EXTRA_TEXT, (MovieDbAPI.buildYoutubeUri(video)).toString());
+//
+//        return shareIntent;
+//    }
 }

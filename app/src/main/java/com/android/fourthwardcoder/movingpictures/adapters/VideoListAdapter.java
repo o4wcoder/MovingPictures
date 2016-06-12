@@ -2,7 +2,6 @@ package com.android.fourthwardcoder.movingpictures.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,12 @@ import android.widget.TextView;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.models.Video;
+import com.android.fourthwardcoder.movingpictures.models.VideoList;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import retrofit2.Callback;
 
 /**
  * Created by Chris Hare on 6/5/2016.

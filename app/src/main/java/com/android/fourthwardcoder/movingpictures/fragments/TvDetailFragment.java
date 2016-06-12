@@ -23,12 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
+//import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
-import com.android.fourthwardcoder.movingpictures.models.Video;
+import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 
@@ -52,7 +52,7 @@ public class TvDetailFragment extends Fragment implements Constants {
     int mTvId;
     TvShow mTvShow;
     ListView mListView;
-    VideosListAdapter mVideoListAdapter;
+    //VideosListAdapter mVideoListAdapter;
 
     ImageView mBackdropImageView;
     ImageView mPosterImageView;
@@ -104,18 +104,18 @@ public class TvDetailFragment extends Fragment implements Constants {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Video video = mVideoListAdapter.getItem(position);
-
-                Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
-                        .appendPath(MovieDbAPI.PATH_WATCH)
-                        .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
-                        .build();
-
-                Log.e(TAG, "Youtube path: " + youtubeUri.toString());
-
-                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-
-                startActivity(i);
+//                VideoOld video = mVideoListAdapter.getItem(position);
+//
+//                Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
+//                        .appendPath(MovieDbAPI.PATH_WATCH)
+//                        .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
+//                        .build();
+//
+//                Log.e(TAG, "Youtube path: " + youtubeUri.toString());
+//
+//                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+//
+//                startActivity(i);
             }
         });
 
@@ -150,7 +150,7 @@ public class TvDetailFragment extends Fragment implements Constants {
 
                 //Attach and intent to this ShareActionProvider
                 if (shareActionProvider != null) {
-                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(),mTvShow));
+                  //  shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(),mTvShow));
                 } else {
                     Log.e(TAG, "Share Action Provider is null!");
                 }
@@ -236,8 +236,8 @@ public class TvDetailFragment extends Fragment implements Constants {
                         mTvShow.getNetworksString());
                 mNetworksTextView.setText(networks);
 
-                mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideos());
-                mListView.setAdapter(mVideoListAdapter);
+                //mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideos());
+               // mListView.setAdapter(mVideoListAdapter);
             }
         }
     }

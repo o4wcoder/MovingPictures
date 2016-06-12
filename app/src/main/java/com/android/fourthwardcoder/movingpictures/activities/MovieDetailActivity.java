@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.util.Stack;
 
@@ -52,7 +50,7 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 //            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
 //                Log.e(TAG,"--------------- Getting whol object movie");
 //                //Get MovieOld object from Main Activity
-//                Movie movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+//                MovieBasic movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
 //                arguments.putParcelable(EXTRA_MOVIE, movie);
 //            }
 //            else {

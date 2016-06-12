@@ -2,7 +2,6 @@ package com.android.fourthwardcoder.movingpictures.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +9,7 @@ import android.widget.ImageView;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
+import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,10 +22,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private static String TAG = MovieListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private ArrayList<Movie> mMovieList;
+    private ArrayList<MovieBasic> mMovieList;
     private MovieListAdapter.MovieListAdapterOnClickHandler mClickHandler;
 
-    public MovieListAdapter(Context context, ArrayList<Movie> movieList, MovieListAdapterOnClickHandler clickHandler) {
+    public MovieListAdapter(Context context, ArrayList<MovieBasic> movieList, MovieListAdapterOnClickHandler clickHandler) {
 
         mContext = context;
         mMovieList = movieList;
@@ -47,7 +45,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     public void onBindViewHolder(MovieListAdapterViewHolder holder, int postition) {
 
 
-       Movie movie = mMovieList.get(postition);
+       MovieBasic movie = mMovieList.get(postition);
        // Log.e(TAG,"onBindViewHolder with movie poster = " + movie.getPosterPath());
         Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getPosterPath())).into(holder.movieThumbImageView);
     }
@@ -80,6 +78,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     }
 
     public interface MovieListAdapterOnClickHandler {
-        void onMovieClick(Movie movie, MovieListAdapterViewHolder vh);
+        void onMovieClick(MovieBasic movie, MovieListAdapterViewHolder vh);
     }
 }

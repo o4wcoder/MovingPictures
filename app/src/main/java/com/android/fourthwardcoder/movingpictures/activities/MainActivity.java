@@ -17,8 +17,7 @@ import com.android.fourthwardcoder.movingpictures.fragments.MainFragment;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
+import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     }
 
     @Override
-    public void onLoadFinished(Movie movie) {
+    public void onLoadFinished(MovieBasic movie) {
 
         Log.e(TAG,"In onLoadFinsished()");
         if (mTwoPane) {

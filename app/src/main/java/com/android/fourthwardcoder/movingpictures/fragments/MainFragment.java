@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -32,19 +31,14 @@ import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Class MainFragment
@@ -82,7 +76,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
   //  GridView mGridView;
     RecyclerView mRecyclerView;
    // ArrayList<MovieOld> mMovieList = null;
-    ArrayList<Movie> mMovieList = null;
+    ArrayList<MovieBasic> mMovieList = null;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
     //ProgressDialog to be displayed while the data is being fetched and parsed
@@ -333,7 +327,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      *
      * @param movieList ArrayList of Movies
      */
-    private void setMovieAdapter(ArrayList<Movie> movieList) {
+    private void setMovieAdapter(ArrayList<MovieBasic> movieList) {
 
         Log.e(TAG,"setMovieAdapter() Inside");
         if (getActivity() != null && mRecyclerView != null) {
@@ -341,13 +335,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
             if (movieList != null) {
-                 Log.e(TAG,"setMovieAdapter(): Movie list is not null. Set adapter");
+                 Log.e(TAG,"setMovieAdapter(): MovieBasic list is not null. Set adapter");
                 //Store global copy
                 mMovieList = movieList;
                 //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
                 MovieListAdapter adapter = new MovieListAdapter(getActivity(), mMovieList, new MovieListAdapter.MovieListAdapterOnClickHandler() {
                     @Override
-                    public void onMovieClick(Movie movie, MovieListAdapter.MovieListAdapterViewHolder vh) {
+                    public void onMovieClick(MovieBasic movie, MovieListAdapter.MovieListAdapterViewHolder vh) {
                         Log.e(TAG, "onClick RecyclerView movie list");
                         //                //Get selected movie from the GridView
                         //Start intent to bring up Details Activity
@@ -408,6 +402,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
          */
         void onItemSelected(int movieId, ImageView imageView);
 
-        void onLoadFinished(Movie movie);
+        void onLoadFinished(MovieBasic movie);
     }
 }

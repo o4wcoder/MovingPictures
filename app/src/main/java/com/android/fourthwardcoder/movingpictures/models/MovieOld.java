@@ -47,7 +47,7 @@ public class MovieOld implements Parcelable {
     ArrayList<String> genres;
     ArrayList<IdNamePair> directors;
     ArrayList<IdNamePair> actors;
-    ArrayList<Video> videos;
+    ArrayList<VideoOld> videos;
 
     //Fields calculated internally
     String genreString;
@@ -206,11 +206,11 @@ public class MovieOld implements Parcelable {
         this.revenue = "$" + revenue;
     }
 
-    public ArrayList<Video> getVideos() {
+    public ArrayList<VideoOld> getVideos() {
         return videos;
     }
 
-    public void setVideos(ArrayList<Video> videos) {
+    public void setVideos(ArrayList<VideoOld> videos) {
         this.videos = videos;
     }
 
@@ -261,7 +261,7 @@ public class MovieOld implements Parcelable {
         //Get Json String and put them into ArrayLists
         Type stringType = new TypeToken<ArrayList<String>>(){}.getType();
         Type idNamePairType = new TypeToken<ArrayList<IdNamePair>>(){}.getType();
-        Type videoType = new TypeToken<ArrayList<Video>>(){}.getType();
+        Type videoType = new TypeToken<ArrayList<VideoOld>>(){}.getType();
 
         //Parse genres
         String genreJsonString = cursor.getString(MovieContract.COL_MOVIE_GENRE_JSON);
@@ -274,7 +274,7 @@ public class MovieOld implements Parcelable {
         movie.setActors((ArrayList<IdNamePair>) new Gson().fromJson(actorJsonString, idNamePairType));
         //Parse videos
         String videoJsonString = cursor.getString(MovieContract.COL_MOVIE_VIDEO_JSON);
-        movie.setVideos((ArrayList<Video>) new Gson().fromJson(videoJsonString, videoType));
+        movie.setVideos((ArrayList<VideoOld>) new Gson().fromJson(videoJsonString, videoType));
         return movie;
     }
 
@@ -308,8 +308,8 @@ public class MovieOld implements Parcelable {
             actors = null;
         }
         if (in.readByte() == 0x01) {
-            videos = new ArrayList<Video>();
-            in.readList(videos, Video.class.getClassLoader());
+            videos = new ArrayList<VideoOld>();
+            in.readList(videos, VideoOld.class.getClassLoader());
         } else {
             videos = null;
         }

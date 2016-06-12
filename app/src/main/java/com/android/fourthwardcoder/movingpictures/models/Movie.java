@@ -1,78 +1,87 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-//@Generated("org.jsonschema2pojo")
-public class Movie implements Parcelable {
+public class Movie {
 
-    @SerializedName("poster_path")
-    @Expose
-    private String posterPath;
     @SerializedName("adult")
     @Expose
     private Boolean adult;
-    @SerializedName("overview")
-    @Expose
-    private String overview;
-    @SerializedName("release_date")
-    @Expose
-    private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = new ArrayList<Integer>();
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("original_title")
-    @Expose
-    private String originalTitle;
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
-    @SerializedName("title")
-    @Expose
-    private String title;
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+    @SerializedName("belongs_to_collection")
+    @Expose
+    private Object belongsToCollection;
+    @SerializedName("budget")
+    @Expose
+    private Integer budget;
+    @SerializedName("genres")
+    @Expose
+    private List<Genre> genres = new ArrayList<Genre>();
+    @SerializedName("homepage")
+    @Expose
+    private String homepage;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("imdb_id")
+    @Expose
+    private String imdbId;
+    @SerializedName("original_language")
+    @Expose
+    private String originalLanguage;
+    @SerializedName("original_title")
+    @Expose
+    private String originalTitle;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
     @SerializedName("popularity")
     @Expose
     private Double popularity;
-    @SerializedName("vote_count")
+    @SerializedName("poster_path")
     @Expose
-    private Integer voteCount;
+    private String posterPath;
+    @SerializedName("production_companies")
+    @Expose
+    private List<ProductionCompany> productionCompanies = new ArrayList<ProductionCompany>();
+    @SerializedName("production_countries")
+    @Expose
+    private List<ProductionCountry> productionCountries = new ArrayList<ProductionCountry>();
+    @SerializedName("release_date")
+    @Expose
+    private String releaseDate;
+    @SerializedName("revenue")
+    @Expose
+    private Integer revenue;
+    @SerializedName("runtime")
+    @Expose
+    private Integer runtime;
+    @SerializedName("spoken_languages")
+    @Expose
+    private List<SpokenLanguage> spokenLanguages = new ArrayList<SpokenLanguage>();
+    @SerializedName("status")
+    @Expose
+    private String status;
+    @SerializedName("tagline")
+    @Expose
+    private String tagline;
+    @SerializedName("title")
+    @Expose
+    private String title;
     @SerializedName("video")
     @Expose
     private Boolean video;
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
-
-    /**
-     *
-     * @return
-     * The posterPath
-     */
-    public String getPosterPath() {
-        return posterPath;
-    }
-
-    /**
-     *
-     * @param posterPath
-     * The poster_path
-     */
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
+    @SerializedName("vote_count")
+    @Expose
+    private Integer voteCount;
 
     /**
      *
@@ -90,132 +99,6 @@ public class Movie implements Parcelable {
      */
     public void setAdult(Boolean adult) {
         this.adult = adult;
-    }
-
-    /**
-     *
-     * @return
-     * The overview
-     */
-    public String getOverview() {
-        return overview;
-    }
-
-    /**
-     *
-     * @param overview
-     * The overview
-     */
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    /**
-     *
-     * @return
-     * The releaseDate
-     */
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    /**
-     *
-     * @param releaseDate
-     * The release_date
-     */
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    /**
-     *
-     * @return
-     * The genreIds
-     */
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    /**
-     *
-     * @param genreIds
-     * The genre_ids
-     */
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     * The id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     *
-     * @return
-     * The originalTitle
-     */
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    /**
-     *
-     * @param originalTitle
-     * The original_title
-     */
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-    /**
-     *
-     * @return
-     * The originalLanguage
-     */
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    /**
-     *
-     * @param originalLanguage
-     * The original_language
-     */
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    /**
-     *
-     * @return
-     * The title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     *
-     * @param title
-     * The title
-     */
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     /**
@@ -239,6 +122,168 @@ public class Movie implements Parcelable {
     /**
      *
      * @return
+     * The belongsToCollection
+     */
+    public Object getBelongsToCollection() {
+        return belongsToCollection;
+    }
+
+    /**
+     *
+     * @param belongsToCollection
+     * The belongs_to_collection
+     */
+    public void setBelongsToCollection(Object belongsToCollection) {
+        this.belongsToCollection = belongsToCollection;
+    }
+
+    /**
+     *
+     * @return
+     * The budget
+     */
+    public Integer getBudget() {
+        return budget;
+    }
+
+    /**
+     *
+     * @param budget
+     * The budget
+     */
+    public void setBudget(Integer budget) {
+        this.budget = budget;
+    }
+
+    /**
+     *
+     * @return
+     * The genres
+     */
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    /**
+     *
+     * @param genres
+     * The genres
+     */
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    /**
+     *
+     * @return
+     * The homepage
+     */
+    public String getHomepage() {
+        return homepage;
+    }
+
+    /**
+     *
+     * @param homepage
+     * The homepage
+     */
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
+
+    /**
+     *
+     * @return
+     * The id
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     *
+     * @param id
+     * The id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     *
+     * @return
+     * The imdbId
+     */
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    /**
+     *
+     * @param imdbId
+     * The imdb_id
+     */
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    /**
+     *
+     * @return
+     * The originalLanguage
+     */
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
+
+    /**
+     *
+     * @param originalLanguage
+     * The original_language
+     */
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    /**
+     *
+     * @return
+     * The originalTitle
+     */
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    /**
+     *
+     * @param originalTitle
+     * The original_title
+     */
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    /**
+     *
+     * @return
+     * The overview
+     */
+    public String getOverview() {
+        return overview;
+    }
+
+    /**
+     *
+     * @param overview
+     * The overview
+     */
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    /**
+     *
+     * @return
      * The popularity
      */
     public Double getPopularity() {
@@ -257,19 +302,181 @@ public class Movie implements Parcelable {
     /**
      *
      * @return
-     * The voteCount
+     * The posterPath
      */
-    public Integer getVoteCount() {
-        return voteCount;
+    public String getPosterPath() {
+        return posterPath;
     }
 
     /**
      *
-     * @param voteCount
-     * The vote_count
+     * @param posterPath
+     * The poster_path
      */
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    /**
+     *
+     * @return
+     * The productionCompanies
+     */
+    public List<ProductionCompany> getProductionCompanies() {
+        return productionCompanies;
+    }
+
+    /**
+     *
+     * @param productionCompanies
+     * The production_companies
+     */
+    public void setProductionCompanies(List<ProductionCompany> productionCompanies) {
+        this.productionCompanies = productionCompanies;
+    }
+
+    /**
+     *
+     * @return
+     * The productionCountries
+     */
+    public List<ProductionCountry> getProductionCountries() {
+        return productionCountries;
+    }
+
+    /**
+     *
+     * @param productionCountries
+     * The production_countries
+     */
+    public void setProductionCountries(List<ProductionCountry> productionCountries) {
+        this.productionCountries = productionCountries;
+    }
+
+    /**
+     *
+     * @return
+     * The releaseDate
+     */
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    /**
+     *
+     * @param releaseDate
+     * The release_date
+     */
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    /**
+     *
+     * @return
+     * The revenue
+     */
+    public Integer getRevenue() {
+        return revenue;
+    }
+
+    /**
+     *
+     * @param revenue
+     * The revenue
+     */
+    public void setRevenue(Integer revenue) {
+        this.revenue = revenue;
+    }
+
+    /**
+     *
+     * @return
+     * The runtime
+     */
+    public Integer getRuntime() {
+        return runtime;
+    }
+
+    /**
+     *
+     * @param runtime
+     * The runtime
+     */
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
+    }
+
+    /**
+     *
+     * @return
+     * The spokenLanguages
+     */
+    public List<SpokenLanguage> getSpokenLanguages() {
+        return spokenLanguages;
+    }
+
+    /**
+     *
+     * @param spokenLanguages
+     * The spoken_languages
+     */
+    public void setSpokenLanguages(List<SpokenLanguage> spokenLanguages) {
+        this.spokenLanguages = spokenLanguages;
+    }
+
+    /**
+     *
+     * @return
+     * The status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     *
+     * @param status
+     * The status
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     *
+     * @return
+     * The tagline
+     */
+    public String getTagline() {
+        return tagline;
+    }
+
+    /**
+     *
+     * @param tagline
+     * The tagline
+     */
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
+    }
+
+    /**
+     *
+     * @return
+     * The title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     *
+     * @param title
+     * The title
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -308,98 +515,36 @@ public class Movie implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
-
-
-    protected Movie(Parcel in) {
-        posterPath = in.readString();
-        byte adultVal = in.readByte();
-        adult = adultVal == 0x02 ? null : adultVal != 0x00;
-        overview = in.readString();
-        releaseDate = in.readString();
-        if (in.readByte() == 0x01) {
-            genreIds = new ArrayList<Integer>();
-            in.readList(genreIds, Integer.class.getClassLoader());
-        } else {
-            genreIds = null;
-        }
-        id = in.readByte() == 0x00 ? null : in.readInt();
-        originalTitle = in.readString();
-        originalLanguage = in.readString();
-        title = in.readString();
-        backdropPath = in.readString();
-        popularity = in.readByte() == 0x00 ? null : in.readDouble();
-        voteCount = in.readByte() == 0x00 ? null : in.readInt();
-        byte videoVal = in.readByte();
-        video = videoVal == 0x02 ? null : videoVal != 0x00;
-        voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+    /**
+     *
+     * @return
+     * The voteCount
+     */
+    public Integer getVoteCount() {
+        return voteCount;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    /**
+     *
+     * @param voteCount
+     * The vote_count
+     */
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(posterPath);
-        if (adult == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (adult ? 0x01 : 0x00));
-        }
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
-        if (genreIds == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(genreIds);
-        }
-        if (id == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(id);
-        }
-        dest.writeString(originalTitle);
-        dest.writeString(originalLanguage);
-        dest.writeString(title);
-        dest.writeString(backdropPath);
-        if (popularity == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeDouble(popularity);
-        }
-        if (voteCount == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(voteCount);
-        }
-        if (video == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (video ? 0x01 : 0x00));
-        }
-        if (voteAverage == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeDouble(voteAverage);
-        }
+    public String getGenreListString() {
+
+
+            String str = "";
+            //Set up display string of list
+            for(int i = 0; i< genres.size(); i++) {
+                str += genres.get(i).getName() + ", ";
+            }
+
+            if(genres.size() > 0)
+                str = str.substring(0,str.length() - 2);
+
+            return str;
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 }

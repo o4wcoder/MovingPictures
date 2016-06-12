@@ -16,6 +16,7 @@ import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.Review;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
+import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -304,9 +305,10 @@ public class MovieDbAPI implements Constants {
      * @param movieId MovieOld id
      * @return        ArrayList of Videos
      */
-    public static ArrayList<Video> getVideoList(int movieId, int entType) {
+    public static ArrayList<VideoOld> getVideoList(int movieId, int entType) {
 
         Uri videoUri = buildVideoUri(movieId, entType);
+        Log.e(TAG,"video Uri = " + videoUri);
         String videoJsonStr = queryMovieDatabase(videoUri);
 
         if(videoJsonStr == null)
@@ -979,15 +981,15 @@ public class MovieDbAPI implements Constants {
     }
     /**
      * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
-     * a each video/trailers returned and puts that data into a Video object. These video objects are
+     * a each video/trailers returned and puts that data into a VideoOld object. These video objects are
      * returned in an ARRAYList
      *
      * @param videosJsonStr
      * @return Full return JSON String of video data
      */
-    private static ArrayList<Video> parseJsonVideoList(String videosJsonStr) {
+    private static ArrayList<VideoOld> parseJsonVideoList(String videosJsonStr) {
 
-        ArrayList<Video> videoList = null;
+        ArrayList<VideoOld> videoList = null;
        // Log.e(TAG,"videoJson: " + videosJsonStr);
 
         try {
@@ -999,7 +1001,7 @@ public class MovieDbAPI implements Constants {
             for(int i = 0; i< resultsArray.length(); i++) {
 
                 JSONObject result = resultsArray.getJSONObject(i);
-                Video video = new Video(result.getString(MovieDbAPI.TAG_KEY));
+                VideoOld video = new VideoOld(result.getString(MovieDbAPI.TAG_KEY));
                 video.setName(result.getString(MovieDbAPI.TAG_NAME));
                 video.setType(result.getString(MovieDbAPI.TAG_TYPE));
                 video.setSize(result.getInt(MovieDbAPI.TAG_SIZE));

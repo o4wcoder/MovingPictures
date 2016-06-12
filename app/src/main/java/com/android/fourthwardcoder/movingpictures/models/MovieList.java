@@ -1,9 +1,7 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 //import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -15,7 +13,7 @@ public class MovieList {
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = new ArrayList<Movie>();
+    private List<MovieBasic> results = new ArrayList<MovieBasic>();
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
@@ -46,7 +44,7 @@ public class MovieList {
      * @return
      * The results
      */
-    public List<Movie> getMovies() {
+    public List<MovieBasic> getMovies() {
         return results;
     }
 
@@ -55,7 +53,7 @@ public class MovieList {
      * @param results
      * The results
      */
-    public void setMovies(List<Movie> results) {
+    public void setMovies(List<MovieBasic> results) {
         this.results = results;
     }
 

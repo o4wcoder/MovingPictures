@@ -1,26 +1,21 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -29,7 +24,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -41,17 +35,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
+//import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieList;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.Video;
+import com.android.fourthwardcoder.movingpictures.models.VideoList;
+import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 import com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
@@ -70,8 +64,7 @@ import retrofit2.Response;
  * <p/>
  * Fragment to show the details of a particular movie
  */
-public class MovieDetailFragment extends Fragment implements Constants,
-        VideoListAdapter.VideoListAdapterOnClickHandler{
+public class MovieDetailFragment extends Fragment implements Constants {
 
     /*****************************************************************/
     /*                        Constants                              */
@@ -156,6 +149,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
                 //Got MovieOld ID, will need to fetch data
                 mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
             Log.e(TAG,"onCreateView(): got movie id = " + mMovieId);
+
                 mFetchData = true;
 
           //  }
@@ -228,7 +222,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
         }
 
 
-        //Set up Video RecyclerView for Horizontal Scrolling
+        //Set up VideoOld RecyclerView for Horizontal Scrolling
         mVideosRecylerView = (RecyclerView)view.findViewById(R.id.movie_detail_video_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         mVideosRecylerView.setLayoutManager(layoutManager);
@@ -526,16 +520,16 @@ public class MovieDetailFragment extends Fragment implements Constants,
 
                     }
                 });
-                ;
-                Picasso.with(getActivity()).load(mMovie.getPosterPath()).into(mPosterImageView);
 
-//                mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
-//                mTitleTextView.setText(mMovie.getTitle());
-//                mReleaseYearTextView.setText(mMovie.getReleaseYear());
+                Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mMovie.getPosterPath())).into(mPosterImageView);
+
+                mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
+                mTitleTextView.setText(mMovie.getTitle());
+        //    mReleaseYearTextView.setText(mMovie.getReleaseYear());
 //
-//                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
-//                mRatingTextView.setText(String.valueOf(mMovie.getRating()) + "/10");
-//                mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getRating(), "10"));
+                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
+                mRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
+            //    mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getVoteAverage(), "10"));
 //
 //                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
 //                        mMovie.getDirectorString());
@@ -543,22 +537,61 @@ public class MovieDetailFragment extends Fragment implements Constants,
 //
 //                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 //
-//                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-//                        Util.reverseDateString(mMovie.getReleaseDate()));
-//                mReleaseDateTextView.setText(releaseDate);
-//
-//                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
-//                        mMovie.getOverview());
-//                mOverviewTextView.setText(synopsis);
-//
-//                Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
-//                        mMovie.getGenreString());
-//
-//                mGenreTextView.setText(genre);
-//
-//                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
-//                        mMovie.getRevenue());
-//                mRevenueTextView.setText(revenue);
+                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
+                        Util.reverseDateString(mMovie.getReleaseDate()));
+                mReleaseDateTextView.setText(releaseDate);
+
+                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
+                        mMovie.getOverview());
+                mOverviewTextView.setText(synopsis);
+
+               Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
+                        mMovie.getGenreListString());
+
+                mGenreTextView.setText(genre);
+
+                if(mMovie.getRevenue() >0) {
+                    Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
+                            mMovie.getRevenue());
+                    mRevenueTextView.setText(revenue);
+                }
+                else {
+                    mRevenueTextView.setVisibility(View.GONE);
+                }
+
+            Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(mMovieId, MovieDbAPI.API_KEY_MOVIE_DB);
+            call.enqueue(new retrofit2.Callback<VideoList>() {
+                @Override
+                public void onResponse(Call<VideoList> call, Response<VideoList> response) {
+                    if (response.isSuccessful()) {
+
+                        if (response.body().getVideos().size() > 0) {
+                            mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
+                                @Override
+                                public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+
+                                    //Get youtube url from video and send it to view intent
+                                    Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+                                    Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+
+                                    startActivity(i);
+                                }
+                            });
+                            mVideosRecylerView.setAdapter(mVideoListAdapter);
+
+                        } else {
+                            mVideoLayout.setVisibility(View.GONE);
+                        }
+                    } else {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<VideoList> call, Throwable t) {
+
+                }
+            });
 //
 //                if (mMovie.getVideos().size() > 0) {
 //                    Log.e(TAG, "setLayout(): Got some videos, setup adapters");
@@ -637,15 +670,6 @@ public class MovieDetailFragment extends Fragment implements Constants,
         });
     }
 
-    @Override
-    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
-
-        //Get youtube url from video and send it to view intent
-        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-
-        startActivity(i);
-    }
 
     private void getCastThumbnails(String uri, final ImageView imageView) {
 
@@ -665,7 +689,7 @@ public class MovieDetailFragment extends Fragment implements Constants,
     /*********************************************************************/
     /*                         Inner Classes                             */
     /*********************************************************************/
-//    private class FetchMovieTask extends AsyncTask<Integer, Void, MovieOld> {
+//    private class FetchMovieTask extends AsyncTask<Integer, Void, Movie> {
 //
 //        //ProgressDialog to be displayed while the data is being fetched and parsed
 //        private ProgressDialog progressDialog;
