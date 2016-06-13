@@ -35,8 +35,13 @@ import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -291,15 +296,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             String[] sortList = res.getStringArray(R.array.sort_url_list);
             String sortOrder = sortList[sortPos];
 
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl(MovieDbAPI.MOVIE_DB_URL)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//
-//            MovieService service = retrofit.create(MovieService.class);
-
-            Call<MovieList> call = MovieDbAPI.getMovieApiService().getMovieList(getSortType(sortPos), sortOrder, MovieDbAPI.API_KEY_MOVIE_DB);
-            Log.e(TAG, "Call url = " + call.request().url());
+            //Call Retrofit to get the Movie List by a specific sort
+            Call<MovieList> call = MovieDbAPI.getMovieApiService().getMovieList(getSortType(sortPos), sortOrder);
 
             call.enqueue(new retrofit2.Callback<MovieList>() {
                 @Override

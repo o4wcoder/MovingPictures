@@ -19,7 +19,13 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.crashlytics.android.Crashlytics;
+
+import java.io.IOException;
+
 import io.fabric.sdk.android.Fabric;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 /**
  * Class MainActivity
@@ -75,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             Log.e(TAG,"onCreate: onTwoPane = false");
             mTwoPane = false;
         }
+
 
     }
 

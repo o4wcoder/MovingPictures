@@ -32,6 +32,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -1054,10 +1058,37 @@ public class MovieDbAPI implements Constants {
         return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile;
     }
 
+    /*********************************************************************************************/
+    /*                                    Retrofit Calls                                         */
+    /*********************************************************************************************/
     public static MovieService getMovieApiService() {
+
+        //Intercept the OkHttp Call from Retrofit and append the API Key to ever request
+        OkHttpClient httpClient =  new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+
+                Request original = chain.request();
+                HttpUrl originalHttpUrl = original.url();
+
+                HttpUrl url = originalHttpUrl.newBuilder()
+                        .addQueryParameter(MovieDbAPI.PARAM_API_KEY,MovieDbAPI.API_KEY_MOVIE_DB)
+                        .build();
+
+                Log.e(TAG,"URL with API_KEY = " + url);
+                //Append the API key to the original URL
+                Request.Builder requestBuilder = original.newBuilder().url(url).method(original.method(),
+                        original.body());
+
+                Request request = requestBuilder.build();
+                return chain.proceed(request);
+            }
+        }).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MovieDbAPI.MOVIE_DB_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
                 .build();
 
         return retrofit.create(MovieService.class);

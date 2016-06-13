@@ -330,7 +330,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     private void getMovie(int id){
 
         Log.e(TAG,"getMovie() with movie id = " + id);
-        Call<Movie> call = MovieDbAPI.getMovieApiService().getMovie(id, MovieDbAPI.API_KEY_MOVIE_DB);
+        Call<Movie> call = MovieDbAPI.getMovieApiService().getMovie(id);
 
         Log.e(TAG,"Call url = " + call.request().url());
 
@@ -559,7 +559,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     mRevenueTextView.setVisibility(View.GONE);
                 }
 
-            Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(mMovieId, MovieDbAPI.API_KEY_MOVIE_DB);
+            Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(mMovieId);
             call.enqueue(new retrofit2.Callback<VideoList>() {
                 @Override
                 public void onResponse(Call<VideoList> call, Response<VideoList> response) {
