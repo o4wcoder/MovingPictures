@@ -21,7 +21,7 @@ import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.Credit;
+import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 
 import java.util.ArrayList;
 
@@ -88,7 +88,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Credit credit = (Credit) mAdapter.getItem(position);
+                CreditOld credit = (CreditOld) mAdapter.getItem(position);
                 Intent i;
                 if (mEntType == ENT_TYPE_MOVIE) {
                     i = new Intent(getActivity(), MovieDetailActivity.class);
@@ -137,11 +137,11 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     /*                              Inner Classes                               */
 
     /****************************************************************************/
-    private class FetchFilmographyTask extends AsyncTask<Integer, Void, ArrayList<Credit>> {
+    private class FetchFilmographyTask extends AsyncTask<Integer, Void, ArrayList<CreditOld>> {
 
 
         @Override
-        protected ArrayList<Credit> doInBackground(Integer... params) {
+        protected ArrayList<CreditOld> doInBackground(Integer... params) {
 
             //Get ID of person
             int personId = params[0];
@@ -153,7 +153,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Credit> creditList) {
+        protected void onPostExecute(ArrayList<CreditOld> creditList) {
 
             if ((getActivity() != null) && (creditList != null)) {
 

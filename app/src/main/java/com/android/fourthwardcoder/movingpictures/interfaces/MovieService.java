@@ -1,6 +1,7 @@
 package com.android.fourthwardcoder.movingpictures.interfaces;
 
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
@@ -24,6 +25,9 @@ public interface MovieService {
 
     @GET("3/movie/{id}/videos")
     Call<VideoList> getVideoList(@Path("id") int id);
+
+    @GET("3/movie/{id}/credits")
+    Call<Credits> getCredits(@Path("id") int id);
 
 
 }

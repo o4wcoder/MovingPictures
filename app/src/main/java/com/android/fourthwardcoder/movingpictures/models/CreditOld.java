@@ -1,13 +1,13 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
 /**
- * Class Credit
+ * Class CreditOld
  * Author: Chris Hare
  * Created: 9/2/2015.
  *
  * Class to hold a person's movie credit details
  */
-public class Credit implements Comparable{
+public class CreditOld implements Comparable{
 
     int id;
     String title;
@@ -15,7 +15,7 @@ public class Credit implements Comparable{
     int releaseYear;
     String character;
 
-    public Credit(int movieId) {
+    public CreditOld(int movieId) {
         this.id = movieId;
     }
 
@@ -63,7 +63,7 @@ public class Credit implements Comparable{
     @Override
     public int compareTo(Object object) {
 
-        int compareYear=((Credit)object).getReleaseYear();
+        int compareYear=((CreditOld)object).getReleaseYear();
         return compareYear - this.releaseYear;
     }
 }

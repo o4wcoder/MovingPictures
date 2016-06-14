@@ -17,7 +17,7 @@ import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.Credit;
+import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 
 import java.util.ArrayList;
 
@@ -61,7 +61,7 @@ public class CastListFragment extends Fragment implements Constants {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Credit credit = (Credit) mAdapter.getItem(position);
+                CreditOld credit = (CreditOld) mAdapter.getItem(position);
                 Intent i = new Intent(getActivity(), PersonDetailActivity.class);
                 i.putExtra(EXTRA_PERSON_ID, credit.getId());
                 startActivity(i);
@@ -82,11 +82,11 @@ public class CastListFragment extends Fragment implements Constants {
         return view;
     }
 
-    private class FetchCastTask extends AsyncTask<Integer, Void, ArrayList<Credit>> {
+    private class FetchCastTask extends AsyncTask<Integer, Void, ArrayList<CreditOld>> {
 
 
         @Override
-        protected ArrayList<Credit> doInBackground(Integer... params) {
+        protected ArrayList<CreditOld> doInBackground(Integer... params) {
 
             int id = params[0];
             int entType = params[1];
@@ -98,7 +98,7 @@ public class CastListFragment extends Fragment implements Constants {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Credit> creditList) {
+        protected void onPostExecute(ArrayList<CreditOld> creditList) {
 
             if ((getActivity() != null) && (creditList != null)) {
                 mAdapter = new CreditListAdapter(getActivity(), creditList, false);

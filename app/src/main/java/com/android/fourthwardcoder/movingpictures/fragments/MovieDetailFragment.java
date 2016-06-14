@@ -41,6 +41,8 @@ import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListene
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
+import com.android.fourthwardcoder.movingpictures.models.Cast;
+import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Video;
@@ -61,7 +63,7 @@ import retrofit2.Response;
  * Class MovieDetailFragment
  * Author: Chris Hare
  * Created: 7/26/2015
- * <p/>
+ * <p>
  * Fragment to show the details of a particular movie
  */
 public class MovieDetailFragment extends Fragment implements Constants {
@@ -71,7 +73,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     /*****************************************************************/
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
     private static final int IMAGE_FADE_DURATION = 500;
-   // private int mMutedColor = 0xFF333333;
+    // private int mMutedColor = 0xFF333333;
     /*****************************************************************/
     /*                        Local Data                             */
     /*****************************************************************/
@@ -96,7 +98,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mReviewsTextView;
 
     TextView mCastShowAllTextView;
-   // CheckBox mFavoritesToggleButton;
+    // CheckBox mFavoritesToggleButton;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
@@ -146,30 +148,30 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //                mMovie = arguments.getParcelable(EXTRA_MOVIE);
 //                Log.e(TAG,"Got movie id from args = "+ mMovie.getId());
 //            } else {
-                //Got MovieOld ID, will need to fetch data
-                mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
-            Log.e(TAG,"onCreateView(): got movie id = " + mMovieId);
+            //Got MovieOld ID, will need to fetch data
+            mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+            Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
 
-                mFetchData = true;
+            mFetchData = true;
 
-          //  }
+            //  }
         }
 
 
         //Get CollapsingToolbarLayout
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         //Get NestedScrollView;
-        mNestedScrollView = (NestedScrollView)view.findViewById(R.id.scrollview);
+        mNestedScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
 
         mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
 
-        mDetailCardView = (CardView)view.findViewById(R.id.movie_detail_cardview);
+        mDetailCardView = (CardView) view.findViewById(R.id.movie_detail_cardview);
         mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
 
-        mFavoritesFAB = (FloatingActionButton)view.findViewById(R.id.favorites_fab);
+        mFavoritesFAB = (FloatingActionButton) view.findViewById(R.id.favorites_fab);
         mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +179,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 if (mMovie != null) {
                     String toastStr = "";
                     if (v.getTag().equals(false)) {
-                        Log.e(TAG,"Set to favorite");
+                        Log.e(TAG, "Set to favorite");
                         mFavoritesFAB.setTag(true);
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
                         toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
@@ -185,7 +187,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                         addMovieToFavoritesDb();
 
                     } else {
-                        Log.e(TAG,"remove from favorite");
+                        Log.e(TAG, "remove from favorite");
                         mFavoritesFAB.setTag(false);
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
                         toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
@@ -205,14 +207,15 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 @Override
                 public void onTransitionStart(Transition transition) {
-                    Log.e(TAG,"Tansition start");
-                   mFavoritesFAB.setVisibility(View.GONE);
+                    Log.e(TAG, "Tansition start");
+                    mFavoritesFAB.setVisibility(View.GONE);
                 }
+
                 @Override
                 public void onTransitionEnd(Transition transition) {
-                    Log.e(TAG,"Transition end. Scan in FAB");
-                  mFavoritesFAB.setVisibility(View.VISIBLE);
-                    if(getActivity() != null) {
+                    Log.e(TAG, "Transition end. Scan in FAB");
+                    mFavoritesFAB.setVisibility(View.VISIBLE);
+                    if (getActivity() != null) {
                         Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
                                 R.anim.scale_in_image);
                         mFavoritesFAB.startAnimation(scaleAnimation);
@@ -223,8 +226,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
 
         //Set up VideoOld RecyclerView for Horizontal Scrolling
-        mVideosRecylerView = (RecyclerView)view.findViewById(R.id.movie_detail_video_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        mVideosRecylerView = (RecyclerView) view.findViewById(R.id.movie_detail_video_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mVideosRecylerView.setLayoutManager(layoutManager);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -233,7 +236,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e(TAG,"Back pressed");
+                    Log.e(TAG, "Back pressed");
 
                     //Kill this activity
                     getActivity().finish();
@@ -258,7 +261,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-                Util.showCastListActivity(getActivity(),mMovie,ENT_TYPE_MOVIE);
+                Util.showCastListActivity(getActivity(), mMovie, ENT_TYPE_MOVIE);
             }
         });
 
@@ -276,10 +279,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mVideoLayout = (CardView) view.findViewById(R.id.videosLayout);
 
         //If we just got the movie id, we need to go and fetch the data
-        if(mFetchData) {
+        if (mFetchData) {
             if (mVideosRecylerView != null) {
                 if (Util.isNetworkAvailable(getActivity())) {
-                   // new FetchMovieTask().execute(mMovieId);
+                    // new FetchMovieTask().execute(mMovieId);
                     getMovie(mMovieId);
                 } else {
                     Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
@@ -287,9 +290,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     connectToast.show();
                 }
             }
-        }
-        else {
+        } else {
             //Got the entire MovieOld object passed to fragment. Just set the layout.
+            Log.e(TAG,"Set layout without getting movie id!!");
             setLayout();
         }
 
@@ -297,51 +300,55 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-//                if (v.equals(mCast1ImageView)) {
-//                      Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(0).getId(),mCast1ImageView);
-//                } else if (v.equals(mCast2ImageView)) {
-//                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(1).getId(),mCast2ImageView);
-//                } else if (v.equals(mCast3ImageView)) {
-//                    Util.startActorDetailActivity(getActivity(),mMovie.getActors().get(2).getId(),mCast3ImageView);
-//                }
+                if (v.equals(mCast1ImageView)) {
+                      Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(0).getId(),mCast1ImageView);
+                } else if (v.equals(mCast2ImageView)) {
+                    Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(1).getId(),mCast2ImageView);
+                } else if (v.equals(mCast3ImageView)) {
+                    Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(2).getId(),mCast3ImageView);
+                }
             }
         };
 
         //Get the 3 Top Billed Cast layouts and child views
-        mCastCardView = (CardView)view.findViewById(R.id.castLayout);
+        mCastCardView = (CardView) view.findViewById(R.id.castLayout);
         View cast1View = view.findViewById(R.id.detail_cast_layout1);
-        mCast1ImageView = (ImageView)cast1View.findViewById(R.id.cast_thumb_image_view);
+        mCast1ImageView = (ImageView) cast1View.findViewById(R.id.cast_thumb_image_view);
         mCast1ImageView.setOnClickListener(castClickListener);
-        mCast1TextView = (TextView)cast1View.findViewById(R.id.cast_thumb_text_view);
+        mCast1TextView = (TextView) cast1View.findViewById(R.id.cast_thumb_text_view);
 
         View cast2View = view.findViewById(R.id.detail_cast_layout2);
-        mCast2ImageView = (ImageView)cast2View.findViewById(R.id.cast_thumb_image_view);
+        mCast2ImageView = (ImageView) cast2View.findViewById(R.id.cast_thumb_image_view);
         mCast2ImageView.setOnClickListener(castClickListener);
-        mCast2TextView = (TextView)cast2View.findViewById(R.id.cast_thumb_text_view);
+        mCast2TextView = (TextView) cast2View.findViewById(R.id.cast_thumb_text_view);
 
         View cast3View = view.findViewById(R.id.detail_cast_layout3);
-        mCast3ImageView = (ImageView)cast3View.findViewById(R.id.cast_thumb_image_view);
+        mCast3ImageView = (ImageView) cast3View.findViewById(R.id.cast_thumb_image_view);
         mCast3ImageView.setOnClickListener(castClickListener);
-        mCast3TextView = (TextView)cast3View.findViewById(R.id.cast_thumb_text_view);
+        mCast3TextView = (TextView) cast3View.findViewById(R.id.cast_thumb_text_view);
+
+        //Fill in list of videos
+        getVideos(mMovieId);
 
         return view;
     }
 
-    private void getMovie(int id){
+    private void getMovie(int id) {
 
-        Log.e(TAG,"getMovie() with movie id = " + id);
+        Log.e(TAG, "getMovie() with movie id = " + id);
         Call<Movie> call = MovieDbAPI.getMovieApiService().getMovie(id);
 
-        Log.e(TAG,"Call url = " + call.request().url());
+        Log.e(TAG, "Call url = " + call.request().url());
 
         call.enqueue(new retrofit2.Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
 
                 if (response.isSuccessful()) {
-                   Log.e(TAG, "onResponse()");
+                    Log.e(TAG, "onResponse()");
                     mMovie = response.body();
-                    setLayout();
+                    //Now get movie credits
+                    getCredits(mMovieId);
 
                 } else {
 
@@ -352,6 +359,80 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 Log.e(TAG, "onFailure() " + t.getMessage());
+
+            }
+        });
+    }
+
+
+
+    private void getVideos(int id) {
+
+    Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(id);
+    call.enqueue(new retrofit2.Callback<VideoList>()
+
+    {
+        @Override
+        public void onResponse (Call < VideoList > call, Response < VideoList > response){
+        if (response.isSuccessful()) {
+
+            if (response.body().getVideos().size() > 0) {
+                mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
+                    @Override
+                    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+
+                        //Get youtube url from video and send it to view intent
+                        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+                        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+
+                        startActivity(i);
+                    }
+                });
+                mVideosRecylerView.setAdapter(mVideoListAdapter);
+
+            } else {
+                mVideoLayout.setVisibility(View.GONE);
+            }
+        } else {
+
+        }
+    }
+
+        @Override
+        public void onFailure (Call < VideoList > call, Throwable t){
+
+    }
+    }
+
+    );
+}
+    private void getCredits(int id) {
+
+        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(id);
+        Log.e(TAG,"getCredits() Inside");
+        call.enqueue(new retrofit2.Callback<Credits>() {
+
+            @Override
+            public void onResponse(Call<Credits> call, Response<Credits> response) {
+                Log.e(TAG,"getCredits() onResponse");
+                if(response.isSuccessful()) {
+
+
+                    Credits credits = response.body();
+                    if(mMovie != null) {
+                        mMovie.setCredits(credits);
+                        //We should have all the details of the movie now. Set the layout.
+                        setLayout();
+                        setCastLayout(credits);
+                    }
+                }
+                else {
+                    //!!!TODO. Do something with the failed response
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Credits> call, Throwable t) {
 
             }
         });
@@ -447,39 +528,13 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Something went wrong. Just return false.
         return false;
     }
-
-    /**
-     * Adjust the size of the nexted listview that contains the videos list
-     *
-     * @param myListView listview of Videos
-     */
-//    private void setListViewSize(ListView myListView) {
-//        ListAdapter myListAdapter = myListView.getAdapter();
-//        if (myListAdapter == null) {
-//            //do nothing return null
-//            return;
-//        }
-//        //set listAdapter in loop for getting final size
-//        int totalHeight = 0;
-//        for (int size = 0; size < myListAdapter.getCount(); size++) {
-//            View listItem = myListAdapter.getView(size, null, myListView);
-//            listItem.measure(0, 0);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//        //setting listview item in adapter
-//        ViewGroup.LayoutParams params = myListView.getLayoutParams();
-//        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
-//        myListView.setLayoutParams(params);
-//        // print height of adapter on log
-//        Log.i("height of listItem:", String.valueOf(totalHeight));
-//    }
-
+    
     /**
      * Set the layout of the Fragment
      */
     private void setLayout() {
 
-        Log.e(TAG,"setLayout()");
+        Log.e(TAG,"setLayout() Inside");
         if (getActivity() != null && mVideosRecylerView != null) {
           //  if (mMovie != null) {
                  //  Log.e(TAG,"movie ")
@@ -487,7 +542,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 //   setHasOptionsMenu(true);
                 //Set title of MovieOld on Action Bar
               //  getActivity().setTitle(mMovie.getTitle());
-
+                Log.e(TAG,"setLayout() call Picasso to pull backgdrop");
                 Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -502,6 +557,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     @Override
                     public void onError() {
                         //Just get the default image since there was not backdrop image available
+                        Log.e(TAG,"Picasso onError()!!!");
                         Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -525,15 +581,15 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
                 mTitleTextView.setText(mMovie.getTitle());
-        //    mReleaseYearTextView.setText(mMovie.getReleaseYear());
+                mReleaseYearTextView.setText(mMovie.getReleaseYear());
 //
                 mRuntimeTextView.setText(mMovie.getRuntime() + " min");
                 mRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
             //    mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getVoteAverage(), "10"));
 //
-//                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
-//                        mMovie.getDirectorString());
-//                mDirectorTextView.setText(director);
+                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
+                        Util.buildPersonListString(mMovie.getCredits().getDirectorList()));
+                mDirectorTextView.setText(director);
 //
 //                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 //
@@ -559,51 +615,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     mRevenueTextView.setVisibility(View.GONE);
                 }
 
-            Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(mMovieId);
-            call.enqueue(new retrofit2.Callback<VideoList>() {
-                @Override
-                public void onResponse(Call<VideoList> call, Response<VideoList> response) {
-                    if (response.isSuccessful()) {
-
-                        if (response.body().getVideos().size() > 0) {
-                            mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
-                                @Override
-                                public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
-
-                                    //Get youtube url from video and send it to view intent
-                                    Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-                                    Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-
-                                    startActivity(i);
-                                }
-                            });
-                            mVideosRecylerView.setAdapter(mVideoListAdapter);
-
-                        } else {
-                            mVideoLayout.setVisibility(View.GONE);
-                        }
-                    } else {
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<VideoList> call, Throwable t) {
-
-                }
-            });
-//
-//                if (mMovie.getVideos().size() > 0) {
-//                    Log.e(TAG, "setLayout(): Got some videos, setup adapters");
-////                    mVideoListAdapter = new VideosListAdapter(getActivity(), mMovie.getVideos());
-////                    mListView.setAdapter(mVideoListAdapter);
-////                    setListViewSize(mListView);
-//
-//                    mVideoListAdapter = new VideoListAdapter(getActivity(), mMovie.getVideos(), this);
-//                    mVideosRecylerView.setAdapter(mVideoListAdapter);
-//                } else
-//                    mVideoLayout.setVisibility(View.GONE);
-//
 //
 //                //        //See if this is a favorite movie and set the state of the star button
 //                Log.e(TAG, "Check if favorite movie");
@@ -626,6 +637,35 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     }
 
+    private void setCastLayout(Credits credits) {
+
+
+        ArrayList<Cast> castList = (ArrayList) credits.getCast();
+
+        if (castList != null) {
+            Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
+            if (castList.size() >= 3) {
+                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
+                getCastThumbnails(castList.get(2).getProfilePath(), mCast3ImageView);
+                mCast1TextView.setText(castList.get(0).getName());
+                mCast2TextView.setText(castList.get(1).getName());
+                mCast3TextView.setText(castList.get(2).getName());
+            } else if (castList.size() == 2) {
+                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
+                mCast1TextView.setText(castList.get(0).getName());
+                mCast2TextView.setText(castList.get(1).getName());
+            } else if (castList.size() == 3) {
+                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                mCast1TextView.setText(castList.get(0).getName());
+            }
+        } else {
+            //Did not return any cast. Don't show cast card.
+            mCastCardView.setVisibility(View.GONE);
+        }
+    }
+    
     private void setPaletteColors() {
 
         Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
@@ -656,6 +696,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         }
     }
     private void startPostponedEnterTransition() {
+        Log.e(TAG,"startPostponedEnterTransition() Inside");
         mPosterImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -673,15 +714,15 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     private void getCastThumbnails(String uri, final ImageView imageView) {
 
-        Picasso.with(getActivity()).load(uri).into(imageView, new Callback() {
+        Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
-
+                Log.e(TAG,"getCastThumbnail() onSuccess()");
             }
 
             @Override
             public void onError() {
-
+                Log.e(TAG,"getCastThumbnail() onError()");
                 imageView.setImageResource(R.drawable.person_no_pic_thumnail);
             }
         });

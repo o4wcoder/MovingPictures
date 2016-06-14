@@ -83,6 +83,8 @@ public class Movie {
     @Expose
     private Integer voteCount;
 
+    private Credits credits;
+
     /**
      *
      * @return
@@ -533,6 +535,15 @@ public class Movie {
         this.voteCount = voteCount;
     }
 
+
+    public Credits getCredits() {
+        return credits;
+    }
+
+    public void setCredits(Credits credits) {
+        this.credits = credits;
+    }
+
     public String getGenreListString() {
 
 
@@ -546,5 +557,16 @@ public class Movie {
                 str = str.substring(0,str.length() - 2);
 
             return str;
+    }
+
+    public String getReleaseYear() {
+
+        String releaseYear = "";
+        String[] dateArray = releaseDate.split("-");
+
+        if(dateArray != null)
+            releaseYear = dateArray[0];
+
+        return releaseYear;
     }
 }

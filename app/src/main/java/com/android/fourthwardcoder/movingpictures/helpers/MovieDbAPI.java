@@ -9,7 +9,7 @@ import android.util.Log;
 import com.android.fourthwardcoder.movingpictures.interfaces.APIKeys;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
-import com.android.fourthwardcoder.movingpictures.models.Credit;
+import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.Person;
@@ -227,18 +227,18 @@ public class MovieDbAPI implements Constants {
      * @param movieUri  URI string use to poll data from movie database
      * @return          ArrayList of Simple Movies
      */
-    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
-
-        Log.e(TAG,"MovieURI: " + movieUri);
-        String movieJsonStr = queryMovieDatabase(movieUri);
-        Log.e(TAG,movieJsonStr);
-        //Error pulling movies, return null
-        if(movieJsonStr == null)
-            return null;
-
-        //Part data and return list of movies
-        return parseJsonMovieList(context,movieJsonStr);
-    }
+//    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
+//
+//        Log.e(TAG,"MovieURI: " + movieUri);
+//        String movieJsonStr = queryMovieDatabase(movieUri);
+//        Log.e(TAG,movieJsonStr);
+//        //Error pulling movies, return null
+//        if(movieJsonStr == null)
+//            return null;
+//
+//        //Part data and return list of movies
+//        return parseJsonMovieList(context,movieJsonStr);
+//    }
 
     /**
      * Get single movie
@@ -326,7 +326,7 @@ public class MovieDbAPI implements Constants {
      * @param movieId MovieOld id
      * @return        ArrayList of credits
      */
-    public static ArrayList<Credit> getMovieCastList(int movieId) {
+    public static ArrayList<CreditOld> getMovieCastList(int movieId) {
 
         Uri creditUri = buildMovieCreditsUri(movieId);
         String creditJsonStr = queryMovieDatabase(creditUri);
@@ -343,7 +343,7 @@ public class MovieDbAPI implements Constants {
      * @param movieId MovieOld id
      * @return        ArrayList of credits
      */
-    public static ArrayList<Credit> getTvCastList(int movieId) {
+    public static ArrayList<CreditOld> getTvCastList(int movieId) {
 
         Uri creditUri = buildTvCreditsUri(movieId);
         String creditJsonStr = queryMovieDatabase(creditUri);
@@ -360,7 +360,7 @@ public class MovieDbAPI implements Constants {
      * @param personId Person id
      * @return         ArrayList of credits of a person
      */
-    public static ArrayList<Credit> getPersonCreditList(int personId,int creditType) {
+    public static ArrayList<CreditOld> getPersonCreditList(int personId, int creditType) {
 
         Uri creditUri = buildPersonCreditsUri(personId, creditType);
         String creditJsonStr = queryMovieDatabase(creditUri);
@@ -539,7 +539,7 @@ public class MovieDbAPI implements Constants {
      * @param movieId Id of movie
      * @return        Uri to MovieOld credits
      */
-    private static Uri buildMovieCreditsUri(int movieId) {
+    public static Uri buildMovieCreditsUri(int movieId) {
 
         //Get Uri for credits of movie
         //Build URI String to query the databaes for the list of credits
@@ -598,11 +598,11 @@ public class MovieDbAPI implements Constants {
     /**
      * Parse JSON String of the cast list
      * @param creditJsonStr Json string of cast list
-     * @return              return cast list info as a list of Credit Objects
+     * @return              return cast list info as a list of CreditOld Objects
      */
-    private static ArrayList<Credit> parseJsonCastList(String creditJsonStr) {
+    private static ArrayList<CreditOld> parseJsonCastList(String creditJsonStr) {
 
-        ArrayList<Credit> castList = null;
+        ArrayList<CreditOld> castList = null;
 
         try {
             // Log.e(TAG,"Credits: " + creditJsonStr);
@@ -611,13 +611,13 @@ public class MovieDbAPI implements Constants {
             //Pull out Cast Information
             JSONArray castArray = creditObj.getJSONArray(MovieDbAPI.TAG_CAST);
 
-            castList = new ArrayList<Credit>(castArray.length());
+            castList = new ArrayList<CreditOld>(castArray.length());
 
             //Pull out actors of the movie
             for (int j = 0; j < castArray.length(); j++) {
                 int id = castArray.getJSONObject(j).getInt(MovieDbAPI.TAG_ID);
 
-                Credit credit = new Credit(id);
+                CreditOld credit = new CreditOld(id);
 
                 credit.setTitle(castArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
                 credit.setCharacter(castArray.getJSONObject(j).getString(MovieDbAPI.TAG_CHARACTER));
@@ -677,10 +677,10 @@ public class MovieDbAPI implements Constants {
      * @param entType              Type of entertainment; MovieOld or TV
      * @return                     ArrayList of Person's credits
      */
-    private static ArrayList<Credit> parseJsonPersonCreditList(String personCreditsJsonStr,int entType) {
+    private static ArrayList<CreditOld> parseJsonPersonCreditList(String personCreditsJsonStr, int entType) {
 
         //List of Reviews that get parsed from MovieOld DB JSON return
-        ArrayList<Credit> creditList = null;
+        ArrayList<CreditOld> creditList = null;
 
         try {
             JSONObject obj = new JSONObject(personCreditsJsonStr);
@@ -688,11 +688,11 @@ public class MovieDbAPI implements Constants {
 
             creditList = new ArrayList<>(resultsArray.length());
 
-            Log.e(TAG, "Credit json: " + personCreditsJsonStr);
+            Log.e(TAG, "CreditOld json: " + personCreditsJsonStr);
             for(int i = 0; i< resultsArray.length(); i++) {
 
                 JSONObject result = resultsArray.getJSONObject(i);
-                Credit credit = new Credit(result.getInt(MovieDbAPI.TAG_ID));;
+                CreditOld credit = new CreditOld(result.getInt(MovieDbAPI.TAG_ID));;
                 credit.setCharacter(result.getString(MovieDbAPI.TAG_CHARACTER));
                 credit.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE
                         + result.getString(MovieDbAPI.TAG_POSTER_PATH));
@@ -908,46 +908,46 @@ public class MovieDbAPI implements Constants {
      * @param moviesJsonStr Full return JSON String of movie data
      * @return              ArrayList of Movies
      */
-    private static ArrayList<MovieOld> parseJsonMovieList(Context context, String moviesJsonStr) {
-
-        //List of Movies that get parsed MovieOld DB JSON return
-        ArrayList<MovieOld> movieList = null;
-
-        try {
-            JSONObject obj = new JSONObject(moviesJsonStr);
-
-            //Get JSONArray List of all movies
-            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
-
-            //Log.e(TAG,"Results Array: " + resultsArray.get(0));
-
-            //Initialize movie array list by the number of movies returned in the query
-            movieList = new ArrayList<>(resultsArray.length());
-
-            //Loop through all of the movies returned in the query
-            for(int i=0;i <resultsArray.length(); i++) {
-
-                //Get MovieOld result. Create movie object and pull out particular data for
-                //that movie.
-                JSONObject result = resultsArray.getJSONObject(i);
-               // Log.e(TAG,"MOVIE Result: " + result.toString());
-
-                 int movieId = result.getInt(MovieDbAPI.TAG_ID);
-                 MovieOld movie = getMovie(movieId);
-
-                //Add movie to movie list array.
-                if(movie != null)
-                   movieList.add(movie);
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return movieList;
-    }
+//    private static ArrayList<MovieOld> parseJsonMovieList(Context context, String moviesJsonStr) {
+//
+//        //List of Movies that get parsed MovieOld DB JSON return
+//        ArrayList<MovieOld> movieList = null;
+//
+//        try {
+//            JSONObject obj = new JSONObject(moviesJsonStr);
+//
+//            //Get JSONArray List of all movies
+//            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
+//
+//            //Log.e(TAG,"Results Array: " + resultsArray.get(0));
+//
+//            //Initialize movie array list by the number of movies returned in the query
+//            movieList = new ArrayList<>(resultsArray.length());
+//
+//            //Loop through all of the movies returned in the query
+//            for(int i=0;i <resultsArray.length(); i++) {
+//
+//                //Get MovieOld result. Create movie object and pull out particular data for
+//                //that movie.
+//                JSONObject result = resultsArray.getJSONObject(i);
+//               // Log.e(TAG,"MOVIE Result: " + result.toString());
+//
+//                 int movieId = result.getInt(MovieDbAPI.TAG_ID);
+//                 MovieOld movie = getMovie(movieId);
+//
+//                //Add movie to movie list array.
+//                if(movie != null)
+//                   movieList.add(movie);
+//            }
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        return movieList;
+//    }
 
     /**
      * Parse JSON String of Reviews

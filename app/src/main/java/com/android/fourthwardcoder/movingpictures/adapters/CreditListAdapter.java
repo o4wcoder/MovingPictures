@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.fourthwardcoder.movingpictures.models.Credit;
+import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.squareup.picasso.Picasso;
 
@@ -19,9 +19,9 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 9/2/2015.
  * <p/>
- * Adapter to display a MovieOld or TV shows Credit info in a listview of the Filmography
+ * Adapter to display a MovieOld or TV shows CreditOld info in a listview of the Filmography
  */
-public class CreditListAdapter extends ArrayAdapter<Credit> {
+public class CreditListAdapter extends ArrayAdapter<CreditOld> {
 
     /**********************************************************************/
     /*                           Constants                                */
@@ -33,7 +33,7 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
     private Context mContext;
     private boolean mShowYear;
 
-    public CreditListAdapter(Context context, ArrayList<Credit> creditList, boolean showYear) {
+    public CreditListAdapter(Context context, ArrayList<CreditOld> creditList, boolean showYear) {
         super(context, 0, creditList);
 
         mContext = context;
@@ -62,12 +62,12 @@ public class CreditListAdapter extends ArrayAdapter<Credit> {
         }
 
         //Get each MovieOld using the position in the ArrayAdapter
-        Credit credit = getItem(position);
+        CreditOld credit = getItem(position);
 
         //Call Picasso to load it into the imageView
         Picasso.with(mContext).load(credit.getPosterPath()).into(holder.imageView);
 
-        //Set (????) if Credit does not have a release year
+        //Set (????) if CreditOld does not have a release year
         String releaseYear = "";
         if (mShowYear) {
             if (credit.getReleaseYear() == 0)
