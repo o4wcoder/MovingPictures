@@ -5,6 +5,7 @@
     <string name="title_activity_movie_detail">MovieDetail</string>
     <string name="director">DIRECTOR:</string>
     <string name="cast">CAST:</string>
+    <string name="writers">WRITERS:</string>
     <string name="cast_toolbar">Cast:</string>
     <string name="rated">RATED:</string>
     <string name="release_date">RELEASE DATE:</string>
@@ -38,7 +39,9 @@
     <string name="menu_search">Search</string>
     <string name="videos">Videos</string>
     <string name="top_cast">Top Billed Cast</string>
+    <string name="top_crew">Top Billed Crew</string>
     <string name="show_all_cast">SHOW ALL CAST</string>
+    <string name="show_all_crew">SHOW ALL CREW</string>
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>

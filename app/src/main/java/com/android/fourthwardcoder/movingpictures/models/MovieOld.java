@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,13 +21,13 @@ import java.util.ArrayList;
  *
  * Class to hold MovieOld details. Implements Parcelable to be passed between activities.
  */
-public class MovieOld implements Parcelable {
+public class MovieOld implements Parcelable, Constants {
 
     /******************************************************/
     /*                   Constants                        */
     /******************************************************/
     //Number of cast members to be displayed on the Details Activity
-    public static final int NUM_CAST_DISPLAY = 3;
+   // public static final int NUM_CAST_DISPLAY = 3;
 
     public static final String TAG = MovieOld.class.getSimpleName();
 

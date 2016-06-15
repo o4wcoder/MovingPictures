@@ -117,6 +117,9 @@ public class MovieDbAPI implements Constants {
     public static final String TAG_CREW = "crew";
     public static final String TAG_JOB = "job";
     public static final String TAG_JOB_DIRECTOR = "Director";
+    public static final String TAG_JOB_WRITER = "Writer";
+    public static final String TAG_DEPARTMENT_DIRECTING = "Directing";
+    public static final String TAG_DEPARTMENT_WRITING = "Writing";
     public static final String TAG_NAME = "name";
     public static final String TAG_RUNTIME = "runtime";
     public static final String TAG_GENRES = "genres";
@@ -222,41 +225,6 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of movies. Uri is required as the sort parameter
-     * @param context   Context of calling Activity
-     * @param movieUri  URI string use to poll data from movie database
-     * @return          ArrayList of Simple Movies
-     */
-//    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
-//
-//        Log.e(TAG,"MovieURI: " + movieUri);
-//        String movieJsonStr = queryMovieDatabase(movieUri);
-//        Log.e(TAG,movieJsonStr);
-//        //Error pulling movies, return null
-//        if(movieJsonStr == null)
-//            return null;
-//
-//        //Part data and return list of movies
-//        return parseJsonMovieList(context,movieJsonStr);
-//    }
-
-    /**
-     * Get single movie
-     * @param id MovieOld id
-     * @return   MovieOld object
-     */
-    public static MovieOld getMovie(int id) {
-
-        Uri uri = buildMovieUri(id);
-        String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
-
-        if(jsonStr == null)
-            return null;
-        else
-            return parseJsonMovie(jsonStr);
-    }
-
-    /**
      * Get a single tv show
      * @param id TV id
      * @return   TV object
@@ -291,7 +259,7 @@ public class MovieDbAPI implements Constants {
     /**
      * Get list of videos from a MovieOld or TV Show
      * @param id MovieOld id
-     * @return   ArrayList of Videos
+     * @return   ArrayList of VideoList
      */
     public static ArrayList<Review> getReviewList(int id, int entType) {
 
@@ -307,7 +275,7 @@ public class MovieDbAPI implements Constants {
     /**
      * Get list of videos from a MovieOld
      * @param movieId MovieOld id
-     * @return        ArrayList of Videos
+     * @return        ArrayList of VideoList
      */
     public static ArrayList<VideoOld> getVideoList(int movieId, int entType) {
 
@@ -809,7 +777,7 @@ public class MovieDbAPI implements Constants {
                         movie.setActors(actorNameList);
                     }
 
-                    //Get Videos
+                    //Get VideoList
                     movie.setVideos(getVideoList(movie.getId(), ENT_TYPE_MOVIE));
 
                 }
@@ -889,7 +857,7 @@ public class MovieDbAPI implements Constants {
                     }
                 }
 
-                //Get Videos
+                //Get VideoList
                 tvShow.setVideos(getVideoList(tvShow.getId(), ENT_TYPE_TV));
             }
         }
@@ -899,55 +867,6 @@ public class MovieDbAPI implements Constants {
 
         return tvShow;
     }
-
-    /**
-     * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
-     * a each movie returned and puts that data into a MovieOld object. These movie objects are
-     * returned in an ARRAYList
-     * @param context       Context of the calling Activity
-     * @param moviesJsonStr Full return JSON String of movie data
-     * @return              ArrayList of Movies
-     */
-//    private static ArrayList<MovieOld> parseJsonMovieList(Context context, String moviesJsonStr) {
-//
-//        //List of Movies that get parsed MovieOld DB JSON return
-//        ArrayList<MovieOld> movieList = null;
-//
-//        try {
-//            JSONObject obj = new JSONObject(moviesJsonStr);
-//
-//            //Get JSONArray List of all movies
-//            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
-//
-//            //Log.e(TAG,"Results Array: " + resultsArray.get(0));
-//
-//            //Initialize movie array list by the number of movies returned in the query
-//            movieList = new ArrayList<>(resultsArray.length());
-//
-//            //Loop through all of the movies returned in the query
-//            for(int i=0;i <resultsArray.length(); i++) {
-//
-//                //Get MovieOld result. Create movie object and pull out particular data for
-//                //that movie.
-//                JSONObject result = resultsArray.getJSONObject(i);
-//               // Log.e(TAG,"MOVIE Result: " + result.toString());
-//
-//                 int movieId = result.getInt(MovieDbAPI.TAG_ID);
-//                 MovieOld movie = getMovie(movieId);
-//
-//                //Add movie to movie list array.
-//                if(movie != null)
-//                   movieList.add(movie);
-//            }
-//
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//
-//        return movieList;
-//    }
 
     /**
      * Parse JSON String of Reviews
@@ -1093,4 +1012,91 @@ public class MovieDbAPI implements Constants {
 
         return retrofit.create(MovieService.class);
     }
+
+    /********************************************************************************************/
+    /*                                  Old HTTP API Calls                                      */
+    /********************************************************************************************/
+    /**
+     * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
+     * a each movie returned and puts that data into a MovieOld object. These movie objects are
+     * returned in an ARRAYList
+     * @param context       Context of the calling Activity
+     * @param moviesJsonStr Full return JSON String of movie data
+     * @return              ArrayList of Movies
+     */
+//    private static ArrayList<MovieOld> parseJsonMovieList(Context context, String moviesJsonStr) {
+//
+//        //List of Movies that get parsed MovieOld DB JSON return
+//        ArrayList<MovieOld> movieList = null;
+//
+//        try {
+//            JSONObject obj = new JSONObject(moviesJsonStr);
+//
+//            //Get JSONArray List of all movies
+//            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
+//
+//            //Log.e(TAG,"Results Array: " + resultsArray.get(0));
+//
+//            //Initialize movie array list by the number of movies returned in the query
+//            movieList = new ArrayList<>(resultsArray.length());
+//
+//            //Loop through all of the movies returned in the query
+//            for(int i=0;i <resultsArray.length(); i++) {
+//
+//                //Get MovieOld result. Create movie object and pull out particular data for
+//                //that movie.
+//                JSONObject result = resultsArray.getJSONObject(i);
+//               // Log.e(TAG,"MOVIE Result: " + result.toString());
+//
+//                 int movieId = result.getInt(MovieDbAPI.TAG_ID);
+//                 MovieOld movie = getMovie(movieId);
+//
+//                //Add movie to movie list array.
+//                if(movie != null)
+//                   movieList.add(movie);
+//            }
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        return movieList;
+//    }
+
+    //    /**
+//     * Get single movie
+//     * @param id MovieOld id
+//     * @return   MovieOld object
+//     */
+//    public static MovieOld getMovie(int id) {
+//
+//        Uri uri = buildMovieUri(id);
+//        String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
+//
+//        if(jsonStr == null)
+//            return null;
+//        else
+//            return parseJsonMovie(jsonStr);
+//    }
+
+    /**
+     * Get list of movies. Uri is required as the sort parameter
+     * @param context   Context of calling Activity
+     * @param movieUri  URI string use to poll data from movie database
+     * @return          ArrayList of Simple Movies
+     */
+//    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
+//
+//        Log.e(TAG,"MovieURI: " + movieUri);
+//        String movieJsonStr = queryMovieDatabase(movieUri);
+//        Log.e(TAG,movieJsonStr);
+//        //Error pulling movies, return null
+//        if(movieJsonStr == null)
+//            return null;
+//
+//        //Part data and return list of movies
+//        return parseJsonMovieList(context,movieJsonStr);
+//    }
 }

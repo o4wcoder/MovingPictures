@@ -9,30 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class VideoList {
 
-    @SerializedName("id")
-    @Expose
-    private Integer id;
     @SerializedName("results")
     @Expose
-    private List<Video> videos = new ArrayList<Video>();
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     * The id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private List<Video> results = new ArrayList<Video>();
 
     /**
      *
@@ -40,7 +19,7 @@ public class VideoList {
      * The results
      */
     public List<Video> getVideos() {
-        return videos;
+        return results;
     }
 
     /**
@@ -49,8 +28,7 @@ public class VideoList {
      * The results
      */
     public void setVideos(List<Video> results) {
-        this.videos = results;
+        this.results = results;
     }
 
 }
-

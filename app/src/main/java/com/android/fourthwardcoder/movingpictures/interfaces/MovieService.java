@@ -3,7 +3,6 @@ package com.android.fourthwardcoder.movingpictures.interfaces;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.VideoList;
 
@@ -20,7 +19,7 @@ public interface MovieService {
     @GET("/3/movie/{sort_type}/")
     Call<MovieList> getMovieList(@Path("sort_type") String sortType,
                                  @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
-    @GET("/3/movie/{id}")
+    @GET("/3/movie/{id}?append_to_response=credits,videos")
     Call<Movie> getMovie(@Path("id") int id);
 
     @GET("3/movie/{id}/videos")

@@ -2,6 +2,7 @@ package com.android.fourthwardcoder.movingpictures.models;
 
 import android.util.Log;
 
+import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,17 +81,28 @@ public class Credits {
 
     public ArrayList<IdNamePair> getDirectorList() {
 
-        ArrayList<IdNamePair> directorList = new ArrayList<IdNamePair>();
+        return getDepartmentList(MovieDbAPI.TAG_DEPARTMENT_DIRECTING);
+    }
+
+    public ArrayList<IdNamePair> getWriterList() {
+
+       return getDepartmentList(MovieDbAPI.TAG_DEPARTMENT_WRITING);
+    }
+
+    private ArrayList<IdNamePair> getDepartmentList(String tag) {
+
+        ArrayList<IdNamePair> list = new ArrayList<>();
         for(Crew crew : getCrew()) {
 
-            if(crew.getJob().equals(MovieDbAPI.TAG_JOB_DIRECTOR)) {
-                IdNamePair director = new IdNamePair(crew.getId());
-                director.setName(crew.getName());
-                directorList.add(director);
+            if(crew.getDepartment().equals(tag)) {
+                IdNamePair job = new IdNamePair(crew.getId());
+                job.setName(crew.getName());
+                list.add(job);
             }
         }
 
-        return directorList;
+        return list;
     }
+
 
 }

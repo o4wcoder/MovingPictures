@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Author: Chris Hare
  * Created: 8/28/2015
  * <p/>
- * List Adapater for Videos of a MovieOld or TV Show.
+ * List Adapater for VideoList of a MovieOld or TV Show.
  */
 //public class VideosListAdapter extends ArrayAdapter<VideoOld> {
 //

@@ -83,7 +83,12 @@ public class Movie {
     @Expose
     private Integer voteCount;
 
+    @SerializedName("credits")
+    @Expose
     private Credits credits;
+    @SerializedName("videos")
+    @Expose
+    private VideoList videos;
 
     /**
      *
@@ -542,6 +547,14 @@ public class Movie {
 
     public void setCredits(Credits credits) {
         this.credits = credits;
+    }
+
+    public VideoList getVideos() {
+        return videos;
+    }
+
+    public void setVideos(VideoList videos) {
+        this.videos = videos;
     }
 
     public String getGenreListString() {

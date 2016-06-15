@@ -36,6 +36,8 @@ public interface Constants {
     int ENT_TYPE_MOVIE = 0;
     int ENT_TYPE_TV = 1;
 
+    public static final int NUM_CAST_DISPLAY = 3;
+
 
 
 

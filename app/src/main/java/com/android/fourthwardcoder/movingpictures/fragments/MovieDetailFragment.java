@@ -46,8 +46,6 @@ import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Video;
-import com.android.fourthwardcoder.movingpictures.models.VideoList;
-import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 import com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
@@ -116,6 +114,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mCast1TextView;
     TextView mCast2TextView;
     TextView mCast3TextView;
+
+    TextView mDirectorListTextView;
+    TextView mWriterListTextView;
 
     boolean mFetchData = false;
 
@@ -327,8 +328,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mCast3ImageView.setOnClickListener(castClickListener);
         mCast3TextView = (TextView) cast3View.findViewById(R.id.cast_thumb_text_view);
 
+        mDirectorListTextView = (TextView)view.findViewById(R.id.detail_crew_director_textview);
+        mWriterListTextView = (TextView)view.findViewById(R.id.detail_crew_writer_textview);
+
         //Fill in list of videos
-        getVideos(mMovieId);
+       // getVideos(mMovieId);
 
         return view;
     }
@@ -348,7 +352,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     Log.e(TAG, "onResponse()");
                     mMovie = response.body();
                     //Now get movie credits
-                    getCredits(mMovieId);
+                   // getCredits(mMovieId);
+                    setLayout();
 
                 } else {
 
@@ -365,78 +370,79 @@ public class MovieDetailFragment extends Fragment implements Constants {
     }
 
 
+//    private void getVideos(int id) {
+//
+//        Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(id);
+//        call.enqueue(new retrofit2.Callback<VideoList>()
+//
+//                     {
+//                         @Override
+//                         public void onResponse(Call<VideoList> call, Response<VideoList> response) {
+//                             if (response.isSuccessful()) {
+//
+//                                 if (response.body().getVideos().size() > 0) {
+//                                     mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
+//                                         @Override
+//                                         public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+//
+//                                             //Get youtube url from video and send it to view intent
+//                                             Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+//                                             Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+//
+//                                             startActivity(i);
+//                                         }
+//                                     });
+//                                     mVideosRecylerView.setAdapter(mVideoListAdapter);
+//
+//                                 } else {
+//                                     mVideoLayout.setVisibility(View.GONE);
+//                                 }
+//                             } else {
+//
+//                             }
+//                         }
+//
+//                         @Override
+//                         public void onFailure(Call<VideoList> call, Throwable t) {
+//
+//                         }
+//                     }
+//
+//        );
+//    }
 
-    private void getVideos(int id) {
-
-    Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(id);
-    call.enqueue(new retrofit2.Callback<VideoList>()
-
-    {
-        @Override
-        public void onResponse (Call < VideoList > call, Response < VideoList > response){
-        if (response.isSuccessful()) {
-
-            if (response.body().getVideos().size() > 0) {
-                mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
-                    @Override
-                    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
-
-                        //Get youtube url from video and send it to view intent
-                        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-                        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-
-                        startActivity(i);
-                    }
-                });
-                mVideosRecylerView.setAdapter(mVideoListAdapter);
-
-            } else {
-                mVideoLayout.setVisibility(View.GONE);
-            }
-        } else {
-
-        }
-    }
-
-        @Override
-        public void onFailure (Call < VideoList > call, Throwable t){
-
-    }
-    }
-
-    );
-}
-    private void getCredits(int id) {
-
-        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(id);
-        Log.e(TAG,"getCredits() Inside");
-        call.enqueue(new retrofit2.Callback<Credits>() {
-
-            @Override
-            public void onResponse(Call<Credits> call, Response<Credits> response) {
-                Log.e(TAG,"getCredits() onResponse");
-                if(response.isSuccessful()) {
-
-
-                    Credits credits = response.body();
-                    if(mMovie != null) {
-                        mMovie.setCredits(credits);
-                        //We should have all the details of the movie now. Set the layout.
-                        setLayout();
-                        setCastLayout(credits);
-                    }
-                }
-                else {
-                    //!!!TODO. Do something with the failed response
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Credits> call, Throwable t) {
-
-            }
-        });
-    }
+//    private void getCredits(int id) {
+//
+//        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(id);
+//        Log.e(TAG,"getCredits() Inside");
+//        call.enqueue(new retrofit2.Callback<Credits>() {
+//
+//            @Override
+//            public void onResponse(Call<Credits> call, Response<Credits> response) {
+//                Log.e(TAG,"getCredits() onResponse");
+//                if(response.isSuccessful()) {
+//
+//
+//                    Credits credits = response.body();
+//                    if(mMovie != null) {
+//                        mMovie.setCredits(credits);
+//                        //We should have all the details of the movie now. Set the layout.
+//                        setLayout();
+//                        setCastLayout(credits);
+//
+//                    }
+//                }
+//                else {
+//                    //!!!TODO. Do something with the failed response
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Credits> call, Throwable t) {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -615,6 +621,63 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     mRevenueTextView.setVisibility(View.GONE);
                 }
 
+            /*
+             * Set up Videos
+             */
+            if (mMovie.getVideos().getVideos().size() > 0) {
+                mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) mMovie.getVideos().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
+                    @Override
+                    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+
+                        //Get youtube url from video and send it to view intent
+                        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+                        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+
+                        startActivity(i);
+                    }
+                });
+                mVideosRecylerView.setAdapter(mVideoListAdapter);
+
+            } else {
+                mVideoLayout.setVisibility(View.GONE);
+            }
+
+            /*
+             * Set Up Cast Info
+             */
+            ArrayList<Cast> castList = (ArrayList) mMovie.getCredits().getCast();
+
+            if (castList != null) {
+                Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
+                if (castList.size() >= 3) {
+                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                    getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
+                    getCastThumbnails(castList.get(2).getProfilePath(), mCast3ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                    mCast2TextView.setText(castList.get(1).getName());
+                    mCast3TextView.setText(castList.get(2).getName());
+                } else if (castList.size() == 2) {
+                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                    getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                    mCast2TextView.setText(castList.get(1).getName());
+                } else if (castList.size() == 3) {
+                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                }
+                else {
+                    //Cast size is 0. Don't show cast card.
+                    mCastCardView.setVisibility(View.GONE);
+                }
+            } else {
+                //Did not return any cast. Don't show cast card.
+                mCastCardView.setVisibility(View.GONE);
+            }
+
+
+            Util.setCrewLinks(getContext(),mMovie.getCredits().getDirectorList(),mDirectorListTextView,getString(R.string.director));
+            Util.setCrewLinks(getContext(),mMovie.getCredits().getWriterList(),mWriterListTextView,getString(R.string.writers));
+
 //
 //                //        //See if this is a favorite movie and set the state of the star button
 //                Log.e(TAG, "Check if favorite movie");
@@ -637,34 +700,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     }
 
-    private void setCastLayout(Credits credits) {
-
-
-        ArrayList<Cast> castList = (ArrayList) credits.getCast();
-
-        if (castList != null) {
-            Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
-            if (castList.size() >= 3) {
-                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
-                getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
-                getCastThumbnails(castList.get(2).getProfilePath(), mCast3ImageView);
-                mCast1TextView.setText(castList.get(0).getName());
-                mCast2TextView.setText(castList.get(1).getName());
-                mCast3TextView.setText(castList.get(2).getName());
-            } else if (castList.size() == 2) {
-                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
-                getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
-                mCast1TextView.setText(castList.get(0).getName());
-                mCast2TextView.setText(castList.get(1).getName());
-            } else if (castList.size() == 3) {
-                getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
-                mCast1TextView.setText(castList.get(0).getName());
-            }
-        } else {
-            //Did not return any cast. Don't show cast card.
-            mCastCardView.setVisibility(View.GONE);
-        }
-    }
     
     private void setPaletteColors() {
 
