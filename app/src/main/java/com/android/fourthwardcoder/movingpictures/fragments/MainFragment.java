@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.adapters.MovieListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.helpers.APIError;
+import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -308,13 +310,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         setMovieAdapter((ArrayList)response.body().getMovies());
                     } else {
 
-                        //!!!TODO. Do something with the failed response
+                        //parse the response to find the error. Display a message
+                        APIError error = ErrorUtils.parseError(response);
+                        Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MovieList> call, Throwable t) {
                     Log.e(TAG, "onFailure() " + t.getMessage());
+                    Toast.makeText(getContext(),getContext().getString(R.string.toast_network_error),Toast.LENGTH_LONG);
 
                 }
             });

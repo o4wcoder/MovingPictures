@@ -37,6 +37,8 @@ import android.widget.Toast;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.helpers.APIError;
+import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
@@ -357,92 +359,21 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 } else {
 
-                    //!!!TODO. Do something with the failed response
+                    //parse the response to find the error. Display a message
+                    APIError error = ErrorUtils.parseError(response);
+                    Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
+
                 }
             }
 
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 Log.e(TAG, "onFailure() " + t.getMessage());
+                Toast.makeText(getContext(),getContext().getString(R.string.toast_network_error),Toast.LENGTH_LONG);
 
             }
         });
     }
-
-
-//    private void getVideos(int id) {
-//
-//        Call<VideoList> call = MovieDbAPI.getMovieApiService().getVideoList(id);
-//        call.enqueue(new retrofit2.Callback<VideoList>()
-//
-//                     {
-//                         @Override
-//                         public void onResponse(Call<VideoList> call, Response<VideoList> response) {
-//                             if (response.isSuccessful()) {
-//
-//                                 if (response.body().getVideos().size() > 0) {
-//                                     mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) response.body().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
-//                                         @Override
-//                                         public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
-//
-//                                             //Get youtube url from video and send it to view intent
-//                                             Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
-//                                             Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-//
-//                                             startActivity(i);
-//                                         }
-//                                     });
-//                                     mVideosRecylerView.setAdapter(mVideoListAdapter);
-//
-//                                 } else {
-//                                     mVideoLayout.setVisibility(View.GONE);
-//                                 }
-//                             } else {
-//
-//                             }
-//                         }
-//
-//                         @Override
-//                         public void onFailure(Call<VideoList> call, Throwable t) {
-//
-//                         }
-//                     }
-//
-//        );
-//    }
-
-//    private void getCredits(int id) {
-//
-//        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(id);
-//        Log.e(TAG,"getCredits() Inside");
-//        call.enqueue(new retrofit2.Callback<Credits>() {
-//
-//            @Override
-//            public void onResponse(Call<Credits> call, Response<Credits> response) {
-//                Log.e(TAG,"getCredits() onResponse");
-//                if(response.isSuccessful()) {
-//
-//
-//                    Credits credits = response.body();
-//                    if(mMovie != null) {
-//                        mMovie.setCredits(credits);
-//                        //We should have all the details of the movie now. Set the layout.
-//                        setLayout();
-//                        setCastLayout(credits);
-//
-//                    }
-//                }
-//                else {
-//                    //!!!TODO. Do something with the failed response
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Credits> call, Throwable t) {
-//
-//            }
-//        });
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
