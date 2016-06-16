@@ -14,7 +14,7 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.models.Review;
+import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
 import com.android.fourthwardcoder.movingpictures.adapters.ReviewsListAdapter;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ReviewsFragment extends Fragment implements Constants {
     /*                          Local Data                                 */
     /***********************************************************************/
     ListView mListView;
-    ArrayList<Review> mReviewList;
+    ArrayList<ReviewOld> mReviewList;
 
     public ReviewsFragment() {
     }
@@ -71,10 +71,10 @@ public class ReviewsFragment extends Fragment implements Constants {
         return view;
     }
 
-    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<Review>> {
+    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<ReviewOld>> {
 
         @Override
-        protected ArrayList<Review> doInBackground(Integer... params) {
+        protected ArrayList<ReviewOld> doInBackground(Integer... params) {
 
             //Get ID of movie or tv show
             int id = params[0];
@@ -84,7 +84,7 @@ public class ReviewsFragment extends Fragment implements Constants {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Review> reviewsList) {
+        protected void onPostExecute(ArrayList<ReviewOld> reviewsList) {
 
             if ((getActivity() != null) && (reviewsList != null)) {
                 ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);

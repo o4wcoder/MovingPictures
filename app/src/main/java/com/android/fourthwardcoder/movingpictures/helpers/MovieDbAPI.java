@@ -13,7 +13,7 @@ import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.Person;
-import com.android.fourthwardcoder.movingpictures.models.Review;
+import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.models.VideoOld;
@@ -261,7 +261,7 @@ public class MovieDbAPI implements Constants {
      * @param id MovieOld id
      * @return   ArrayList of VideoList
      */
-    public static ArrayList<Review> getReviewList(int id, int entType) {
+    public static ArrayList<ReviewOld> getReviewList(int id, int entType) {
 
         Uri reviewUri = buildReviewsUri(id, entType);
         String reviewJsonStr = queryMovieDatabase(reviewUri);
@@ -459,7 +459,7 @@ public class MovieDbAPI implements Constants {
                 .appendPath(PATH_REVIEWS)
                 .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
                 .build();
-        Log.e(TAG,"Review URI: " + reviewsUri);
+        Log.e(TAG,"ReviewOld URI: " + reviewsUri);
         return reviewsUri;
     }
     /**
@@ -873,10 +873,10 @@ public class MovieDbAPI implements Constants {
      * @param reviewsJsonStr JSON String of reviews
      * @return               ArrayList of reviews
      */
-    private static ArrayList<Review> parseJsonReviewList(String reviewsJsonStr) {
+    private static ArrayList<ReviewOld> parseJsonReviewList(String reviewsJsonStr) {
 
         //List of Reviews that get parsed from MovieOld DB JSON return
-        ArrayList<Review> reviewList = null;
+        ArrayList<ReviewOld> reviewList = null;
         //Log.e(TAG,"REviewJson: " +reviewsJsonStr);
         try {
             JSONObject obj = new JSONObject(reviewsJsonStr);
@@ -887,7 +887,7 @@ public class MovieDbAPI implements Constants {
             for(int i = 0; i< resultsArray.length(); i++) {
 
                 JSONObject result = resultsArray.getJSONObject(i);
-                Review review = new Review();;
+                ReviewOld review = new ReviewOld();;
                 review.setAuthor(result.getString(MovieDbAPI.TAG_AUTHOR));
                 review.setContent(result.getString(MovieDbAPI.TAG_CONTENT));
 

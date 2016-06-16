@@ -314,21 +314,26 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <LinearLayout
-                style="@style/detailLayoutSection"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:id="@+id/detail_reviews_layout"
+            style="@style/detailLayoutSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+>
 
-                <TextView
-                    android:id="@+id/reviewsTextView"
-                    style="@style/headerLinkTextView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/user_reviews" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/reviewsTextView"
+                style="@style/headerLinkTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/user_reviews" />
+        </android.support.v7.widget.CardView>
 
-        </LinearLayout>
+    </LinearLayout>
 
 
     </android.support.v4.widget.NestedScrollView>

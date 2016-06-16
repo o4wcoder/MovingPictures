@@ -89,6 +89,9 @@ public class Movie {
     @SerializedName("videos")
     @Expose
     private VideoList videos;
+    @SerializedName("reviews")
+    @Expose
+    private ReviewList reviews;
 
     /**
      *
@@ -557,6 +560,23 @@ public class Movie {
         this.videos = videos;
     }
 
+    /**
+     *
+     * @return
+     * The reviews
+     */
+    public ReviewList getReviews() {
+        return reviews;
+    }
+
+    /**
+     *
+     * @param reviews
+     * The reviews
+     */
+    public void setReviews(ReviewList reviews) {
+        this.reviews = reviews;
+    }
     public String getGenreListString() {
 
 

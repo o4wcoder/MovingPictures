@@ -19,7 +19,7 @@ public interface MovieService {
     @GET("/3/movie/{sort_type}/")
     Call<MovieList> getMovieList(@Path("sort_type") String sortType,
                                  @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
-    @GET("/3/movie/{id}?append_to_response=credits,videos")
+    @GET("/3/movie/{id}?append_to_response=credits,videos,reviews")
     Call<Movie> getMovie(@Path("id") int id);
 
     @GET("3/movie/{id}/videos")
