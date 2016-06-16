@@ -1,7 +1,7 @@
 # MovingPictures
-<b><a href="https://www.udacity.com/course/android-developer-nanodegree--nd801">Udacity Android Developer Nanodegree</a> Project 1 &amp; 2 </b>
-
 An Movie App similar in functionality to Flixstr or IMDB. <br>
+
+Started out as <b><a href="https://www.udacity.com/course/android-developer-nanodegree--nd801">Udacity Android Developer Nanodegree</a> Project 1 &amp; 2 </b>. However have since been adding a lot more features and will be production ready and on Google Play soon.
 
 Movie Database API provided by <a href="https://www.themoviedb.org">The Movie DB</a> <br>
 
