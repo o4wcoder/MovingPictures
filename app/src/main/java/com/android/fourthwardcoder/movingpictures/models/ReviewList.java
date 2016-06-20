@@ -1,12 +1,15 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class ReviewList {
+public class ReviewList implements Parcelable {
 
     @SerializedName("page")
     @Expose
@@ -44,7 +47,7 @@ public class ReviewList {
      * @return
      * The results
      */
-    public List<Review> getResults() {
+    public List<Review> getReviews() {
         return results;
     }
 
@@ -53,7 +56,7 @@ public class ReviewList {
      * @param results
      * The results
      */
-    public void setResults(List<Review> results) {
+    public void setReviews(List<Review> results) {
         this.results = results;
     }
 
@@ -93,4 +96,62 @@ public class ReviewList {
         this.totalResults = totalResults;
     }
 
+
+    protected ReviewList(Parcel in) {
+        page = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            results = new ArrayList<Review>();
+            in.readList(results, Review.class.getClassLoader());
+        } else {
+            results = null;
+        }
+        totalPages = in.readByte() == 0x00 ? null : in.readInt();
+        totalResults = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (page == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(page);
+        }
+        if (results == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(results);
+        }
+        if (totalPages == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(totalPages);
+        }
+        if (totalResults == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(totalResults);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ReviewList> CREATOR = new Parcelable.Creator<ReviewList>() {
+        @Override
+        public ReviewList createFromParcel(Parcel in) {
+            return new ReviewList(in);
+        }
+
+        @Override
+        public ReviewList[] newArray(int size) {
+            return new ReviewList[size];
+        }
+    };
 }

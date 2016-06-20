@@ -27,6 +27,7 @@ public interface Constants {
     String EXTRA_TV_ID = "com.android.fourthwardcoder.popularmovies.extra_tv_id";
     String EXTRA_ENT_TYPE = "com.android.fourthwardcoder.popularmovies.extra_ent_type";
     String EXTRA_VIDEO_URI = "com.android.fourthwardcoder.popularmovies.extra_video_uri";
+    String EXTRA_REVIEW_LIST = "com.android.fourthwardcoder.popularmovies.extra_review_list";
 
 
     //Entertainment type Annotations

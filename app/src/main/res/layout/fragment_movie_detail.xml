@@ -103,14 +103,16 @@
                         android:layout_below="@+id/releaseYearTextView" />
 
                     <TextView
-                        android:id="@+id/directorTextView"
+                        android:id="@+id/certificationTextView"
                         style="@style/detailDarkBackgroundTextView"
-                        android:layout_below="@+id/runtimeTextView" />
+                        android:layout_below="@+id/runtimeTextView"
+                        android:textStyle="bold"
+                       />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/directorTextView"
+                        android:layout_below="@+id/certificationTextView"
                         android:layout_toRightOf="@+id/posterImageView"
                         android:orientation="horizontal">
 

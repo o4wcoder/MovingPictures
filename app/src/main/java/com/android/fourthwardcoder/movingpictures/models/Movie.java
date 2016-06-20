@@ -93,6 +93,10 @@ public class Movie {
     @Expose
     private ReviewList reviews;
 
+    @SerializedName("release_dates")
+    @Expose
+    private ReleaseDates releaseDates;
+
     /**
      *
      * @return
@@ -577,6 +581,15 @@ public class Movie {
     public void setReviews(ReviewList reviews) {
         this.reviews = reviews;
     }
+
+    public ReleaseDates getReleaseDates() {
+        return releaseDates;
+    }
+
+    public void setReleaseDates(ReleaseDates releaseDates) {
+        this.releaseDates = releaseDates;
+    }
+
     public String getGenreListString() {
 
 

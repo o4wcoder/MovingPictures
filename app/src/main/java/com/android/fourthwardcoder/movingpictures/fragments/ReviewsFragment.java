@@ -14,6 +14,7 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.models.Review;
 import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
 import com.android.fourthwardcoder.movingpictures.adapters.ReviewsListAdapter;
 
@@ -38,7 +39,7 @@ public class ReviewsFragment extends Fragment implements Constants {
     /*                          Local Data                                 */
     /***********************************************************************/
     ListView mListView;
-    ArrayList<ReviewOld> mReviewList;
+    ArrayList<Review> mReviewList;
 
     public ReviewsFragment() {
     }
@@ -53,43 +54,35 @@ public class ReviewsFragment extends Fragment implements Constants {
         mListView.setEmptyView(view.findViewById(R.id.emptyReviewsLayout));
 
         Intent i = getActivity().getIntent();
-        final int id = i.getIntExtra(EXTRA_MOVIE_ID, 0);
-        final int entType = i.getIntExtra(EXTRA_ENT_TYPE, 0);
 
-
+        mReviewList = (ArrayList) i.getParcelableArrayListExtra(EXTRA_REVIEW_LIST);
         if (mListView != null) {
 
-            if(Util.isNetworkAvailable(getActivity())) {
-                new FetchReviewsTask().execute(id, entType);
-            }
-            else {
-                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                connectToast.show();
-            }
+            ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), mReviewList);
+            mListView.setAdapter(adapter);
         }
         return view;
     }
 
-    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<ReviewOld>> {
-
-        @Override
-        protected ArrayList<ReviewOld> doInBackground(Integer... params) {
-
-            //Get ID of movie or tv show
-            int id = params[0];
-            int entType = params[1];
-
-            return MovieDbAPI.getReviewList(id, entType);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<ReviewOld> reviewsList) {
-
-            if ((getActivity() != null) && (reviewsList != null)) {
-                ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);
-                mListView.setAdapter(adapter);
-            }
-        }
-    }
+//    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<ReviewOld>> {
+//
+//        @Override
+//        protected ArrayList<ReviewOld> doInBackground(Integer... params) {
+//
+//            //Get ID of movie or tv show
+//            int id = params[0];
+//            int entType = params[1];
+//
+//            return MovieDbAPI.getReviewList(id, entType);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<ReviewOld> reviewsList) {
+//
+//            if ((getActivity() != null) && (reviewsList != null)) {
+//                ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);
+//                mListView.setAdapter(adapter);
+//            }
+//        }
+//    }
 }

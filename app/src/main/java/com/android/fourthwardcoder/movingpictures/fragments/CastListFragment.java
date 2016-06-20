@@ -65,6 +65,8 @@ public class CastListFragment extends Fragment implements Constants {
                 Intent i = new Intent(getActivity(), PersonDetailActivity.class);
                 i.putExtra(EXTRA_PERSON_ID, credit.getId());
                 startActivity(i);
+
+              //  Util.startActorDetailActivity(getContext(),credit)
             }
         });
 

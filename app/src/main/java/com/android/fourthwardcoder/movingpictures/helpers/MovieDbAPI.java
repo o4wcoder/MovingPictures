@@ -75,6 +75,9 @@ public class MovieDbAPI implements Constants {
     public static final String IMAGE_342_SIZE = "w342/";
     public static final String IMAGE_500_SIZE = "w500/";
 
+    //US Certificatiaon (Movie Rating)
+    public static final String CERT_US = "US";
+
     //Extra append paths for the movie URI
     public static final String PATH_MOVIE = "movie";
     public static final String PATH_TV = "tv";
@@ -256,21 +259,7 @@ public class MovieDbAPI implements Constants {
             return parseJsonPerson(jsonStr);
     }
 
-    /**
-     * Get list of videos from a MovieOld or TV Show
-     * @param id MovieOld id
-     * @return   ArrayList of VideoList
-     */
-    public static ArrayList<ReviewOld> getReviewList(int id, int entType) {
 
-        Uri reviewUri = buildReviewsUri(id, entType);
-        String reviewJsonStr = queryMovieDatabase(reviewUri);
-
-        if(reviewJsonStr == null)
-            return null;
-        else
-            return parseJsonReviewList(reviewJsonStr);
-    }
 
     /**
      * Get list of videos from a MovieOld
@@ -439,29 +428,7 @@ public class MovieDbAPI implements Constants {
         return movieUri;
     }
 
-    /**
-     * Build URI to get the reviews of a MovieOld or TV show
-     * @param id      Id of the movie or TV show
-     * @param entType Type of entertainment; MovieOld or TV
-     * @return        Uri to the reviews of the MovieOld or TV show
-     */
-    private static Uri buildReviewsUri(int id, int entType) {
 
-        String entTypePath = "";
-        if(entType == ENT_TYPE_MOVIE)
-            entTypePath = PATH_MOVIE;
-        else
-            entTypePath = PATH_TV;
-
-        Uri reviewsUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                .appendPath(entTypePath)
-                .appendPath(String.valueOf(id))
-                .appendPath(PATH_REVIEWS)
-                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                .build();
-        Log.e(TAG,"ReviewOld URI: " + reviewsUri);
-        return reviewsUri;
-    }
     /**
      * Build URI to get the videos of a MovieOld or TV show
      * @param id      Id of the movie or TV show
@@ -699,97 +666,6 @@ public class MovieDbAPI implements Constants {
         return creditList;
     }
 
-    /**
-     * Parse JSON String of MovieOld
-     * @param movieJsonStr JSON String of MovieOld
-     * @return             MovieOld object
-     */
-    private static MovieOld parseJsonMovie(String movieJsonStr) {
-
-        MovieOld movie = null;
-
-        try {
-            if (movieJsonStr != null) {
-                //Log.e(TAG, "MovieOld: " + movieJsonStr);
-
-
-                JSONObject movieObj = new JSONObject(movieJsonStr);
-
-                movie = new MovieOld(movieObj.getInt(MovieDbAPI.TAG_ID));
-                movie.setTitle(movieObj.getString(MovieDbAPI.TAG_TITLE));
-                movie.setOverview(movieObj.getString(MovieDbAPI.TAG_OVERVIEW));
-                movie.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + movieObj.getString(MovieDbAPI.TAG_POSTER_PATH));
-                movie.setBackdropPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + movieObj.getString(MovieDbAPI.TAG_BACKDROP_PATH));
-                movie.setReleaseDate(movieObj.getString(MovieDbAPI.TAG_RELEASE_DATE));
-                movie.setRating(movieObj.getDouble(MovieDbAPI.TAG_RATING));
-                movie.setRuntime(movieObj.getString(MovieDbAPI.TAG_RUNTIME));
-
-                movie.setGenres(parseList(movieObj, TAG_GENRES, TAG_NAME));
-
-                int iRevenue = movieObj.getInt(MovieDbAPI.TAG_REVENUE);
-                movie.setRevenue(NumberFormat.getIntegerInstance().format(iRevenue));
-
-                //Get Uri for credits of movie
-                //Build URI String to query the databaes for the list of credits
-                Uri creditUri = buildMovieCreditsUri(movie.getId());
-
-                String creditJsonStr = MovieDbAPI.queryMovieDatabase(creditUri);
-
-                if (creditJsonStr != null) {
-
-                    // Log.e(TAG,"Credits: " + creditJsonStr);
-                    JSONObject creditObj = new JSONObject(creditJsonStr);
-
-                    //Pull out Crew information
-                    JSONArray crewArray = creditObj.getJSONArray(MovieDbAPI.TAG_CREW);
-
-                    ArrayList<IdNamePair> directorList = new ArrayList<IdNamePair>();
-                    for (int j = 0; j < crewArray.length(); j++) {
-                        String job = crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_JOB);
-
-                        //Find director
-                        if (job.equals(MovieDbAPI.TAG_JOB_DIRECTOR)) {
-                            IdNamePair director = new IdNamePair(crewArray.getJSONObject(j).getInt(MovieDbAPI.TAG_ID));
-                            director.setName(crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
-                            directorList.add(director);
-                        }
-                    }
-                    //Add director list to movie
-                    if (directorList.size() > 0)
-                        movie.setDirectors(directorList);
-
-                    //Pull out Cast Information
-                    JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
-                    ArrayList<IdNamePair> actorNameList = new ArrayList<IdNamePair>();
-                    //Pull out actors of the movie
-                    for (int j = 0; j < castArray.length(); j++) {
-                        //Log.e(TAG, castArray.getJSONObject(j).toString());
-                        IdNamePair cast = new IdNamePair(castArray.getJSONObject(j).getInt(TAG_ID));
-                        cast.setName(castArray.getJSONObject(j).getString(TAG_NAME));
-
-                        actorNameList.add(cast);
-                    }
-
-                    //Add cast list to movie
-                    if (actorNameList.size() > 0) {
-                        //Log.e(TAG, "Setting actor lists to movie object");
-
-                        movie.setActors(actorNameList);
-                    }
-
-                    //Get VideoList
-                    movie.setVideos(getVideoList(movie.getId(), ENT_TYPE_MOVIE));
-
-                }
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
-            return null;
-        }
-
-        return movie;
-
-    }
 
     /**
      * Parse JSON String of TV Show
@@ -868,40 +744,7 @@ public class MovieDbAPI implements Constants {
         return tvShow;
     }
 
-    /**
-     * Parse JSON String of Reviews
-     * @param reviewsJsonStr JSON String of reviews
-     * @return               ArrayList of reviews
-     */
-    private static ArrayList<ReviewOld> parseJsonReviewList(String reviewsJsonStr) {
 
-        //List of Reviews that get parsed from MovieOld DB JSON return
-        ArrayList<ReviewOld> reviewList = null;
-        //Log.e(TAG,"REviewJson: " +reviewsJsonStr);
-        try {
-            JSONObject obj = new JSONObject(reviewsJsonStr);
-            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
-
-            reviewList = new ArrayList<>(resultsArray.length());
-
-            for(int i = 0; i< resultsArray.length(); i++) {
-
-                JSONObject result = resultsArray.getJSONObject(i);
-                ReviewOld review = new ReviewOld();;
-                review.setAuthor(result.getString(MovieDbAPI.TAG_AUTHOR));
-                review.setContent(result.getString(MovieDbAPI.TAG_CONTENT));
-
-                Log.e(TAG, review.toString());
-                reviewList.add(review);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG,"Caught JSON exception " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-
-        return reviewList;
-    }
     /**
      * Parses the JSON String returned from the query to the MovieOld DB. Pulls data out for
      * a each video/trailers returned and puts that data into a VideoOld object. These video objects are
@@ -969,7 +812,7 @@ public class MovieDbAPI implements Constants {
 
     public static String getFullPosterPath(String imageFile) {
 
-        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + imageFile;
+        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_342_SIZE + imageFile;
     }
 
     public static String getFullBackdropPath(String imageFile) {
@@ -1098,5 +941,170 @@ public class MovieDbAPI implements Constants {
 //
 //        //Part data and return list of movies
 //        return parseJsonMovieList(context,movieJsonStr);
+//    }
+
+    /**
+     * Get list of videos from a MovieOld or TV Show
+     * @param id MovieOld id
+     * @return   ArrayList of VideoList
+     */
+//    public static ArrayList<ReviewOld> getReviewList(int id, int entType) {
+//
+//        Uri reviewUri = buildReviewsUri(id, entType);
+//        String reviewJsonStr = queryMovieDatabase(reviewUri);
+//
+//        if(reviewJsonStr == null)
+//            return null;
+//        else
+//            return parseJsonReviewList(reviewJsonStr);
+//    }
+
+    /**
+     //     * Build URI to get the reviews of a MovieOld or TV show
+     //     * @param id      Id of the movie or TV show
+     //     * @param entType Type of entertainment; MovieOld or TV
+     //     * @return        Uri to the reviews of the MovieOld or TV show
+     //     */
+//    private static Uri buildReviewsUri(int id, int entType) {
+//
+//        String entTypePath = "";
+//        if(entType == ENT_TYPE_MOVIE)
+//            entTypePath = PATH_MOVIE;
+//        else
+//            entTypePath = PATH_TV;
+//
+//        Uri reviewsUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+//                .appendPath(entTypePath)
+//                .appendPath(String.valueOf(id))
+//                .appendPath(PATH_REVIEWS)
+//                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+//                .build();
+//        Log.e(TAG,"ReviewOld URI: " + reviewsUri);
+//        return reviewsUri;
+//    }
+    /**
+     //     * Parse JSON String of Reviews
+     //     * @param reviewsJsonStr JSON String of reviews
+     //     * @return               ArrayList of reviews
+     //     */
+//    private static ArrayList<ReviewOld> parseJsonReviewList(String reviewsJsonStr) {
+//
+//        //List of Reviews that get parsed from MovieOld DB JSON return
+//        ArrayList<ReviewOld> reviewList = null;
+//        //Log.e(TAG,"REviewJson: " +reviewsJsonStr);
+//        try {
+//            JSONObject obj = new JSONObject(reviewsJsonStr);
+//            JSONArray resultsArray = obj.getJSONArray(MovieDbAPI.TAG_RESULTS);
+//
+//            reviewList = new ArrayList<>(resultsArray.length());
+//
+//            for(int i = 0; i< resultsArray.length(); i++) {
+//
+//                JSONObject result = resultsArray.getJSONObject(i);
+//                ReviewOld review = new ReviewOld();;
+//                review.setAuthor(result.getString(MovieDbAPI.TAG_AUTHOR));
+//                review.setContent(result.getString(MovieDbAPI.TAG_CONTENT));
+//
+//                Log.e(TAG, review.toString());
+//                reviewList.add(review);
+//            }
+//        } catch (JSONException e) {
+//            Log.e(TAG,"Caught JSON exception " + e.getMessage());
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        return reviewList;
+//    }
+    /**
+     //     * Parse JSON String of MovieOld
+     //     * @param movieJsonStr JSON String of MovieOld
+     //     * @return             MovieOld object
+     //     */
+//    private static MovieOld parseJsonMovie(String movieJsonStr) {
+//
+//        MovieOld movie = null;
+//
+//        try {
+//            if (movieJsonStr != null) {
+//                //Log.e(TAG, "MovieOld: " + movieJsonStr);
+//
+//
+//                JSONObject movieObj = new JSONObject(movieJsonStr);
+//
+//                movie = new MovieOld(movieObj.getInt(MovieDbAPI.TAG_ID));
+//                movie.setTitle(movieObj.getString(MovieDbAPI.TAG_TITLE));
+//                movie.setOverview(movieObj.getString(MovieDbAPI.TAG_OVERVIEW));
+//                movie.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + movieObj.getString(MovieDbAPI.TAG_POSTER_PATH));
+//                movie.setBackdropPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + movieObj.getString(MovieDbAPI.TAG_BACKDROP_PATH));
+//                movie.setReleaseDate(movieObj.getString(MovieDbAPI.TAG_RELEASE_DATE));
+//                movie.setRating(movieObj.getDouble(MovieDbAPI.TAG_RATING));
+//                movie.setRuntime(movieObj.getString(MovieDbAPI.TAG_RUNTIME));
+//
+//                movie.setGenres(parseList(movieObj, TAG_GENRES, TAG_NAME));
+//
+//                int iRevenue = movieObj.getInt(MovieDbAPI.TAG_REVENUE);
+//                movie.setRevenue(NumberFormat.getIntegerInstance().format(iRevenue));
+//
+//                //Get Uri for credits of movie
+//                //Build URI String to query the databaes for the list of credits
+//                Uri creditUri = buildMovieCreditsUri(movie.getId());
+//
+//                String creditJsonStr = MovieDbAPI.queryMovieDatabase(creditUri);
+//
+//                if (creditJsonStr != null) {
+//
+//                    // Log.e(TAG,"Credits: " + creditJsonStr);
+//                    JSONObject creditObj = new JSONObject(creditJsonStr);
+//
+//                    //Pull out Crew information
+//                    JSONArray crewArray = creditObj.getJSONArray(MovieDbAPI.TAG_CREW);
+//
+//                    ArrayList<IdNamePair> directorList = new ArrayList<IdNamePair>();
+//                    for (int j = 0; j < crewArray.length(); j++) {
+//                        String job = crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_JOB);
+//
+//                        //Find director
+//                        if (job.equals(MovieDbAPI.TAG_JOB_DIRECTOR)) {
+//                            IdNamePair director = new IdNamePair(crewArray.getJSONObject(j).getInt(MovieDbAPI.TAG_ID));
+//                            director.setName(crewArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
+//                            directorList.add(director);
+//                        }
+//                    }
+//                    //Add director list to movie
+//                    if (directorList.size() > 0)
+//                        movie.setDirectors(directorList);
+//
+//                    //Pull out Cast Information
+//                    JSONArray castArray = creditObj.getJSONArray(TAG_CAST);
+//                    ArrayList<IdNamePair> actorNameList = new ArrayList<IdNamePair>();
+//                    //Pull out actors of the movie
+//                    for (int j = 0; j < castArray.length(); j++) {
+//                        //Log.e(TAG, castArray.getJSONObject(j).toString());
+//                        IdNamePair cast = new IdNamePair(castArray.getJSONObject(j).getInt(TAG_ID));
+//                        cast.setName(castArray.getJSONObject(j).getString(TAG_NAME));
+//
+//                        actorNameList.add(cast);
+//                    }
+//
+//                    //Add cast list to movie
+//                    if (actorNameList.size() > 0) {
+//                        //Log.e(TAG, "Setting actor lists to movie object");
+//
+//                        movie.setActors(actorNameList);
+//                    }
+//
+//                    //Get VideoList
+//                    movie.setVideos(getVideoList(movie.getId(), ENT_TYPE_MOVIE));
+//
+//                }
+//            }
+//        } catch (JSONException e) {
+//            Log.e(TAG, e.getMessage());
+//            return null;
+//        }
+//
+//        return movie;
+//
 //    }
 }

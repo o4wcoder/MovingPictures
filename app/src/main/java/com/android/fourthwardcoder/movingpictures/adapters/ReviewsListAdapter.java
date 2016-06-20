@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
+import com.android.fourthwardcoder.movingpictures.models.Review;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * <p/>
  * Adapter to display the reviews on a ListView
  */
-public class ReviewsListAdapter extends ArrayAdapter<ReviewOld> {
+public class ReviewsListAdapter extends ArrayAdapter<Review> {
 
     /**********************************************************************/
     /*                           Constants                                */
@@ -32,7 +32,7 @@ public class ReviewsListAdapter extends ArrayAdapter<ReviewOld> {
     /**********************************************************************/
     private Context mContext;
 
-    public ReviewsListAdapter(Context context, ArrayList<ReviewOld> reviewList) {
+    public ReviewsListAdapter(Context context, ArrayList<Review> reviewList) {
         super(context, 0, reviewList);
 
         mContext = context;
@@ -57,7 +57,7 @@ public class ReviewsListAdapter extends ArrayAdapter<ReviewOld> {
         }
 
         //Get each MovieOld using the position in the ArrayAdapter
-        ReviewOld review = getItem(position);
+        Review review = getItem(position);
 
         Spanned reviewStr = Html.fromHtml("<b>" + mContext.getString(R.string.author) + "</b>" + " " +
                 review.getAuthor() + "<br><br>" + review.getContent());

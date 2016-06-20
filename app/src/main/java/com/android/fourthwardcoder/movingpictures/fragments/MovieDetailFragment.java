@@ -47,6 +47,7 @@ import com.android.fourthwardcoder.movingpictures.models.Cast;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.models.ReleaseDateList;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -89,7 +90,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mReleaseYearTextView;
     TextView mRuntimeTextView;
     TextView mRatingTextView;
-    TextView mDirectorTextView;
+    TextView mCertificationTextView;
     TextView mCastTextView;
     TextView mReleaseDateTextView;
     ExpandableTextView mOverviewTextView;
@@ -108,6 +109,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     CardView mDetailCardView;
     CardView mCastCardView;
     RecyclerView mVideosRecylerView;
+    CardView mReviewsCardView;
 
     //Cast Image and Text
     ImageView mCast1ImageView;
@@ -252,29 +254,20 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
         mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
         mRatingTextView = (TextView) view.findViewById(R.id.ratingTextView);
-        mDirectorTextView = (TextView) view.findViewById(R.id.directorTextView);
+        mCertificationTextView = (TextView) view.findViewById(R.id.certificationTextView);
         mCastTextView = (TextView) view.findViewById(R.id.castTextView);
         mReleaseDateTextView = (TextView) view.findViewById(R.id.releaseDateTextView);
         mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.detail_overview_exp_text_view);
         mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
         mRevenueTextView = (TextView) view.findViewById(R.id.revenueTextView);
         mReviewsTextView = (TextView) view.findViewById(R.id.reviewsTextView);
+        mReviewsCardView = (CardView) view.findViewById(R.id.detail_reviews_layout);
         mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
         mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Util.showCastListActivity(getActivity(), mMovie, ENT_TYPE_MOVIE);
-            }
-        });
-
-        mReviewsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ReviewsActivity.class);
-                i.putExtra(EXTRA_MOVIE_ID, mMovie.getId());
-                i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
-                startActivity(i);
             }
         });
 
@@ -524,9 +517,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 mRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
             //    mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getVoteAverage(), "10"));
 //
-                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
-                        Util.buildPersonListString(mMovie.getCredits().getDirectorList()));
-                mDirectorTextView.setText(director);
+//                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
+//                        Util.buildPersonListString(mMovie.getCredits().getDirectorList()));
+//                mDirectorTextView.setText(director);
 //
 //                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 //
@@ -609,6 +602,22 @@ public class MovieDetailFragment extends Fragment implements Constants {
             Util.setCrewLinks(getContext(),mMovie.getCredits().getDirectorList(),mDirectorListTextView,getString(R.string.director));
             Util.setCrewLinks(getContext(),mMovie.getCredits().getWriterList(),mWriterListTextView,getString(R.string.writers));
 
+            if(mMovie.getReviews().getReviews().size() > 0) {
+                mReviewsTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), ReviewsActivity.class);
+//                        i.putExtra(EXTRA_MOVIE_ID, mMovie.getId());
+                        i.putParcelableArrayListExtra(EXTRA_REVIEW_LIST,(ArrayList)mMovie.getReviews().getReviews());
+                        i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
+                        startActivity(i);
+                    }
+                });
+            }
+            else {
+                mReviewsCardView.setVisibility(View.GONE);
+            }
+
 //
 //                //        //See if this is a favorite movie and set the state of the star button
 //                Log.e(TAG, "Check if favorite movie");
@@ -628,6 +637,18 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //                new FetchPersonTask().execute(mMovie);
             }
        // }
+
+        Log.e(TAG,"Certification data ------------");
+        Log.e(TAG,"First list size = " + mMovie.getReleaseDates().getResults().size());
+
+        for(ReleaseDateList list :  mMovie.getReleaseDates().getResults()) {
+            Log.e(TAG, "Location = " + list.getIso31661());
+            if(list.getIso31661().equals(MovieDbAPI.CERT_US)) {
+                Log.e(TAG, "Got US rating = " + list.getReleaseDates().get(0).getCertification());
+                mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
+            }
+        }
+
 
     }
 
@@ -693,101 +714,5 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
     }
-    /*********************************************************************/
-    /*                         Inner Classes                             */
-    /*********************************************************************/
-//    private class FetchMovieTask extends AsyncTask<Integer, Void, Movie> {
-//
-//        //ProgressDialog to be displayed while the data is being fetched and parsed
-//        private ProgressDialog progressDialog;
-//
-//        @Override
-//        protected void onPreExecute() {
-//
-//            //Start ProgressDialog on Main Thread UI before precessing begins
-//            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_movies), true);
-//        }
-//
-//        @Override
-//        protected MovieOld doInBackground(Integer... params) {
-//
-//            //Get ID of movie
-//            int movieId = params[0];
-//             Log.e(TAG,"Fetch MovieOld TAsk doInBackground with movie id " + movieId);
-//            //Query and build MovieOld Object
-//            return MovieDbAPI.getMovie(movieId);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(MovieOld movie) {
-//
-//            //Done processing the movie query, kill Progress Dialog on main UI
-//            progressDialog.dismiss();
-//
-//            mMovie = movie;
-//            setLayout();
-//
-//
-//        }
-//    }
 
-//    private class FetchPersonTask extends AsyncTask<MovieOld, Void, ArrayList<Person>> {
-//
-//        @Override
-//        protected ArrayList<Person> doInBackground(MovieOld... params) {
-//
-//            ArrayList<Person> personList = null;
-//            //Get ID of movie
-//            MovieOld movie = params[0];
-//            int numOfActors = 3;
-//
-//            if(movie.getActors() != null) {
-//                if (movie.getActors().size() < 3)
-//                    numOfActors = movie.getActors().size();
-//
-//                personList = new ArrayList<>(numOfActors);
-//                for (int i = 0; i < numOfActors; i++) {
-//                    Person person = MovieDbAPI.getPerson(movie.getActors().get(i).getId());
-//                    if (person != null)
-//                        personList.add(person);
-//
-//                }
-//
-//                return personList;
-//            }
-//
-//            return null;
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<Person> personList) {
-//
-//            Log.e(TAG,"Set cast image and textviews");
-//
-//            if(personList != null) {
-//                if (personList.size() == 3) {
-//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-//                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
-//                    getCastThumbnails(personList.get(2).getProfileImagePath(), mCast3ImageView);
-//                    mCast1TextView.setText(personList.get(0).getName());
-//                    mCast2TextView.setText(personList.get(1).getName());
-//                    mCast3TextView.setText(personList.get(2).getName());
-//                } else if (personList.size() == 2) {
-//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-//                    getCastThumbnails(personList.get(1).getProfileImagePath(), mCast2ImageView);
-//                    mCast1TextView.setText(personList.get(0).getName());
-//                    mCast2TextView.setText(personList.get(1).getName());
-//                } else if (personList.size() == 3) {
-//                    getCastThumbnails(personList.get(0).getProfileImagePath(), mCast1ImageView);
-//                    mCast1TextView.setText(personList.get(0).getName());
-//                }
-//            } else {
-//                //Did not return any cast. Don't show cast card.
-//                mCastCardView.setVisibility(View.GONE);
-//            }
-//
-//        }
-//
-//    }
 }
