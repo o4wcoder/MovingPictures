@@ -69,6 +69,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mFilmographyTextView;
     TextView mPhotosTextView;
     Person mPerson;
+    int mPersonId;
 
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
@@ -79,8 +80,13 @@ public class PersonDetailFragment extends Fragment implements Constants {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //retain the instance on rotation
-        setRetainInstance(true);
+        Log.e(TAG,"onCreate() Inside");
+        if(savedInstanceState != null) {
+       //     mPerson = savedInstanceState.getParcelable(EXTRA_PERSON);
+        }
+        else {
+            mPersonId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+        }
     }
 
     @Override
@@ -88,7 +94,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person_detail, container, false);
 
-        final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+
 
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);
@@ -117,7 +123,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
 
                 Intent i = new Intent(getActivity(), PersonFilmographyTabActivity.class);
-                i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID, personId);
+                i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID, mPersonId);
                 startActivity(i)
                 ;
             }
@@ -128,14 +134,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), PersonPhotosActivity.class);
-                i.putExtra(EXTRA_PERSON_ID, personId);
+                i.putExtra(EXTRA_PERSON_ID, mPersonId);
                 i.putExtra(EXTRA_PERSON_NAME, mPerson.getName());
                 startActivity(i);
             }
         });
 
         if(Util.isNetworkAvailable(getActivity())) {
-            new FetchPersonTask().execute(personId);
+            new FetchPersonTask().execute(mPersonId);
         }
         else {
             Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
@@ -162,9 +168,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
         return view;
     }
 
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//
+//        savedInstanceState.putParcelable(EXTRA_PERSON, mPerson);
+//        super.onSaveInstanceState(savedInstanceState);
+//    }
     /*************************************************************************/
     /*                           Inner Classes                               */
-
     /*************************************************************************/
     private class FetchPersonTask extends AsyncTask<Integer, Void, Person> {
 

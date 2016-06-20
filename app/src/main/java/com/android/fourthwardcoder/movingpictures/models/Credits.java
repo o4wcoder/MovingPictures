@@ -1,5 +1,7 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.net.IDN;
@@ -11,7 +13,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Credits {
+public class Credits implements Parcelable {
 
     private static final String TAG = Credits.class.getSimpleName();
 
@@ -86,7 +88,7 @@ public class Credits {
 
     public ArrayList<IdNamePair> getWriterList() {
 
-       return getDepartmentList(MovieDbAPI.TAG_DEPARTMENT_WRITING);
+        return getDepartmentList(MovieDbAPI.TAG_DEPARTMENT_WRITING);
     }
 
     private ArrayList<IdNamePair> getDepartmentList(String tag) {
@@ -105,4 +107,60 @@ public class Credits {
     }
 
 
+
+    protected Credits(Parcel in) {
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            cast = new ArrayList<Cast>();
+            in.readList(cast, Cast.class.getClassLoader());
+        } else {
+            cast = null;
+        }
+        if (in.readByte() == 0x01) {
+            crew = new ArrayList<Crew>();
+            in.readList(crew, Crew.class.getClassLoader());
+        } else {
+            crew = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        if (cast == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(cast);
+        }
+        if (crew == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(crew);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Credits> CREATOR = new Parcelable.Creator<Credits>() {
+        @Override
+        public Credits createFromParcel(Parcel in) {
+            return new Credits(in);
+        }
+
+        @Override
+        public Credits[] newArray(int size) {
+            return new Credits[size];
+        }
+    };
 }

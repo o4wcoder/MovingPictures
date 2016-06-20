@@ -96,7 +96,7 @@ public class Util implements Constants {
 
         Intent i = new Intent(context,PersonDetailActivity.class);
         i.putExtra(EXTRA_PERSON_ID,id);
-
+        Log.e(TAG,"startActorDetailActivity()");
         if(imageView != null) {
             ActivityOptionsCompat activityOptions =
                     ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,

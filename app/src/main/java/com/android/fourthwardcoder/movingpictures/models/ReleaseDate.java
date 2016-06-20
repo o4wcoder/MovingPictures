@@ -1,10 +1,12 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ReleaseDate
-{
+public class ReleaseDate implements Parcelable {
     @SerializedName("certification")
     @Expose
     private String certification;
@@ -90,4 +92,42 @@ public class ReleaseDate
         this.type = type;
     }
 
+
+    protected ReleaseDate(Parcel in) {
+        certification = in.readString();
+        iso6391 = in.readString();
+        releaseDate = in.readString();
+        type = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(certification);
+        dest.writeString(iso6391);
+        dest.writeString(releaseDate);
+        if (type == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(type);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ReleaseDate> CREATOR = new Parcelable.Creator<ReleaseDate>() {
+        @Override
+        public ReleaseDate createFromParcel(Parcel in) {
+            return new ReleaseDate(in);
+        }
+
+        @Override
+        public ReleaseDate[] newArray(int size) {
+            return new ReleaseDate[size];
+        }
+    };
 }

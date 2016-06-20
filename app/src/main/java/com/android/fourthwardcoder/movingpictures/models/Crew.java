@@ -1,10 +1,13 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Crew {
+public class Crew implements Parcelable {
 
     @SerializedName("credit_id")
     @Expose
@@ -108,4 +111,46 @@ public class Crew {
     public void setProfilePath(Object profilePath) {
         this.profilePath = profilePath;
     }
+
+    protected Crew(Parcel in) {
+        creditId = in.readString();
+        department = in.readString();
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        job = in.readString();
+        name = in.readString();
+        profilePath = (Object) in.readValue(Object.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(creditId);
+        dest.writeString(department);
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        dest.writeString(job);
+        dest.writeString(name);
+        dest.writeValue(profilePath);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Crew> CREATOR = new Parcelable.Creator<Crew>() {
+        @Override
+        public Crew createFromParcel(Parcel in) {
+            return new Crew(in);
+        }
+
+        @Override
+        public Crew[] newArray(int size) {
+            return new Crew[size];
+        }
+    };
 }

@@ -19,6 +19,7 @@ public interface Constants {
     String EXTRA_MOVIE_ID = "com.android.fourthwardcoder.popularmovies.extra_movie_id";
     String EXTRA_MOVIE_LIST = "com.android.fourthwardcoder.popularmovies.extra_movie_list";
     String EXTRA_TITLE = "com.android.fourthwardcoder.popularmovies.extra_title";
+    String EXTRA_PERSON = "com.android.fourthwardcoder.popularmovies.extra_person";
     String EXTRA_PERSON_ID = "com.android.fourthwardcoder.popularmovies.extra_person_id";
     String EXTRA_PERSON_NAME = "com.android.fourthwardcoder.popularmovies.extra_person_name";
     String EXTRA_FULL_PHOTO_PATH = "com.android.fourthwardcoder.popularmovies.extra_full_photo_path";

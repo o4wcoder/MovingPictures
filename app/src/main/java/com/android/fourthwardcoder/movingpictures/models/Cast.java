@@ -1,11 +1,14 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Cast {
+public class Cast implements Parcelable {
 
     @SerializedName("cast_id")
     @Expose
@@ -155,4 +158,58 @@ public class Cast {
         this.profilePath = profilePath;
     }
 
+
+    protected Cast(Parcel in) {
+        castId = in.readByte() == 0x00 ? null : in.readInt();
+        character = in.readString();
+        creditId = in.readString();
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        name = in.readString();
+        order = in.readByte() == 0x00 ? null : in.readInt();
+        profilePath = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (castId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(castId);
+        }
+        dest.writeString(character);
+        dest.writeString(creditId);
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        dest.writeString(name);
+        if (order == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(order);
+        }
+        dest.writeString(profilePath);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Cast> CREATOR = new Parcelable.Creator<Cast>() {
+        @Override
+        public Cast createFromParcel(Parcel in) {
+            return new Cast(in);
+        }
+
+        @Override
+        public Cast[] newArray(int size) {
+            return new Cast[size];
+        }
+    };
 }

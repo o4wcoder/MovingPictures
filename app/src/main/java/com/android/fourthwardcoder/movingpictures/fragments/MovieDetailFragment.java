@@ -136,6 +136,25 @@ public class MovieDetailFragment extends Fragment implements Constants {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null) {
+
+            Log.e(TAG,"onCreate()....... Get saved movie object after rotation");
+            mMovie = savedInstanceState.getParcelable(EXTRA_MOVIE);
+        }
+        else {
+            //Get Movie passed from Main Activity
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+
+                //Got MovieOld ID, will need to fetch data
+                mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+                Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
+
+                mFetchData = true;
+            }
+        }
+
     }
 
     @Override
@@ -144,23 +163,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-        //Get MovieOld passed from Main Activity
-        Bundle arguments = getArguments();
-        if (arguments != null) {
 
-//            if (arguments.containsKey(EXTRA_MOVIE)) {
-//                //Got MovieOld Object from Main Activity
-//                mMovie = arguments.getParcelable(EXTRA_MOVIE);
-//                Log.e(TAG,"Got movie id from args = "+ mMovie.getId());
-//            } else {
-            //Got MovieOld ID, will need to fetch data
-            mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
-            Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
-
-            mFetchData = true;
-
-            //  }
-        }
 
 
         //Get CollapsingToolbarLayout
@@ -274,23 +277,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         mVideoLayout = (CardView) view.findViewById(R.id.videosLayout);
 
-        //If we just got the movie id, we need to go and fetch the data
-        if (mFetchData) {
-            if (mVideosRecylerView != null) {
-                if (Util.isNetworkAvailable(getActivity())) {
-                    // new FetchMovieTask().execute(mMovieId);
-                    getMovie(mMovieId);
-                } else {
-                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                    connectToast.show();
-                }
-            }
-        } else {
-            //Got the entire MovieOld object passed to fragment. Just set the layout.
-            Log.e(TAG,"Set layout without getting movie id!!");
-            setLayout();
-        }
+
 
         View.OnClickListener castClickListener = new View.OnClickListener() {
             @Override
@@ -326,10 +313,37 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mDirectorListTextView = (TextView)view.findViewById(R.id.detail_crew_director_textview);
         mWriterListTextView = (TextView)view.findViewById(R.id.detail_crew_writer_textview);
 
-        //Fill in list of videos
-       // getVideos(mMovieId);
+
+        //Now that we have all the views set up we can either go fetch the data or use the saved
+        //instance
+        //!!! This must be done last !!!
+
+        //If we just got the movie id, we need to go and fetch the data
+        if (mFetchData) {
+            if (mVideosRecylerView != null) {
+                if (Util.isNetworkAvailable(getActivity())) {
+                    // new FetchMovieTask().execute(mMovieId);
+                    getMovie(mMovieId);
+                } else {
+                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                    connectToast.show();
+                }
+            }
+        } else {
+            //Got the entire Movie object passed to fragment. Just set the layout.
+            Log.e(TAG,"Set layout without getting movie id!!");
+            setLayout();
+        }
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putParcelable(EXTRA_MOVIE, mMovie);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     private void getMovie(int id) {
@@ -351,7 +365,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     setLayout();
 
                 } else {
-
+                    Log.e(TAG,"Get Movie list call was not sucessful");
                     //parse the response to find the error. Display a message
                     APIError error = ErrorUtils.parseError(response);
                     Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
@@ -638,13 +652,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
        // }
 
-        Log.e(TAG,"Certification data ------------");
-        Log.e(TAG,"First list size = " + mMovie.getReleaseDates().getResults().size());
 
+        //Pull out the Movie US Certification/Rating
         for(ReleaseDateList list :  mMovie.getReleaseDates().getResults()) {
-            Log.e(TAG, "Location = " + list.getIso31661());
+
             if(list.getIso31661().equals(MovieDbAPI.CERT_US)) {
-                Log.e(TAG, "Got US rating = " + list.getReleaseDates().get(0).getCertification());
                 mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
             }
         }
