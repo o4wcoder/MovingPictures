@@ -40,8 +40,10 @@
     <string name="videos">Videos</string>
     <string name="top_cast">Top Billed Cast</string>
     <string name="top_crew">Top Billed Crew</string>
+    <string name="known_for">Known For</string>
     <string name="show_all_cast">SHOW ALL CAST</string>
     <string name="show_all_crew">SHOW ALL CREW</string>
+    <string name="show_all_filmography">SHOW ALL FILMOGRAPHY</string>
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>

@@ -296,19 +296,19 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Get the 3 Top Billed Cast layouts and child views
         mCastCardView = (CardView) view.findViewById(R.id.castLayout);
         View cast1View = view.findViewById(R.id.detail_cast_layout1);
-        mCast1ImageView = (ImageView) cast1View.findViewById(R.id.cast_thumb_image_view);
+        mCast1ImageView = (ImageView) cast1View.findViewById(R.id.thumb_image_view);
         mCast1ImageView.setOnClickListener(castClickListener);
-        mCast1TextView = (TextView) cast1View.findViewById(R.id.cast_thumb_text_view);
+        mCast1TextView = (TextView) cast1View.findViewById(R.id.thumb_text_view);
 
         View cast2View = view.findViewById(R.id.detail_cast_layout2);
-        mCast2ImageView = (ImageView) cast2View.findViewById(R.id.cast_thumb_image_view);
+        mCast2ImageView = (ImageView) cast2View.findViewById(R.id.thumb_image_view);
         mCast2ImageView.setOnClickListener(castClickListener);
-        mCast2TextView = (TextView) cast2View.findViewById(R.id.cast_thumb_text_view);
+        mCast2TextView = (TextView) cast2View.findViewById(R.id.thumb_text_view);
 
         View cast3View = view.findViewById(R.id.detail_cast_layout3);
-        mCast3ImageView = (ImageView) cast3View.findViewById(R.id.cast_thumb_image_view);
+        mCast3ImageView = (ImageView) cast3View.findViewById(R.id.thumb_image_view);
         mCast3ImageView.setOnClickListener(castClickListener);
-        mCast3TextView = (TextView) cast3View.findViewById(R.id.cast_thumb_text_view);
+        mCast3TextView = (TextView) cast3View.findViewById(R.id.thumb_text_view);
 
         mDirectorListTextView = (TextView)view.findViewById(R.id.detail_crew_director_textview);
         mWriterListTextView = (TextView)view.findViewById(R.id.detail_crew_writer_textview);
@@ -321,17 +321,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //If we just got the movie id, we need to go and fetch the data
         if (mFetchData) {
             if (mVideosRecylerView != null) {
-                if (Util.isNetworkAvailable(getActivity())) {
-                    // new FetchMovieTask().execute(mMovieId);
-                    getMovie(mMovieId);
-                } else {
-                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                    connectToast.show();
-                }
+                getMovie(mMovieId);
             }
         } else {
-            //Got the entire Movie object passed to fragment. Just set the layout.
+            //Got the entire Movie oject saved from instance state. Just set the layout.
             Log.e(TAG,"Set layout without getting movie id!!");
             setLayout();
         }
@@ -365,7 +358,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     setLayout();
 
                 } else {
-                    Log.e(TAG,"Get Movie list call was not sucessful");
+                    Log.e(TAG,"Get Movie list call was not successful");
                     //parse the response to find the error. Display a message
                     APIError error = ErrorUtils.parseError(response);
                     Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
@@ -588,19 +581,19 @@ public class MovieDetailFragment extends Fragment implements Constants {
             if (castList != null) {
                 Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
                 if (castList.size() >= 3) {
-                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
-                    getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
-                    getCastThumbnails(castList.get(2).getProfilePath(), mCast3ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(2).getProfilePath(), mCast3ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                     mCast3TextView.setText(castList.get(2).getName());
                 } else if (castList.size() == 2) {
-                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
-                    getCastThumbnails(castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                 } else if (castList.size() == 3) {
-                    getCastThumbnails(castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                 }
                 else {
@@ -711,20 +704,20 @@ public class MovieDetailFragment extends Fragment implements Constants {
     }
 
 
-    private void getCastThumbnails(String uri, final ImageView imageView) {
-
-        Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG,"getCastThumbnail() onSuccess()");
-            }
-
-            @Override
-            public void onError() {
-                Log.e(TAG,"getCastThumbnail() onError()");
-                imageView.setImageResource(R.drawable.person_no_pic_thumnail);
-            }
-        });
-    }
+//    private void getCastThumbnails(String uri, final ImageView imageView) {
+//
+//        Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
+//            @Override
+//            public void onSuccess() {
+//                Log.e(TAG,"getCastThumbnail() onSuccess()");
+//            }
+//
+//            @Override
+//            public void onError() {
+//                Log.e(TAG,"getCastThumbnail() onError()");
+//                imageView.setImageResource(R.drawable.person_no_pic_thumnail);
+//            }
+//        });
+//    }
 
 }

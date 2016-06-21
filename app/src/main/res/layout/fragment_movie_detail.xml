@@ -227,15 +227,15 @@
 
                             <include
                                 android:id="@+id/detail_cast_layout1"
-                                layout="@layout/detail_cast_list_item"></include>
+                                layout="@layout/single_poster_list_item"></include>
 
                             <include
                                 android:id="@+id/detail_cast_layout2"
-                                layout="@layout/detail_cast_list_item"></include>
+                                layout="@layout/single_poster_list_item"></include>
 
                             <include
                                 android:id="@+id/detail_cast_layout3"
-                                layout="@layout/detail_cast_list_item"></include>
+                                layout="@layout/single_poster_list_item"></include>
 
                         </LinearLayout>
                     </LinearLayout>

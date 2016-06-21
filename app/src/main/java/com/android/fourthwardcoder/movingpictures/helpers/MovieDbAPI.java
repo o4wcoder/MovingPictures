@@ -11,9 +11,7 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
-import com.android.fourthwardcoder.movingpictures.models.Person;
-import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
+import com.android.fourthwardcoder.movingpictures.models.PersonOld;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.models.VideoOld;
@@ -28,7 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -243,21 +240,7 @@ public class MovieDbAPI implements Constants {
             return parseJsonTvShow(jsonStr);
     }
 
-    /**
-     * Get single person
-     * @param id Person id
-     * @return   Person object
-     */
-    public static Person getPerson(int id) {
-
-        Uri uri = buildPersonUri(id);
-        String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
-        Log.e(TAG,"Person = " + jsonStr);
-        if(jsonStr == null)
-            return null;
-        else
-            return parseJsonPerson(jsonStr);
-    }
+//
 
 
 
@@ -314,7 +297,7 @@ public class MovieDbAPI implements Constants {
 
     /**
      * Get list of credits of a person
-     * @param personId Person id
+     * @param personId PersonOld id
      * @return         ArrayList of credits of a person
      */
     public static ArrayList<CreditOld> getPersonCreditList(int personId, int creditType) {
@@ -394,22 +377,7 @@ public class MovieDbAPI implements Constants {
     /* URI Builder Methods
     /*/
 
-    /**
-     * Build URI to get a single movie from the database
-     * @param movieId Id of the movie
-     * @return        Uri to movie
-     */
-    private static Uri buildMovieUri(int movieId) {
-        //Get Uri for basic movie info
-        //Build URI String to query the databaes for a specific movie
-        Uri movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                .appendPath(MovieDbAPI.PATH_MOVIE)
-                .appendPath(String.valueOf(movieId))
-                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                .build();
 
-        return movieUri;
-    }
 
     /**
      * Build URI to get a single TV show from the database
@@ -453,21 +421,6 @@ public class MovieDbAPI implements Constants {
         return videosUri;
     }
 
-    /**
-     * Build Uri to get a Person
-     * @param personId Id of person
-     * @return         Uri to the Person
-     */
-    private static Uri buildPersonUri(int personId) {
-
-        Uri personUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                .appendPath(MovieDbAPI.PATH_PERSON)
-                .appendPath(String.valueOf(personId))
-                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                .build();
-
-        return personUri;
-    }
 
     /**
      * Build Uri to MovieOld credits
@@ -508,8 +461,8 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Build Uri to a Person's credits
-     * @param personId Id of Person
+     * Build Uri to a PersonOld's credits
+     * @param personId Id of PersonOld
      * @return         Uri to person's credits
      */
     private static Uri buildPersonCreditsUri(int personId,int entType) {
@@ -572,45 +525,13 @@ public class MovieDbAPI implements Constants {
         return castList;
     }
 
-    /**
-     * Parse JSON string of Person data
-     * @param personJsonStr JSON string of person data
-     * @return              Person Object containing data of the person
-     */
-    private static Person parseJsonPerson(String personJsonStr) {
 
-        Person person = null;
-
-        try {
-            JSONObject obj = new JSONObject(personJsonStr);
-
-            person = new Person(obj.getInt(MovieDbAPI.TAG_ID));
-
-            person.setName(obj.getString(MovieDbAPI.TAG_NAME));
-            person.setBiography(obj.getString(MovieDbAPI.TAG_BIOGRAPHY));
-            person.setBirthday(obj.getString(MovieDbAPI.TAG_BIRTHDAY));
-            person.setDeathday(obj.getString(MovieDbAPI.TAG_DEATHDAY));
-            person.setBirthPlace(obj.getString(MovieDbAPI.TAG_PLACE_OF_BIRTH));
-            person.setProfileImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + obj.getString(MovieDbAPI.TAG_PROFILE_PATH));
-
-            String strPage = obj.getString(MovieDbAPI.TAG_HOMEPAGE);
-            strPage = strPage.replace("http://","");
-            person.setHomepage(strPage);
-
-        } catch (JSONException e) {
-            Log.e(TAG,"Caught JSON exception " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-
-        return person;
-    }
 
     /**
-     * Parse JSON String of a Person's credits
-     * @param personCreditsJsonStr JSON String of Person's credits
+     * Parse JSON String of a PersonOld's credits
+     * @param personCreditsJsonStr JSON String of PersonOld's credits
      * @param entType              Type of entertainment; MovieOld or TV
-     * @return                     ArrayList of Person's credits
+     * @return                     ArrayList of PersonOld's credits
      */
     private static ArrayList<CreditOld> parseJsonPersonCreditList(String personCreditsJsonStr, int entType) {
 
@@ -1106,5 +1027,87 @@ public class MovieDbAPI implements Constants {
 //
 //        return movie;
 //
+//    }
+    /**
+     //     * Get single person
+     //     * @param id PersonOld id
+     //     * @return   PersonOld object
+     //     */
+//    public static PersonOld getPerson(int id) {
+//
+//        Uri uri = buildPersonUri(id);
+//        String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
+//        Log.e(TAG,"PersonOld = " + uri);
+//        if(jsonStr == null)
+//            return null;
+//        else
+//            return parseJsonPerson(jsonStr);
+//    }
+
+    /**
+     //     * Parse JSON string of PersonOld data
+     //     * @param personJsonStr JSON string of person data
+     //     * @return              PersonOld Object containing data of the person
+     //     */
+//    private static PersonOld parseJsonPerson(String personJsonStr) {
+//
+//        PersonOld person = null;
+//
+//        try {
+//            JSONObject obj = new JSONObject(personJsonStr);
+//
+//            person = new PersonOld(obj.getInt(MovieDbAPI.TAG_ID));
+//
+//            person.setName(obj.getString(MovieDbAPI.TAG_NAME));
+//            person.setBiography(obj.getString(MovieDbAPI.TAG_BIOGRAPHY));
+//            person.setBirthday(obj.getString(MovieDbAPI.TAG_BIRTHDAY));
+//            person.setDeathday(obj.getString(MovieDbAPI.TAG_DEATHDAY));
+//            person.setBirthPlace(obj.getString(MovieDbAPI.TAG_PLACE_OF_BIRTH));
+//            person.setProfileImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + obj.getString(MovieDbAPI.TAG_PROFILE_PATH));
+//
+//            String strPage = obj.getString(MovieDbAPI.TAG_HOMEPAGE);
+//            strPage = strPage.replace("http://","");
+//            person.setHomepage(strPage);
+//
+//        } catch (JSONException e) {
+//            Log.e(TAG,"Caught JSON exception " + e.getMessage());
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//        return person;
+//    }
+
+    /**
+     //     * Build Uri to get a PersonOld
+     //     * @param personId Id of person
+     //     * @return         Uri to the PersonOld
+     //     */
+//    private static Uri buildPersonUri(int personId) {
+//
+//        Uri personUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+//                .appendPath(MovieDbAPI.PATH_PERSON)
+//                .appendPath(String.valueOf(personId))
+//                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+//                .build();
+//
+//        return personUri;
+//    }
+
+    /**
+     //     * Build URI to get a single movie from the database
+     //     * @param movieId Id of the movie
+     //     * @return        Uri to movie
+     //     */
+//    private static Uri buildMovieUri(int movieId) {
+//        //Get Uri for basic movie info
+//        //Build URI String to query the databaes for a specific movie
+//        Uri movieUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
+//                .appendPath(MovieDbAPI.PATH_MOVIE)
+//                .appendPath(String.valueOf(movieId))
+//                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
+//                .build();
+//
+//        return movieUri;
 //    }
 }

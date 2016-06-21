@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
+import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Genre;
@@ -30,6 +31,8 @@ import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.models.VideoOld;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +91,7 @@ public class Util implements Constants {
 
 
     /**
-     * Start Person Detail Activity of the cast memmber
+     * Start PersonOld Detail Activity of the cast memmber
      * @param context context of calling activity
      * @param id      id of person
      */
@@ -109,6 +112,22 @@ public class Util implements Constants {
         }
     }
 
+    public static void startMovieDetailActivity(Context context, int id, ImageView imageView) {
+
+        Intent i = new Intent(context,MovieDetailActivity.class);
+        i.putExtra(EXTRA_MOVIE_ID,id);
+        Log.e(TAG,"startMovieDetailActivity()");
+        if(imageView != null) {
+            ActivityOptionsCompat activityOptions =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                            new Pair<View, String>(imageView, context.getString(R.string.trans_movie_poster)));
+
+            context.startActivity(i, activityOptions.toBundle());
+        }
+        else {
+            context.startActivity(i);
+        }
+    }
     /**
      * Create a clickable span over and actors name
      * @param passContext context of calling activity
@@ -163,7 +182,7 @@ public class Util implements Constants {
         return strList;
     }
     /**
-     * Create clickable links on the names of the cast. When clicked, it will go to that Person's
+     * Create clickable links on the names of the cast. When clicked, it will go to that PersonOld's
      * detail page activity.
      * @param passContext context of calling activity
      * @param passMovie   movie/tv object
@@ -291,6 +310,23 @@ public class Util implements Constants {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+
+
+    public static void loadPosterThumbnail(Context context, String uri, final ImageView imageView) {
+
+        Picasso.with(context).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                Log.e(TAG,"getCastThumbnail() onSuccess()");
+            }
+
+            @Override
+            public void onError() {
+                Log.e(TAG,"getCastThumbnail() onError()");
+                imageView.setImageResource(R.drawable.person_no_pic_thumnail);
+            }
+        });
+    }
     /**
      * Create SharedIntent to share a video from movie
      * @return

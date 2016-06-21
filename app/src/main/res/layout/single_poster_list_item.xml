@@ -5,7 +5,7 @@
     android:layout_weight="1">
 
     <ImageView
-        android:id="@+id/cast_thumb_image_view"
+        android:id="@+id/thumb_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
@@ -14,13 +14,13 @@
         android:src="@drawable/movie_thumbnail"/>
 
     <TextView
-        android:id="@+id/cast_thumb_text_view"
+        android:id="@+id/thumb_text_view"
         style="@style/Base.TextAppearance.AppCompat.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/cast_thumb_image_view"
-        android:layout_alignRight="@id/cast_thumb_image_view"
-        android:layout_below="@+id/cast_thumb_image_view"
+        android:layout_alignLeft="@id/thumb_image_view"
+        android:layout_alignRight="@id/thumb_image_view"
+        android:layout_below="@+id/thumb_image_view"
         android:alpha="@string/secondary_text_alpha_dark"
         android:padding="2dp"
         android:gravity="center"

@@ -4,6 +4,8 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.Person;
+import com.android.fourthwardcoder.movingpictures.models.PersonOld;
 import com.android.fourthwardcoder.movingpictures.models.VideoList;
 
 import retrofit2.Call;
@@ -27,6 +29,12 @@ public interface MovieService {
 
     @GET("3/movie/{id}/credits")
     Call<Credits> getCredits(@Path("id") int id);
+
+    @GET("3/person/{id}")
+    Call<Person> getPerson(@Path("id") int id);
+
+    @GET("3/discover/movie?sort_by=popularity.desc")
+    Call<MovieList> getPersonsTopMovies(@Query("with_cast") int id);
 
 
 }
