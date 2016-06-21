@@ -54,7 +54,7 @@ public class CreditListAdapterOld extends ArrayAdapter<CreditOld> {
             convertView = inflater.inflate(R.layout.image_name_character_list_item, parent, false);
             //Get imageView
             holder.imageView = (ImageView) convertView.findViewById(R.id.posterImageView);
-            holder.nameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
+            holder.nameTextView = (TextView) convertView.findViewById(R.id.titleTextView);
             holder.characterTextView = (TextView) convertView.findViewById(R.id.characterTextView);
             convertView.setTag(holder);
         } else {

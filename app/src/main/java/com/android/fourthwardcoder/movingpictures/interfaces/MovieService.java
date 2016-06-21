@@ -18,7 +18,7 @@ import retrofit2.http.Query;
  */
 public interface MovieService {
 
-    @GET("/3/movie/{sort_type}/")
+    @GET("/3/movie/{sort_type}")
     Call<MovieList> getMovieList(@Path("sort_type") String sortType,
                                  @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
     @GET("/3/movie/{id}?append_to_response=release_dates,credits,videos,reviews")
@@ -35,6 +35,9 @@ public interface MovieService {
 
     @GET("3/discover/movie?sort_by=popularity.desc")
     Call<MovieList> getPersonsTopMovies(@Query("with_cast") int id);
+
+    @GET("3/person/{id}/{credit_type}")
+    Call<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
 
 
 }

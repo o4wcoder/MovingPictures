@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Cast implements Parcelable {
+public class Cast implements Comparable, Parcelable {
 
     @SerializedName("cast_id")
     @Expose
@@ -31,6 +31,15 @@ public class Cast implements Parcelable {
     @SerializedName("profile_path")
     @Expose
     private String profilePath;
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
+    @SerializedName("title")
+    @Expose
+    private String title;
+    @SerializedName("release_date")
+    @Expose
+    private String releaseDate;
 
     /**
      *
@@ -159,6 +168,53 @@ public class Cast implements Parcelable {
     }
 
 
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public int getReleaseYear() {
+
+        int releaseYear = 0;
+        if((releaseDate != null) && (releaseDate != "") && (releaseDate != "null")) {
+            String dateArray[] = releaseDate.split("-");
+
+            try {
+            releaseYear = Integer.parseInt(dateArray[0]);
+            } catch(NumberFormatException e) {}
+
+        }
+
+        return releaseYear;
+    }
+
+
+    @Override
+    public int compareTo(Object object) {
+
+        int compareYear=((Cast)object).getReleaseYear();
+        return compareYear - this.getReleaseYear();
+    }
+
     protected Cast(Parcel in) {
         castId = in.readByte() == 0x00 ? null : in.readInt();
         character = in.readString();
@@ -167,6 +223,10 @@ public class Cast implements Parcelable {
         name = in.readString();
         order = in.readByte() == 0x00 ? null : in.readInt();
         profilePath = in.readString();
+        posterPath = in.readString();
+        title = in.readString();
+        releaseDate = in.readString();
+
     }
 
     @Override
@@ -198,6 +258,10 @@ public class Cast implements Parcelable {
             dest.writeInt(order);
         }
         dest.writeString(profilePath);
+        dest.writeString(posterPath);
+        dest.writeString(title);
+        dest.writeString(releaseDate);
+
     }
 
     @SuppressWarnings("unused")
@@ -212,4 +276,5 @@ public class Cast implements Parcelable {
             return new Cast[size];
         }
     };
+
 }

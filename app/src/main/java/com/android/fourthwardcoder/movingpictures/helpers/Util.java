@@ -327,6 +327,16 @@ public class Util implements Constants {
             }
         });
     }
+
+    public static String formatYearFromDate(String releaseDate) {
+
+        if((releaseDate != null) && (releaseDate != "") && (releaseDate != "null")) {
+            String dateArray[] = releaseDate.split("-");
+            return "(" + dateArray[0] + ")";
+        }
+        else
+            return "(????)";
+    }
     /**
      * Create SharedIntent to share a video from movie
      * @return

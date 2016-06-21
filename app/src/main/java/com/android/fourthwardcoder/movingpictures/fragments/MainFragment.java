@@ -31,6 +31,7 @@ import com.android.fourthwardcoder.movingpictures.data.MovieContract;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.movingpictures.helpers.ServiceGenerator;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
@@ -310,9 +311,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         Log.e(TAG, "onResponse()");
                         setMovieAdapter((ArrayList)response.body().getMovies());
                     } else {
-
+                        Log.e(TAG,"!!! Response was not sucessful!!!");
                         //parse the response to find the error. Display a message
                         APIError error = ErrorUtils.parseError(response);
+                        Log.e(TAG,"Error message = " + error.message());
                         Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
                     }
                 }

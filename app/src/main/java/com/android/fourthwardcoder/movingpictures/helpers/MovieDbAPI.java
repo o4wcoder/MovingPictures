@@ -480,6 +480,7 @@ public class MovieDbAPI implements Constants {
                 .appendQueryParameter(PARAM_API_KEY, API_KEY_MOVIE_DB)
                 .build();
 
+        Log.e(TAG,"Person's credits uri = " + personCreditsUri);
         return personCreditsUri;
     }
 
