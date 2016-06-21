@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
-import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapterOld;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -44,7 +44,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     /*                         Local Data                               */
     /********************************************************************/
     ListView mListView;
-    CreditListAdapter mAdapter;
+    CreditListAdapterOld mAdapter;
     int mEntType;
     int mPersonId;
 
@@ -157,7 +157,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
             if ((getActivity() != null) && (creditList != null)) {
 
-                mAdapter = new CreditListAdapter(getActivity(), creditList, true);
+                mAdapter = new CreditListAdapterOld(getActivity(), creditList, true);
                 mListView.setAdapter(mAdapter);
             }
         }

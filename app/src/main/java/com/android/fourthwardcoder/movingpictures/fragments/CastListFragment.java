@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
-import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapterOld;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -39,7 +39,7 @@ public class CastListFragment extends Fragment implements Constants {
     /*                         Local Data                               */
     /********************************************************************/
     ListView mListView;
-    CreditListAdapter mAdapter;
+    CreditListAdapterOld mAdapter;
 
     public CastListFragment() {
     }
@@ -103,7 +103,7 @@ public class CastListFragment extends Fragment implements Constants {
         protected void onPostExecute(ArrayList<CreditOld> creditList) {
 
             if ((getActivity() != null) && (creditList != null)) {
-                mAdapter = new CreditListAdapter(getActivity(), creditList, false);
+                mAdapter = new CreditListAdapterOld(getActivity(), creditList, false);
                 mListView.setAdapter(mAdapter);
             }
         }

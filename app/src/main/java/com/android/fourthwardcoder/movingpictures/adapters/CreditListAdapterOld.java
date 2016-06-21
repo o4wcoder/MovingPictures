@@ -15,13 +15,13 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- * Class CreditListAdapter
+ * Class CreditListAdapterOld
  * Author: Chris Hare
  * Created: 9/2/2015.
  * <p/>
  * Adapter to display a MovieOld or TV shows CreditOld info in a listview of the Filmography
  */
-public class CreditListAdapter extends ArrayAdapter<CreditOld> {
+public class CreditListAdapterOld extends ArrayAdapter<CreditOld> {
 
     /**********************************************************************/
     /*                           Constants                                */
@@ -33,7 +33,7 @@ public class CreditListAdapter extends ArrayAdapter<CreditOld> {
     private Context mContext;
     private boolean mShowYear;
 
-    public CreditListAdapter(Context context, ArrayList<CreditOld> creditList, boolean showYear) {
+    public CreditListAdapterOld(Context context, ArrayList<CreditOld> creditList, boolean showYear) {
         super(context, 0, creditList);
 
         mContext = context;

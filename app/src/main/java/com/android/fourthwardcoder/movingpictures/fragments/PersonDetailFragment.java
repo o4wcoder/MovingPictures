@@ -103,6 +103,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
         Log.e(TAG,"onCreate() Inside");
         if(savedInstanceState != null) {
             mPerson = savedInstanceState.getParcelable(EXTRA_PERSON);
+            mKnownForMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
         }
         else {
             mPersonId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
@@ -209,10 +210,13 @@ public class PersonDetailFragment extends Fragment implements Constants {
         mKnownFor3TextView = (TextView) cast3View.findViewById(R.id.thumb_text_view);
 
         if(mFetchData) {
+            Log.e(TAG,"Go fetch Person's data");
             getPerson(mPersonId);
         } else {
             //Got the entire Person object saved from instance state. Just set the layout.
+            Log.e(TAG,"Already have Person's data, just set layouts");
             setLayout();
+            setKnownForLayout();
         }
         return view;
     }
@@ -221,6 +225,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putParcelable(EXTRA_PERSON, mPerson);
+        savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST,mKnownForMovieList);
         super.onSaveInstanceState(savedInstanceState);
     }
     private void getPerson(int id) {
@@ -265,33 +270,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     Log.e(TAG, "onResponse()");
                     mKnownForMovieList = ((ArrayList)response.body().getMovies());
                     
-
-                    if (mKnownForMovieList != null) {
-                        Log.e(TAG,"set Known For List. Movie list not null with size = " + mKnownForMovieList.size());
-                        if (mKnownForMovieList.size() >= 3) {
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(2).getPosterPath(), mKnownFor3ImageView);
-                            mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
-                            mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
-                            mKnownFor3TextView.setText(mKnownForMovieList.get(2).getTitle());
-                        } else if (mKnownForMovieList.size() == 2) {
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
-                            mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
-                            mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
-                        } else if (mKnownForMovieList.size() == 3) {
-                            Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
-                            mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
-                        }
-                        else {
-                            //Cast size is 0. Don't show cast card.
-                            mKnownForCardView.setVisibility(View.GONE);
-                        }
-                    } else {
-                        //Did not return any cast. Don't show cast card.
-                        mKnownForCardView.setVisibility(View.GONE);
-                    }
+                    setKnownForLayout();
                
                 } else {
 
@@ -395,9 +374,44 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 mWebpageTextView.setVisibility(View.GONE);
             }
 
-            getPersonsTopMovies();
+            //If we are fetching data on first tim through, go get the known for movies. Otherwise
+            //we arleayd have them saved so just set the layout.
+            if(mFetchData)
+                getPersonsTopMovies();
+            else
+                setKnownForLayout();
         }
 
+    }
+
+    private void setKnownForLayout() {
+
+        if (mKnownForMovieList != null) {
+            Log.e(TAG,"set Known For List. Movie list not null with size = " + mKnownForMovieList.size());
+            if (mKnownForMovieList.size() >= 3) {
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(2).getPosterPath(), mKnownFor3ImageView);
+                mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
+                mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
+                mKnownFor3TextView.setText(mKnownForMovieList.get(2).getTitle());
+            } else if (mKnownForMovieList.size() == 2) {
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
+                mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
+                mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
+            } else if (mKnownForMovieList.size() == 3) {
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
+                mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
+            }
+            else {
+                //Cast size is 0. Don't show cast card.
+                mKnownForCardView.setVisibility(View.GONE);
+            }
+        } else {
+            //Did not return any cast. Don't show cast card.
+            mKnownForCardView.setVisibility(View.GONE);
+        }
     }
 
 
