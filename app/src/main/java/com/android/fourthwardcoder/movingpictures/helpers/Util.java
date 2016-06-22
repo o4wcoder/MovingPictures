@@ -23,14 +23,11 @@ import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
+import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Genre;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
-import com.android.fourthwardcoder.movingpictures.models.TvShow;
-import com.android.fourthwardcoder.movingpictures.models.Video;
-import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -95,38 +92,51 @@ public class Util implements Constants {
      * @param context context of calling activity
      * @param id      id of person
      */
-    public static void startActorDetailActivity(Context context, int id, ImageView imageView) {
+//    public static void startActorDetailActivity(Context context, int id, ImageView imageView) {
+//
+//        Intent i = new Intent(context,PersonDetailActivity.class);
+//        i.putExtra(EXTRA_PERSON_ID,id);
+//        Log.e(TAG,"startActorDetailActivity()");
+//        if(imageView != null) {
+//            ActivityOptionsCompat activityOptions =
+//                    ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+//                            new Pair<View, String>(imageView, context.getString(R.string.trans_poster)));
+//
+//            context.startActivity(i, activityOptions.toBundle());
+//        }
+//        else {
+//            context.startActivity(i);
+//        }
+//    }
 
-        Intent i = new Intent(context,PersonDetailActivity.class);
-        i.putExtra(EXTRA_PERSON_ID,id);
-        Log.e(TAG,"startActorDetailActivity()");
-        if(imageView != null) {
-            ActivityOptionsCompat activityOptions =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
-                            new Pair<View, String>(imageView, context.getString(R.string.trans_person_poster)));
+    public static void startDetailActivity(Context context, int id, @EntertainmentType int type,ImageView imageView) {
 
-            context.startActivity(i, activityOptions.toBundle());
+        Intent intent = null;
+
+        //Find out which type of detail activity we want to start
+        if(type == ENT_TYPE_MOVIE)
+            intent = new Intent(context,MovieDetailActivity.class);
+        else if(type == ENT_TYPE_PERSON)
+            intent = new Intent(context,PersonDetailActivity.class);
+        else if(type == ENT_TYPE_TV)
+            intent = new Intent(context, TvDetailActivity.class);
+
+        if(intent != null) {
+            intent.putExtra(EXTRA_ID, id);
+            Log.e(TAG, "startDetailActivity()");
+            if (imageView != null) {
+                ActivityOptionsCompat activityOptions =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
+                                new Pair<View, String>(imageView, context.getString(R.string.trans_poster)));
+
+                context.startActivity(intent, activityOptions.toBundle());
+            } else {
+                context.startActivity(intent);
+            }
+        } else {
+            Log.e(TAG,"startDetailActivity() Intentn to start activity was null with ent type = " + type);
         }
-        else {
-            context.startActivity(i);
-        }
-    }
 
-    public static void startMovieDetailActivity(Context context, int id, ImageView imageView) {
-
-        Intent i = new Intent(context,MovieDetailActivity.class);
-        i.putExtra(EXTRA_MOVIE_ID,id);
-        Log.e(TAG,"startMovieDetailActivity()");
-        if(imageView != null) {
-            ActivityOptionsCompat activityOptions =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context,
-                            new Pair<View, String>(imageView, context.getString(R.string.trans_movie_poster)));
-
-            context.startActivity(i, activityOptions.toBundle());
-        }
-        else {
-            context.startActivity(i);
-        }
     }
     /**
      * Create a clickable span over and actors name
@@ -142,7 +152,7 @@ public class Util implements Constants {
             @Override
             public void onClick(View textView) {
 
-               startActorDetailActivity(context,id,null);
+               startDetailActivity(context,id,ENT_TYPE_PERSON,null);
             }
         };
 
@@ -153,7 +163,7 @@ public class Util implements Constants {
     public static void showCastListActivity(Context context, Movie movie, final int entType) {
 
         Intent i = new Intent(context, CastListActivity.class);
-        i.putExtra(EXTRA_MOVIE_ID, movie.getId());
+        i.putExtra(EXTRA_ID, movie.getId());
         i.putExtra(EXTRA_TITLE, movie.getTitle());
         if (entType == ENT_TYPE_MOVIE)
             i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
@@ -349,7 +359,7 @@ public class Util implements Constants {
 //        shareIntent.setType("text/plain");
 //
 //        String strSubject = activity.getString(R.string.share_movie_subject);
-//        if(movie instanceof TvShow)
+//        if(movie instanceof TvShowOld)
 //            strSubject = activity.getString(R.string.share_tvshow_subject);
 //
 //        String subject = video.getType() + " " + strSubject +

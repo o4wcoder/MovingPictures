@@ -50,7 +50,7 @@ public class CastListFragment extends Fragment implements Constants {
         View view = inflater.inflate(R.layout.fragment_simple_listview, container, false);
 
         Intent i = getActivity().getIntent();
-        final int movieId = i.getIntExtra(EXTRA_MOVIE_ID, 0);
+        final int movieId = i.getIntExtra(EXTRA_ID, 0);
         final int entType = i.getIntExtra(EXTRA_ENT_TYPE, 0);
 
         getActivity().setTitle(getString(R.string.cast_toolbar) + " " + i.getStringExtra(EXTRA_TITLE));
@@ -63,7 +63,7 @@ public class CastListFragment extends Fragment implements Constants {
 
                 CreditOld credit = (CreditOld) mAdapter.getItem(position);
                 Intent i = new Intent(getActivity(), PersonDetailActivity.class);
-                i.putExtra(EXTRA_PERSON_ID, credit.getId());
+                i.putExtra(EXTRA_ID, credit.getId());
                 startActivity(i);
 
               //  Util.startActorDetailActivity(getContext(),credit)

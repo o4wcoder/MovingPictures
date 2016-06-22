@@ -67,7 +67,7 @@ public class PersonPhotosFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person_photos, container, false);
 
-        final int personId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+        final int personId = getActivity().getIntent().getIntExtra(EXTRA_ID, 0);
         mPersonName = getActivity().getIntent().getStringExtra(EXTRA_PERSON_NAME);
 
         getActivity().setTitle(getString(R.string.photos_toolbar) + " " + mPersonName);

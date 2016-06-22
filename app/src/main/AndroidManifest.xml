@@ -98,6 +98,7 @@
         <activity
             android:name="com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity"
             android:label="@string/title_activity_tv_detail"
+            android:theme="@style/AppTheme.TvShowDetail"
             android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

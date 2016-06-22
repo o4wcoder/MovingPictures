@@ -11,8 +11,7 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
-import com.android.fourthwardcoder.movingpictures.models.PersonOld;
-import com.android.fourthwardcoder.movingpictures.models.TvShow;
+import com.android.fourthwardcoder.movingpictures.models.TvShowOld;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 
@@ -27,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -229,9 +227,10 @@ public class MovieDbAPI implements Constants {
      * @param id TV id
      * @return   TV object
      */
-    public static TvShow getTvShow(int id) {
+    public static TvShowOld getTvShow(int id) {
 
         Uri uri = buildTvUri(id);
+        Log.e(TAG,"TvShowOld Uri = " + uri);
         String jsonStr = MovieDbAPI.queryMovieDatabase(uri);
 
         if(jsonStr == null)
@@ -487,9 +486,9 @@ public class MovieDbAPI implements Constants {
      * @param tvJsonStr Json String of TV Show
      * @return          TVShow object
      */
-    public static TvShow parseJsonTvShow(String tvJsonStr) {
+    public static TvShowOld parseJsonTvShow(String tvJsonStr) {
 
-        TvShow tvShow = null;
+        TvShowOld tvShow = null;
 
         try {
             if (tvJsonStr != null) {
@@ -498,7 +497,7 @@ public class MovieDbAPI implements Constants {
 
                 JSONObject tvObj = new JSONObject(tvJsonStr);
 
-                tvShow = new TvShow(tvObj.getInt(MovieDbAPI.TAG_ID));
+                tvShow = new TvShowOld(tvObj.getInt(MovieDbAPI.TAG_ID));
                 tvShow.setTitle(tvObj.getString(MovieDbAPI.TAG_NAME));
                 tvShow.setOverview(tvObj.getString(MovieDbAPI.TAG_OVERVIEW));
                 tvShow.setPosterPath(BASE_MOVIE_IMAGE_URL + IMAGE_185_SIZE + tvObj.getString(TAG_POSTER_PATH));

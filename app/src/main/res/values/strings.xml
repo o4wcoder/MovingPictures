@@ -72,7 +72,9 @@
     <string name="acc_movie_rating">Rating: <xliff:g id="rating">%1$s</xliff:g>out of <xliff:g id="rating">%1$s</xliff:g></string>
 
     <!-- Transitions -->
-    <string name="trans_movie_poster">trans_movie_poster</string>
-    <string name="trans_person_poster">trans_person_poster</string>
+    <string name="trans_poster">trans_poster</string>
+    <!--
+    <string name="trans_person_poster">trans_movie_poster</string>
+    -->
 
 </resources>

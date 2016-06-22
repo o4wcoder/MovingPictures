@@ -32,7 +32,7 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
+        setContentView(R.layout.activity_detail);
         //Change status bar color
        // Util.setStatusBarColor(this);
       //  final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,14 +56,14 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 //            else {
                 Log.e(TAG,"-----Just have the id");
                 //Must have just the id of the movie
-                int movieId = getIntent().getIntExtra(EXTRA_MOVIE_ID,0);
-                arguments.putInt(EXTRA_MOVIE_ID,movieId);
+                int movieId = getIntent().getIntExtra(EXTRA_ID,0);
+                arguments.putInt(EXTRA_ID,movieId);
       //      }
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, fragment)
+                    .add(R.id.detail_container, fragment)
                     .commit();
         }
 

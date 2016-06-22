@@ -19,6 +19,7 @@
 
     <style name="AppTheme.MovieDetails" parent="@style/AppTheme"></style>
     <style name="AppTheme.PersonDetail" parent="@style/AppTheme"></style>
+    <style name="AppTheme.TvShowDetail" parent="@style/AppTheme"></style>
     <style name="AppTheme.PersonPhotoDetail" parent="@style/AppTheme"></style>
 
     <!--

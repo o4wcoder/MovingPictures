@@ -6,6 +6,7 @@ import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.PersonOld;
+import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.VideoList;
 
 import retrofit2.Call;
@@ -38,6 +39,9 @@ public interface MovieService {
 
     @GET("3/person/{id}/{credit_type}")
     Call<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
+
+    @GET("3/tv/{id}?append_to_response=credits,videos")
+    Call<TvShow> getTvShow(@Path("id") int id);
 
 
 }

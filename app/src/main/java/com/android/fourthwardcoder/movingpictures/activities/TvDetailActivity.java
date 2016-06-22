@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.fragments.TvDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
@@ -23,21 +24,34 @@ public class TvDetailActivity extends AppCompatActivity implements Constants {
     /**********************************************************************/
     private final static String TAG = TvDetailActivity.class.getSimpleName();
 
-    int mPersonId;
+   // int mPersonId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Change status bar color
-        Util.setStatusBarColor(this);
+       // Util.setStatusBarColor(this);
 
-        setContentView(R.layout.activity_tv_detail);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_detail);
 
-        mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+        //Start postpone element transition
+        supportPostponeEnterTransition();
+
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+      //  mPersonId = getIntent().getIntExtra(EXTRA_ID, 0);
+
+        TvDetailFragment fragment = new TvDetailFragment();
+        //fragment.setArguments(arguments);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.detail_container, fragment)
+                .commit();
+
+
     }
 
     @Override

@@ -42,10 +42,10 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState != null) {
-            mPersonId = savedInstanceState.getInt(EXTRA_PERSON_ID);
+            mPersonId = savedInstanceState.getInt(EXTRA_ID);
         } else {
             //Get PersonId from Intent
-            mPersonId = getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+            mPersonId = getIntent().getIntExtra(EXTRA_ID, 0);
         }
         //Change status bar color
         Util.setStatusBarColor(this);
@@ -84,7 +84,7 @@ public class PersonFilmographyTabActivity extends AppCompatActivity implements C
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putInt(EXTRA_PERSON_ID, mPersonId);
+        savedInstanceState.putInt(EXTRA_ID, mPersonId);
         super.onSaveInstanceState(savedInstanceState);
     }
 }

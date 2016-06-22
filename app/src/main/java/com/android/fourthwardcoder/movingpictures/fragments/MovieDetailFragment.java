@@ -101,7 +101,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mCastShowAllTextView;
     // CheckBox mFavoritesToggleButton;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
     RelativeLayout mDetailLayout;
 
@@ -148,7 +147,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             if (arguments != null) {
 
                 //Got MovieOld ID, will need to fetch data
-                mMovieId = arguments.getInt(EXTRA_MOVIE_ID);
+                mMovieId = arguments.getInt(EXTRA_ID);
                 Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
 
                 mFetchData = true;
@@ -163,21 +162,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-
-
-
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-        //Get NestedScrollView;
-        mNestedScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
+        mDetailCardView = (CardView) view.findViewById(R.id.movie_detail_cardview);
+        mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
-
         mPosterImageView = (ImageView) view.findViewById(R.id.posterImageView);
 
-        mDetailCardView = (CardView) view.findViewById(R.id.movie_detail_cardview);
-        mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
+
 
         mFavoritesFAB = (FloatingActionButton) view.findViewById(R.id.favorites_fab);
         mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
@@ -284,11 +278,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
 
                 if (v.equals(mCast1ImageView)) {
-                      Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(0).getId(),mCast1ImageView);
+                      Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(0).getId(),ENT_TYPE_PERSON,mCast1ImageView);
                 } else if (v.equals(mCast2ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(1).getId(),mCast2ImageView);
+                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(1).getId(),ENT_TYPE_PERSON,mCast2ImageView);
                 } else if (v.equals(mCast3ImageView)) {
-                    Util.startActorDetailActivity(getActivity(),mMovie.getCredits().getCast().get(2).getId(),mCast3ImageView);
+                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(2).getId(),ENT_TYPE_PERSON,mCast3ImageView);
                 }
             }
         };
@@ -472,7 +466,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     private void setLayout() {
 
         Log.e(TAG,"setLayout() Inside");
-        if (getActivity() != null && mVideosRecylerView != null) {
+        if (getActivity() != null && mMovie != null && mVideosRecylerView != null) {
           //  if (mMovie != null) {
                  //  Log.e(TAG,"movie ")
                 //Got the data, can create share menu if there are videos

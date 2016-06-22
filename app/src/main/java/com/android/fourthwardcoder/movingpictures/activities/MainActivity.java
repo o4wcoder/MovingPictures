@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             //transaction
             Log.e(TAG,"onItemSelected(): with twoPane");
             Bundle args = new Bundle();
-            args.putInt(EXTRA_MOVIE_ID, movieId);
+            args.putInt(EXTRA_ID, movieId);
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
@@ -128,13 +128,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                     .commit();
         } else {
             Intent i = new Intent(this, MovieDetailActivity.class);
-            i.putExtra(EXTRA_MOVIE_ID,movieId);
+            i.putExtra(EXTRA_ID,movieId);
 
 
             //Start shared element transition for the movie poster
             ActivityOptionsCompat activityOptions =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                            new Pair<View, String>(imageView, getString(R.string.trans_movie_poster)));
+                            new Pair<View, String>(imageView, getString(R.string.trans_poster)));
 
             startActivity(i,activityOptions.toBundle());
 

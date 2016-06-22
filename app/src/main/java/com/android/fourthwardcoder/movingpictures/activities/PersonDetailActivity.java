@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.fragments.PersonDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 
 import java.util.Stack;
@@ -36,10 +37,17 @@ public class PersonDetailActivity extends AppCompatActivity {
         //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 
-        setContentView(R.layout.activity_actor_detail);
+        setContentView(R.layout.activity_detail);
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        PersonDetailFragment fragment = new PersonDetailFragment();
+        //fragment.setArguments(arguments);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.detail_container, fragment)
+                .commit();
 
     }
 

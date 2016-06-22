@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     android:adjustViewBounds="true"
     android:layout_gravity="center"
-    android:transitionName="@string/trans_movie_poster">
+    android:transitionName="@string/trans_poster">
 
 </ImageView>

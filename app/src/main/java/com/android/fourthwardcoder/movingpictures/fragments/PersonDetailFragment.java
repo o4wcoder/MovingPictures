@@ -106,7 +106,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             mKnownForMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
         }
         else {
-            mPersonId = getActivity().getIntent().getIntExtra(EXTRA_PERSON_ID, 0);
+            mPersonId = getActivity().getIntent().getIntExtra(EXTRA_ID, 0);
             mFetchData = true;
         }
     }
@@ -145,7 +145,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
 
                 Intent i = new Intent(getActivity(), PersonFilmographyTabActivity.class);
-                i.putExtra(MovieDetailFragment.EXTRA_PERSON_ID, mPersonId);
+                i.putExtra(MovieDetailFragment.EXTRA_ID, mPersonId);
                 startActivity(i)
                 ;
             }
@@ -156,7 +156,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), PersonPhotosActivity.class);
-                i.putExtra(EXTRA_PERSON_ID, mPersonId);
+                i.putExtra(EXTRA_ID, mPersonId);
                 i.putExtra(EXTRA_PERSON_NAME, mPerson.getName());
                 startActivity(i);
             }
@@ -184,11 +184,11 @@ public class PersonDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
 
                 if (v.equals(mKnownFor1ImageView)) {
-                   Util.startMovieDetailActivity(getActivity(),mKnownForMovieList.get(0).getId(),mKnownFor1ImageView);
+                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(0).getId(),ENT_TYPE_MOVIE,mKnownFor1ImageView);
                 } else if (v.equals(mKnownFor2ImageView)) {
-                   Util.startMovieDetailActivity(getActivity(),mKnownForMovieList.get(1).getId(),mKnownFor2ImageView);
+                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(1).getId(),ENT_TYPE_MOVIE,mKnownFor2ImageView);
                 } else if (v.equals(mKnownFor3ImageView)) {
-                   Util.startMovieDetailActivity(getActivity(),mKnownForMovieList.get(2).getId(),mKnownFor3ImageView);
+                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(2).getId(),ENT_TYPE_MOVIE,mKnownFor3ImageView);
                 }
             }
         };
@@ -342,36 +342,40 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
             mBornPlaceTextView.setText(mPerson.getPlaceOfBirth());
 
-            if (!(mPerson.getDeathday()).equals("")) {
-                Spanned deathDate = Html.fromHtml("<b>" + getString(R.string.death) + "</b>" + " " +
-                        Util.reverseDateString(mPerson.getDeathday()));
-                mDeathDateTextView.setText(deathDate);
-            } else {
-                mDeathDateTextView.setVisibility(View.GONE);
+            if(mPerson.getDeathday() != null) {
+                if (!(mPerson.getDeathday()).equals("")) {
+                    Spanned deathDate = Html.fromHtml("<b>" + getString(R.string.death) + "</b>" + " " +
+                            Util.reverseDateString(mPerson.getDeathday()));
+                    mDeathDateTextView.setText(deathDate);
+                } else {
+                    mDeathDateTextView.setVisibility(View.GONE);
+                }
             }
 
             Spanned biography = Html.fromHtml("<b>" + getString(R.string.biography) + "</b>" + " " +
                     mPerson.getBiography());
             mBiographyContentTextView.setText(biography);
 
-            if(!(mPerson.getHomepage()).equals("")) {
-                SpannableString pageSS = new SpannableString(mPerson.getHomepage());
+            if(mPerson.getHomepage() != null){
+                if (!(mPerson.getHomepage()).equals("")) {
+                    SpannableString pageSS = new SpannableString(mPerson.getHomepage());
 
-                ClickableSpan span = new ClickableSpan() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
-                        // Verify that the intent will resolve to an activity
-                        if (i.resolveActivity(getActivity().getPackageManager()) != null)
-                            startActivity(i);
-                    }
-                };
+                    ClickableSpan span = new ClickableSpan() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mPerson.getHomepage()));
+                            // Verify that the intent will resolve to an activity
+                            if (i.resolveActivity(getActivity().getPackageManager()) != null)
+                                startActivity(i);
+                        }
+                    };
 
-                pageSS.setSpan(span, 0, mPerson.getHomepage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                mWebpageTextView.setText(pageSS);
-                mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            } else {
-                mWebpageTextView.setVisibility(View.GONE);
+                    pageSS.setSpan(span, 0, mPerson.getHomepage().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    mWebpageTextView.setText(pageSS);
+                    mWebpageTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                } else {
+                    mWebpageTextView.setVisibility(View.GONE);
+                }
             }
 
             //If we are fetching data on first tim through, go get the known for movies. Otherwise

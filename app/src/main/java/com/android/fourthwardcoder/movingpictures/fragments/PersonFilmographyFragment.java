@@ -68,7 +68,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
         Bundle args = new Bundle();
         //Store entertainment type; movie or tv
         args.putInt(EXTRA_ENT_TYPE, entType);
-        args.putInt(EXTRA_PERSON_ID, personId);
+        args.putInt(EXTRA_ID, personId);
         //Create Fragment and store arguments to it.
         PersonFilmographyFragment fragment = new PersonFilmographyFragment();
         fragment.setArguments(args);
@@ -83,11 +83,11 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
         //Check if we've rotated
         if (savedInstance != null) {
             mEntType = savedInstance.getInt(EXTRA_ENT_TYPE);
-            mPersonId = savedInstance.getInt(EXTRA_PERSON_ID);
+            mPersonId = savedInstance.getInt(EXTRA_ID);
         } else {
             Bundle bundle = getArguments();
             mEntType = bundle.getInt(EXTRA_ENT_TYPE);
-            mPersonId = bundle.getInt(EXTRA_PERSON_ID);
+            mPersonId = bundle.getInt(EXTRA_ID);
         }
     }
 
@@ -150,7 +150,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(EXTRA_ENT_TYPE, mEntType);
-        savedInstanceState.putInt(EXTRA_PERSON_ID, mPersonId);
+        savedInstanceState.putInt(EXTRA_ID, mPersonId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -196,8 +196,8 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
                 @Override
                 public void onCreditClick(int id, CreditListAdapter.CreditListAdapterViewHolder vh) {
 
-
-                    Util.startMovieDetailActivity(getContext(),id,vh.thumbImageView);
+                    Log.e(TAG,"onCreditClick() id = " + id + " ent type = " + mEntType);
+                    Util.startDetailActivity(getContext(),id,mEntType,vh.thumbImageView);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
