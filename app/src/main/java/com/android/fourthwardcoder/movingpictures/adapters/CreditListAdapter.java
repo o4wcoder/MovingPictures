@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Cast;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
@@ -23,7 +24,8 @@ import java.util.Collections;
 /**
  * Created by Chris Hare on 6/21/2016.
  */
-public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.CreditListAdapterViewHolder> {
+public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.CreditListAdapterViewHolder>
+    implements Constants{
 
     private static String TAG = CreditListAdapter.class.getSimpleName();
 
@@ -32,15 +34,16 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
     /***********************************************************************************************/
     private Context mContext;
     private Credits mCredits;
+    private int mEntType;
     private CreditListAdapter.CreditListAdapterOnClickHandler mClickHandler;
-    boolean mShowYear;
 
-    public CreditListAdapter(Context context, Credits credits, boolean showYear,
+    public CreditListAdapter(Context context, Credits credits, int entType,
                              CreditListAdapterOnClickHandler clickHandler ) {
 
         mContext = context;
         Collections.sort(credits.getCast());
         mCredits = credits;
+        mEntType = entType;
         mClickHandler = clickHandler;
     }
 
@@ -60,10 +63,15 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
          Cast cast = mCredits.getCast().get(position);
          Log.e(TAG,"Movie Title = " + cast.getTitle());
          Log.e(TAG,"Pic path = " + cast.getPosterPath());
+        Log.e(TAG,"Name = " + cast.getName());
          Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
+         Log.e(TAG,"Ent type = " + mEntType);
+        if (mEntType == ENT_TYPE_MOVIE)
+            holder.titleTextView.setText(cast.getTitle() + " " + Util.formatYearFromDate(cast.getReleaseDate()));
+        else
+            holder.titleTextView.setText(cast.getName() + " " + Util.formatYearFromDate(cast.getFirstAirDate()));
 
-         holder.titleTextView.setText(cast.getTitle() + " " + Util.formatYearFromDate(cast.getReleaseDate()));
-         holder.characterTextView.setText(cast.getCharacter());
+        holder.characterTextView.setText(cast.getCharacter());
 
     }
 

@@ -40,6 +40,9 @@ public class Cast implements Comparable, Parcelable {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+    @SerializedName("first_air_date")
+    @Expose
+    private String firstAirDate;
 
     /**
      *
@@ -192,6 +195,14 @@ public class Cast implements Comparable, Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public String getFirstAirDate() {
+        return firstAirDate;
+    }
+
+    public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
+    }
+
     public int getReleaseYear() {
 
         int releaseYear = 0;
@@ -207,12 +218,32 @@ public class Cast implements Comparable, Parcelable {
         return releaseYear;
     }
 
+    public int getFirstAirYear() {
+
+        int firstAirYear = 0;
+        if((firstAirDate != null) && (firstAirDate != "") && (firstAirDate != "null")) {
+            String dateArray[] = firstAirDate.split("-");
+
+            try {
+                firstAirYear = Integer.parseInt(dateArray[0]);
+            } catch(NumberFormatException e) {}
+
+        }
+
+        return firstAirYear;
+    }
+
 
     @Override
     public int compareTo(Object object) {
 
-        int compareYear=((Cast)object).getReleaseYear();
-        return compareYear - this.getReleaseYear();
+        if((releaseDate != null) && (releaseDate != "") && (releaseDate != "null")) {
+            int compareYear = ((Cast) object).getReleaseYear();
+            return compareYear - this.getReleaseYear();
+        } else {
+            int compareYear = ((Cast) object).getFirstAirYear();
+            return compareYear - this.getFirstAirYear();
+        }
     }
 
     protected Cast(Parcel in) {
@@ -226,6 +257,7 @@ public class Cast implements Comparable, Parcelable {
         posterPath = in.readString();
         title = in.readString();
         releaseDate = in.readString();
+        firstAirDate = in.readString();
 
     }
 
@@ -261,6 +293,7 @@ public class Cast implements Comparable, Parcelable {
         dest.writeString(posterPath);
         dest.writeString(title);
         dest.writeString(releaseDate);
+        dest.writeString(firstAirDate);
 
     }
 

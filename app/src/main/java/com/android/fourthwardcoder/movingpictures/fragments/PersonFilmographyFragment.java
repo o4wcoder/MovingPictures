@@ -156,7 +156,10 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
     private void getPersonsFilmography() {
 
-        Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mPersonId,MovieDbAPI.PATH_MOVIE_CREDIT);
+        //See if we want to fetch Movie or TV credits
+        Log.e(TAG,"getPersonsFilmography() with ent type = " + mEntType);
+        String creditPath = (mEntType == ENT_TYPE_TV) ? MovieDbAPI.PATH_TV_CREDIT : MovieDbAPI.PATH_MOVIE_CREDIT;
+        Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mPersonId,creditPath);
 
         call.enqueue(new retrofit2.Callback<Credits>() {
 
@@ -169,9 +172,8 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
                     setAdapter();
 
-                    Log.e(TAG,"First Character = " + mCredits.getCast().get(0).getCharacter());
                 } else {
-                    Log.e(TAG,"Get Movie list call was not sucessful");
+
                     //parse the response to find the error. Display a message
                     APIError error = ErrorUtils.parseError(response);
                     Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
@@ -190,45 +192,18 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
         if(mCredits != null) {
 
-            mAdapter = new CreditListAdapter(getContext(), mCredits, true, new CreditListAdapter.CreditListAdapterOnClickHandler() {
+            mAdapter = new CreditListAdapter(getContext(), mCredits, mEntType, new CreditListAdapter.CreditListAdapterOnClickHandler() {
                 @Override
                 public void onCreditClick(int id, CreditListAdapter.CreditListAdapterViewHolder vh) {
 
-                    Log.e(TAG,"onCreditClick()");
+
+                    Util.startMovieDetailActivity(getContext(),id,vh.thumbImageView);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
         }
     }
-    /****************************************************************************/
-    /*                              Inner Classes                               */
-    /****************************************************************************/
-//    private class FetchFilmographyTask extends AsyncTask<Integer, Void, ArrayList<CreditOld>> {
-//
-//
-//        @Override
-//        protected ArrayList<CreditOld> doInBackground(Integer... params) {
-//
-//            //Get ID of person
-//            int personId = params[0];
-//            //Get Entertainment type; MovieOld or TV
-//            int entType = params[1];
-//
-//            //return list of a person credits from a movie or tv show
-//            return MovieDbAPI.getPersonCreditList(personId, entType);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<CreditOld> creditList) {
-//
-//            if ((getActivity() != null) && (creditList != null)) {
-//
-//                mAdapter = new CreditListAdapterOld(getActivity(), creditList, true);
-//                mListView.setAdapter(mAdapter);
-//            }
-//        }
-//
-//    }
+
 }
 
 
