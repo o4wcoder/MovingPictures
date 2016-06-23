@@ -4,7 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.android.fourthwardcoder.movingpictures.fragments.PersonFilmographyFragment;
+import com.android.fourthwardcoder.movingpictures.fragments.ShowAllListFragment;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
 /**
  * Class FilmographyPagerAdapter
@@ -13,7 +14,7 @@ import com.android.fourthwardcoder.movingpictures.fragments.PersonFilmographyFra
  * <p/>
  * Adapter for the Filmography Pager
  */
-public class FilmographyPagerAdapter extends FragmentStatePagerAdapter {
+public class FilmographyPagerAdapter extends FragmentStatePagerAdapter implements Constants {
 
     /*************************************************************************/
     /*                             Constants                                 */
@@ -39,10 +40,10 @@ public class FilmographyPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                PersonFilmographyFragment tab1 = PersonFilmographyFragment.newInstance(position, mPersonId);
+                ShowAllListFragment tab1 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_MOVIE);
                 return tab1;
             case 1:
-                PersonFilmographyFragment tab2 = PersonFilmographyFragment.newInstance(position, mPersonId);
+                ShowAllListFragment tab2 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_TV);
                 return tab2;
             default:
                 return null;

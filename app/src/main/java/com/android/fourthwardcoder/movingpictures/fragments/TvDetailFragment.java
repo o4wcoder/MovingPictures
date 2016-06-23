@@ -265,7 +265,8 @@ public class TvDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-               // Util.showCastListActivity(getActivity(), mTvShow, ENT_TYPE_MOVIE);
+               Util.showListActivity(getActivity(), mTvShow.getId(),mTvShow.getName(),
+                       ENT_TYPE_PERSON,LIST_TYPE_TV_CAST);
             }
         });
       //  if (mListView != null)

@@ -28,6 +28,7 @@ public interface Constants {
     String EXTRA_PERSON_PHOTO_ID = "com.android.fourthwardcoder.popularmovies.extra_person_photo_id";
     //String EXTRA_TV_ID = "com.android.fourthwardcoder.popularmovies.extra_tv_id";
     String EXTRA_ENT_TYPE = "com.android.fourthwardcoder.popularmovies.extra_ent_type";
+    String EXTRA_LIST_TYPE = "com.android.fourthwardcoder.popularmovies.extra_list_type";
     String EXTRA_VIDEO_URI = "com.android.fourthwardcoder.popularmovies.extra_video_uri";
     String EXTRA_REVIEW_LIST = "com.android.fourthwardcoder.popularmovies.extra_review_list";
 
@@ -39,6 +40,17 @@ public interface Constants {
     int ENT_TYPE_MOVIE = 0;
     int ENT_TYPE_TV = 1;
     int ENT_TYPE_PERSON = 2;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({LIST_TYPE_MOVIE,LIST_TYPE_TV,LIST_TYPE_MOVIE_CAST,LIST_TYPE_MOVIE_CREW,
+    LIST_TYPE_TV_CAST,LIST_TYPE_TV_CREW})
+    @interface ShowAllListType {}
+    int LIST_TYPE_MOVIE = 0;
+    int LIST_TYPE_TV = 1;
+    int LIST_TYPE_MOVIE_CAST = 2;
+    int LIST_TYPE_MOVIE_CREW = 3;
+    int LIST_TYPE_TV_CAST = 4;
+    int LIST_TYPE_TV_CREW = 4;
 
     public static final int NUM_CAST_DISPLAY = 3;
 

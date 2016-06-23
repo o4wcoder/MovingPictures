@@ -275,7 +275,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-                Util.showCastListActivity(getActivity(), mMovie, ENT_TYPE_MOVIE);
+                Util.showListActivity(getActivity(), mMovie.getId(),
+                        mMovie.getTitle(), ENT_TYPE_PERSON,LIST_TYPE_MOVIE_CAST);
             }
         });
 

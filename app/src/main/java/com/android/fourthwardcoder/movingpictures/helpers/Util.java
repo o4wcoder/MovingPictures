@@ -28,6 +28,7 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Genre;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
+import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -160,17 +161,24 @@ public class Util implements Constants {
 
     }
 
-    public static void showCastListActivity(Context context, Movie movie, final int entType) {
+    public static void showListActivity(Context context, int id, String title, final int entType, final int listType) {
 
         Intent i = new Intent(context, CastListActivity.class);
-        i.putExtra(EXTRA_ID, movie.getId());
-        i.putExtra(EXTRA_TITLE, movie.getTitle());
-        if (entType == ENT_TYPE_MOVIE)
-            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
-        else
-            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);
+        i.putExtra(EXTRA_ID, id);
+        i.putExtra(EXTRA_TITLE, title);
+        i.putExtra(EXTRA_ENT_TYPE, entType);
+        i.putExtra(EXTRA_LIST_TYPE,listType);
         context.startActivity(i);
     }
+
+//    public static void showListActivity(Context context, TvShow tvShow, final int entType) {
+//
+//        Intent i = new Intent(context, CastListActivity.class);
+//        i.putExtra(EXTRA_ID, tvShow.getId());
+//        i.putExtra(EXTRA_TITLE, tvShow.getName());
+//            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);
+//        context.startActivity(i);
+//    }
 
     private static String getStringList(ArrayList<IdNamePair> list) {
 

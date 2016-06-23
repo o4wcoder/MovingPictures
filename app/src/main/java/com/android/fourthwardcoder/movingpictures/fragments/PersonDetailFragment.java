@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -330,12 +331,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
                         mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
                         mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
 
+                        startPostponedEnterTransition();
 
                     }
                 }
 
                 @Override
                 public void onError() {
+                       startPostponedEnterTransition();
 
                 }
             });
@@ -402,6 +405,21 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
     }
 
+    private void startPostponedEnterTransition() {
+        Log.e(TAG,"startPostponedEnterTransition() Inside");
+        mProfileImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
+                mProfileImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                //Must call this inside a PreDrawListener or the Enter Transition will not work
+                //Need to make sure imageview is ready before starting transition.
+                getActivity().supportStartPostponedEnterTransition();
+                return true;
+            }
+        });
+    }
     private void setKnownForLayout() {
 
         if (mKnownForMovieList != null) {

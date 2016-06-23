@@ -223,40 +223,6 @@ public class MovieDbAPI implements Constants {
     }
 
     /**
-     * Get list of cast from a MovieOld
-     * @param movieId MovieOld id
-     * @return        ArrayList of credits
-     */
-    public static ArrayList<CreditOld> getMovieCastList(int movieId) {
-
-        Uri creditUri = buildMovieCreditsUri(movieId);
-        String creditJsonStr = queryMovieDatabase(creditUri);
-
-        if(creditJsonStr == null)
-            return null;
-        else
-            return parseJsonCastList(creditJsonStr);
-
-    }
-
-    /**
-     * Get list of cast from a MovieOld
-     * @param movieId MovieOld id
-     * @return        ArrayList of credits
-     */
-    public static ArrayList<CreditOld> getTvCastList(int movieId) {
-
-        Uri creditUri = buildTvCreditsUri(movieId);
-        String creditJsonStr = queryMovieDatabase(creditUri);
-
-        if(creditJsonStr == null)
-            return null;
-        else
-            return parseJsonCastList(creditJsonStr);
-
-    }
-
-    /**
      * Get screen size of the device
      * @param context Context of calling activity
      * @return        screen size
@@ -318,91 +284,6 @@ public class MovieDbAPI implements Constants {
     /*                         Private Methods                               */
     /*************************************************************************/
 
-    /*
-    /* URI Builder Methods
-    /*/
-
-    /**
-     * Build Uri to MovieOld credits
-     * @param movieId Id of movie
-     * @return        Uri to MovieOld credits
-     */
-    public static Uri buildMovieCreditsUri(int movieId) {
-
-        //Get Uri for credits of movie
-        //Build URI String to query the databaes for the list of credits
-        Uri movieCreditUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                .appendPath(MovieDbAPI.PATH_MOVIE)
-                .appendPath(String.valueOf(movieId))
-                .appendPath(MovieDbAPI.TAG_CREDITS)
-                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                .build();
-
-        return movieCreditUri;
-    }
-
-    /**
-     * Build Uri to TV show credits
-     * @param tvId Id of TV show
-     * @return     Uri of TV show credits
-     */
-    private static Uri buildTvCreditsUri(int tvId) {
-
-        //Get Uri for credits of movie
-        //Build URI String to query the databaes for the list of credits
-        Uri movieCreditUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                .appendPath(MovieDbAPI.PATH_TV)
-                .appendPath(String.valueOf(tvId))
-                .appendPath(MovieDbAPI.TAG_CREDITS)
-                .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                .build();
-
-        return movieCreditUri;
-    }
-
-
-
-    /**
-     * Parse JSON String of the cast list
-     * @param creditJsonStr Json string of cast list
-     * @return              return cast list info as a list of CreditOld Objects
-     */
-    private static ArrayList<CreditOld> parseJsonCastList(String creditJsonStr) {
-
-        ArrayList<CreditOld> castList = null;
-
-        try {
-            // Log.e(TAG,"Credits: " + creditJsonStr);
-            JSONObject creditObj = new JSONObject(creditJsonStr);
-
-            //Pull out Cast Information
-            JSONArray castArray = creditObj.getJSONArray(MovieDbAPI.TAG_CAST);
-
-            castList = new ArrayList<CreditOld>(castArray.length());
-
-            //Pull out actors of the movie
-            for (int j = 0; j < castArray.length(); j++) {
-                int id = castArray.getJSONObject(j).getInt(MovieDbAPI.TAG_ID);
-
-                CreditOld credit = new CreditOld(id);
-
-                credit.setTitle(castArray.getJSONObject(j).getString(MovieDbAPI.TAG_NAME));
-                credit.setCharacter(castArray.getJSONObject(j).getString(MovieDbAPI.TAG_CHARACTER));
-                credit.setPosterPath(MovieDbAPI.BASE_MOVIE_IMAGE_URL
-                        + MovieDbAPI.IMAGE_185_SIZE + castArray.getJSONObject(j).getString(MovieDbAPI.TAG_PROFILE_PATH));
-
-                castList.add(credit);
-
-            }
-
-         } catch (JSONException e) {
-             Log.e(TAG, e.getMessage());
-             return null;
-
-         }
-
-        return castList;
-    }
 
     public static String getFullPosterPath(String imageFile) {
 

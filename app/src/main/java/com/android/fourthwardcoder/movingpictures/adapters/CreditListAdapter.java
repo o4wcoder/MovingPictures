@@ -35,15 +35,17 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
     private Context mContext;
     private Credits mCredits;
     private int mEntType;
+    private int mListType;
     private CreditListAdapter.CreditListAdapterOnClickHandler mClickHandler;
 
-    public CreditListAdapter(Context context, Credits credits, int entType,
+    public CreditListAdapter(Context context, Credits credits, int entType,int listType,
                              CreditListAdapterOnClickHandler clickHandler ) {
 
         mContext = context;
         Collections.sort(credits.getCast());
         mCredits = credits;
         mEntType = entType;
+        mListType = listType;
         mClickHandler = clickHandler;
     }
 
@@ -64,12 +66,24 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
          Log.e(TAG,"Movie Title = " + cast.getTitle());
          Log.e(TAG,"Pic path = " + cast.getPosterPath());
         Log.e(TAG,"Name = " + cast.getName());
+
+
+
          Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
          Log.e(TAG,"Ent type = " + mEntType);
-        if (mEntType == ENT_TYPE_MOVIE)
+        if (mEntType == ENT_TYPE_MOVIE) {
+            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
             holder.titleTextView.setText(cast.getTitle() + " " + Util.formatYearFromDate(cast.getReleaseDate()));
-        else
+        }
+        else if(mEntType == ENT_TYPE_TV) {
+            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
             holder.titleTextView.setText(cast.getName() + " " + Util.formatYearFromDate(cast.getFirstAirDate()));
+
+        }
+        else if(mEntType == ENT_TYPE_PERSON) {
+            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath())).into(holder.thumbImageView);
+            holder.titleTextView.setText(cast.getName());
+        }
 
         holder.characterTextView.setText(cast.getCharacter());
 

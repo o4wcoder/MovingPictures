@@ -1,55 +1,42 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
-import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
-import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapterOld;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
-
-import java.util.ArrayList;
+import com.android.fourthwardcoder.movingpictures.models.Movie;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 
 /**
- * Class PersonFilmographyFragment
+ * Class ShowAllListFragment
  * Author: Chris Hare
  * Created: 8/15/15
  * <p/>
  * Display's a listview of Movies/TV of a person
  */
-public class PersonFilmographyFragment extends Fragment implements Constants {
+public class ShowAllListFragment extends Fragment implements Constants {
 
     /********************************************************************/
     /*                         Constants                                */
     /********************************************************************/
-    private static final String TAG = PersonFilmographyFragment.class.getSimpleName();
+    private static final String TAG = ShowAllListFragment.class.getSimpleName();
 
     /********************************************************************/
     /*                         Local Data                               */
@@ -59,18 +46,21 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     CreditListAdapter mAdapter;
             RecyclerView mRecyclerView;
     int mEntType;
-    int mPersonId;
+    int mListType;
+    int mId;
     Credits mCredits;
 
-    public static PersonFilmographyFragment newInstance(int entType, int personId) {
+    public static ShowAllListFragment newInstance(int id,int entType, int listType) {
 
         //Store data in bungle for the fragment
         Bundle args = new Bundle();
+        args.putInt(EXTRA_ID, id);
         //Store entertainment type; movie or tv
         args.putInt(EXTRA_ENT_TYPE, entType);
-        args.putInt(EXTRA_ID, personId);
+        args.putInt(EXTRA_LIST_TYPE, listType);
+
         //Create Fragment and store arguments to it.
-        PersonFilmographyFragment fragment = new PersonFilmographyFragment();
+        ShowAllListFragment fragment = new ShowAllListFragment();
         fragment.setArguments(args);
 
         return fragment;
@@ -82,12 +72,16 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 
         //Check if we've rotated
         if (savedInstance != null) {
+            mId = savedInstance.getInt(EXTRA_ID);
             mEntType = savedInstance.getInt(EXTRA_ENT_TYPE);
-            mPersonId = savedInstance.getInt(EXTRA_ID);
+            mListType = savedInstance.getInt(EXTRA_LIST_TYPE);
+
         } else {
             Bundle bundle = getArguments();
+            mId = bundle.getInt(EXTRA_ID);
             mEntType = bundle.getInt(EXTRA_ENT_TYPE);
-            mPersonId = bundle.getInt(EXTRA_ID);
+            mListType = bundle.getInt(EXTRA_LIST_TYPE);
+
         }
     }
 
@@ -132,7 +126,7 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 //        if (mListView != null) {
 //
 //            if(Util.isNetworkAvailable(getActivity())) {
-//                new FetchFilmographyTask().execute(mPersonId, mEntType);
+//                new FetchFilmographyTask().execute(mId, mEntType);
 //            }
 //            else {
 //                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
@@ -141,7 +135,16 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
 //            }
 //        }
 
-        getPersonsFilmography();
+        if (mEntType == ENT_TYPE_PERSON) {
+            if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_MOVIE_CREW) {
+                getCredits(MovieDbAPI.PATH_MOVIE);
+            } else if(mListType == LIST_TYPE_TV_CAST || mListType == LIST_TYPE_TV_CREW ) {
+                getCredits(MovieDbAPI.PATH_TV);
+            }
+        } else if (mEntType == ENT_TYPE_MOVIE || mEntType == ENT_TYPE_TV) {
+            getPersonsFilmography();
+        }
+
         return view;
 
     }
@@ -150,8 +153,17 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(EXTRA_ENT_TYPE, mEntType);
-        savedInstanceState.putInt(EXTRA_ID, mPersonId);
+        savedInstanceState.putInt(EXTRA_LIST_TYPE,mListType);
+        savedInstanceState.putInt(EXTRA_ID, mId);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    private void getCredits(String entPath) {
+        Log.e(TAG,"getCredits() Now fill create network call");
+
+        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(entPath,mId);
+
+        setApiCall(call);
     }
 
     private void getPersonsFilmography() {
@@ -159,8 +171,12 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
         //See if we want to fetch Movie or TV credits
         Log.e(TAG,"getPersonsFilmography() with ent type = " + mEntType);
         String creditPath = (mEntType == ENT_TYPE_TV) ? MovieDbAPI.PATH_TV_CREDIT : MovieDbAPI.PATH_MOVIE_CREDIT;
-        Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mPersonId,creditPath);
+        Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mId,creditPath);
 
+        setApiCall(call);
+    }
+
+    private void setApiCall(Call<Credits> call) {
         call.enqueue(new retrofit2.Callback<Credits>() {
 
             @Override
@@ -187,12 +203,11 @@ public class PersonFilmographyFragment extends Fragment implements Constants {
             }
         });
     }
-
     private void setAdapter() {
 
         if(mCredits != null) {
 
-            mAdapter = new CreditListAdapter(getContext(), mCredits, mEntType, new CreditListAdapter.CreditListAdapterOnClickHandler() {
+            mAdapter = new CreditListAdapter(getContext(), mCredits, mEntType,mListType, new CreditListAdapter.CreditListAdapterOnClickHandler() {
                 @Override
                 public void onCreditClick(int id, CreditListAdapter.CreditListAdapterViewHolder vh) {
 

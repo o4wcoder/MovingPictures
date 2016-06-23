@@ -34,6 +34,9 @@ public class PersonDetailActivity extends AppCompatActivity {
         //Change status bar color
        // Util.setStatusBarColor(this);
 
+        //Start postpone element transition
+        supportPostponeEnterTransition();
+
         //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 

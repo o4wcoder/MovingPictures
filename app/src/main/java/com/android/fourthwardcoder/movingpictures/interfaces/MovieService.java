@@ -28,8 +28,8 @@ public interface MovieService {
     @GET("3/movie/{id}/videos")
     Call<VideoList> getVideoList(@Path("id") int id);
 
-    @GET("3/movie/{id}/credits")
-    Call<Credits> getCredits(@Path("id") int id);
+    @GET("3/{type}/{id}/credits")
+    Call<Credits> getCredits(@Path("type") String type, @Path("id") int id);
 
     @GET("3/person/{id}")
     Call<Person> getPerson(@Path("id") int id);
