@@ -399,6 +399,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             //we arleayd have them saved so just set the layout.
             if(mFetchData)
                 getPersonsTopMovies();
+
             else
                 setKnownForLayout();
         }

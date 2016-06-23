@@ -126,6 +126,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     //Crew
     TextView mDirectorListTextView;
     TextView mWriterListTextView;
+    TextView mCrewShowAllTextView;
 
     boolean mFetchData = false;
 
@@ -270,15 +271,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mRevenueTextView = (TextView) view.findViewById(R.id.revenueTextView);
         mReviewsTextView = (TextView) view.findViewById(R.id.reviewsTextView);
         mReviewsCardView = (CardView) view.findViewById(R.id.detail_reviews_layout);
-        mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
-        mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Util.showListActivity(getActivity(), mMovie.getId(),
-                        mMovie.getTitle(), ENT_TYPE_PERSON,LIST_TYPE_MOVIE_CAST);
-            }
-        });
 
 
 
@@ -315,10 +308,27 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mCast3ImageView = (ImageView) cast3View.findViewById(R.id.thumb_image_view);
         mCast3ImageView.setOnClickListener(castClickListener);
         mCast3TextView = (TextView) cast3View.findViewById(R.id.thumb_text_view);
+        mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
+        mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Util.showListActivity(getActivity(), mMovie.getId(),
+                        mMovie.getTitle(), ENT_TYPE_PERSON,LIST_TYPE_MOVIE_CAST);
+            }
+        });
+
 
         mDirectorListTextView = (TextView)view.findViewById(R.id.detail_crew_director_textview);
         mWriterListTextView = (TextView)view.findViewById(R.id.detail_crew_writer_textview);
-
+        mCrewShowAllTextView = (TextView)view.findViewById(R.id.detail_crew_show_all_textview);
+        mCrewShowAllTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Util.showListActivity(getActivity(),mMovie.getId(),
+                        mMovie.getTitle(),ENT_TYPE_PERSON,LIST_TYPE_MOVIE_CREW);
+            }
+        });
 
         //Now that we have all the views set up we can either go fetch the data or use the saved
         //instance

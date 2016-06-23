@@ -109,7 +109,6 @@ public class PersonPhotosFragment extends Fragment implements Constants {
 
     /****************************************************************************/
     /*                            Inner Classes                                 */
-
     /****************************************************************************/
     private class FetchPersonPhotosTask extends AsyncTask<Integer, Void, ArrayList<PersonPhoto>> {
 

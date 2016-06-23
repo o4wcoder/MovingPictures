@@ -15,6 +15,7 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Cast;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
+import com.android.fourthwardcoder.movingpictures.models.Crew;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.squareup.picasso.Picasso;
 
@@ -74,25 +75,40 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
         if (mEntType == ENT_TYPE_MOVIE) {
             Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
             holder.titleTextView.setText(cast.getTitle() + " " + Util.formatYearFromDate(cast.getReleaseDate()));
+            holder.characterTextView.setText(cast.getCharacter());
         }
         else if(mEntType == ENT_TYPE_TV) {
             Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
             holder.titleTextView.setText(cast.getName() + " " + Util.formatYearFromDate(cast.getFirstAirDate()));
+            holder.characterTextView.setText(cast.getCharacter());
 
         }
         else if(mEntType == ENT_TYPE_PERSON) {
-            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath())).into(holder.thumbImageView);
-            holder.titleTextView.setText(cast.getName());
+            if(mListType == LIST_TYPE_MOVIE_CAST) {
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath())).into(holder.thumbImageView);
+                holder.titleTextView.setText(cast.getName());
+                holder.characterTextView.setText(cast.getCharacter());
+            }
+            if(mListType == LIST_TYPE_MOVIE_CREW) {
+                Crew crew = mCredits.getCrew().get(position);
+
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath((String)crew.getProfilePath())).into(holder.thumbImageView);
+                holder.titleTextView.setText(crew.getName());
+                holder.characterTextView.setText(crew.getJob());
+            }
         }
 
-        holder.characterTextView.setText(cast.getCharacter());
+
 
     }
 
     @Override
     public int getItemCount() {
 
-        return mCredits.getCast().size();
+        if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST)
+            return mCredits.getCast().size();
+        else
+            return mCredits.getCrew().size();
     }
 
 
@@ -117,8 +133,13 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
 
         @Override
         public void onClick(View v) {
-            int id = mCredits.getCast().get(getAdapterPosition()).getId();
-            mClickHandler.onCreditClick(id,this);
+            int id = 0;
+            if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST)
+                id = mCredits.getCast().get(getAdapterPosition()).getId();
+            else
+                id = mCredits.getCrew().get(getAdapterPosition()).getId();
+
+            mClickHandler.onCreditClick(id, this);
         }
     }
 
