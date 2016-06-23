@@ -1,9 +1,12 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -11,9 +14,13 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +29,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,14 +40,22 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
+import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
+import com.android.fourthwardcoder.movingpictures.models.Cast;
+import com.android.fourthwardcoder.movingpictures.models.Network;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.TvShowOld;
+import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -83,6 +100,21 @@ public class TvDetailFragment extends Fragment implements Constants {
     RelativeLayout mDetailLayout;
     FloatingActionButton mFavoritesFAB;
 
+    //Videos
+    CardView mVideoLayout;
+    RecyclerView mVideosRecylerView;
+    VideoListAdapter mVideoListAdapter;
+
+    //Cast
+    CardView mCastCardView;
+    ImageView mCast1ImageView;
+    ImageView mCast2ImageView;
+    ImageView mCast3ImageView;
+    TextView mCast1TextView;
+    TextView mCast2TextView;
+    TextView mCast3TextView;
+    TextView mCastShowAllTextView;
+
     public TvDetailFragment() {
     }
 
@@ -99,10 +131,48 @@ public class TvDetailFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tv_detail, container, false);
 
+        //Set up back UP navigation arrow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG, "Back pressed");
+
+                    //Kill this activity
+                    getActivity().finish();
+                }
+            });
+        }
+
+        //Create animations when shared element transition is finished
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
+
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    Log.e(TAG, "Tansition start");
+                    mFavoritesFAB.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    Log.e(TAG, "Transition end. Scan in FAB");
+                    mFavoritesFAB.setVisibility(View.VISIBLE);
+                    if (getActivity() != null) {
+                        Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
+                                R.anim.scale_in_image);
+                        mFavoritesFAB.startAnimation(scaleAnimation);
+                    }
+                }
+            });
+        }
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-        mDetailCardView = (CardView) view.findViewById(R.id.movie_detail_cardview);
-        mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
+        mDetailCardView = (CardView) view.findViewById(R.id.color_detail_cardview);
+        mDetailLayout = (RelativeLayout) view.findViewById(R.id.color_detail_layout);
 
 
         //Set image views
@@ -111,39 +181,93 @@ public class TvDetailFragment extends Fragment implements Constants {
 
         mFavoritesFAB = (FloatingActionButton) view.findViewById(R.id.favorites_fab);
 
+        mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                if (mMovie != null) {
+//                    String toastStr = "";
+//                    if (v.getTag().equals(false)) {
+//                        Log.e(TAG, "Set to favorite");
+//                        mFavoritesFAB.setTag(true);
+//                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
+//                        toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
+//                                + getString(R.string.to_favorites);
+//                        addMovieToFavoritesDb();
+//
+//                    } else {
+//                        Log.e(TAG, "remove from favorite");
+//                        mFavoritesFAB.setTag(false);
+//                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
+//                        toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
+//                                + getString(R.string.from_favorites);
+//                        removeMovieFromDb();
+//                    }
+//                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+//                            toastStr, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }
+            }
+        });
+
+
+
+        //Set up Video Layout and RecyclerView for Horizontal Scrolling
+        mVideoLayout = (CardView) view.findViewById(R.id.video_list_layout);
+        mVideosRecylerView = (RecyclerView) view.findViewById(R.id.video_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mVideosRecylerView.setLayoutManager(layoutManager);
+
+        //Get textviews for TvShow Details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
         mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
         mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
        // mCreatedByTextView = (TextView) view.findViewById(R.id.createdByTextView);
         mCastTextView = (TextView) view.findViewById(R.id.castTextView);
         mRatingTextView = (TextView) view.findViewById(R.id.ratingTextView);
-        mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.overviewContentExpandableTextView);
+        mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.detail_overview_exp_text_view);
         mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
         mNetworksTextView = (TextView) view.findViewById(R.id.networksTextView);
         mReleaseDateTextView = (TextView) view.findViewById(R.id.releaseDateTextView);
 
-//        mListView = (ListView) view.findViewById(R.id.videosListView);
-//        mListView.setScrollContainer(false);
-//
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-////                VideoOld video = mVideoListAdapter.getItem(position);
-////
-////                Uri youtubeUri = Uri.parse(MovieDbAPI.BASE_YOUTUBE_URL).buildUpon()
-////                        .appendPath(MovieDbAPI.PATH_WATCH)
-////                        .appendQueryParameter(MovieDbAPI.PARAM_V, video.getKey())
-////                        .build();
-////
-////                Log.e(TAG, "Youtube path: " + youtubeUri.toString());
-////
-////                Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
-////
-////                startActivity(i);
-//            }
-//        });
+        View.OnClickListener castClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if (v.equals(mCast1ImageView)) {
+                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(0).getId(),ENT_TYPE_PERSON,mCast1ImageView);
+                } else if (v.equals(mCast2ImageView)) {
+                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(1).getId(),ENT_TYPE_PERSON,mCast2ImageView);
+                } else if (v.equals(mCast3ImageView)) {
+                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(2).getId(),ENT_TYPE_PERSON,mCast3ImageView);
+                }
+            }
+        };
+
+        //Get the 3 Top Billed Cast layouts and child views
+        mCastCardView = (CardView) view.findViewById(R.id.cast_list_layout);
+        View cast1View = view.findViewById(R.id.detail_cast_layout1);
+        mCast1ImageView = (ImageView) cast1View.findViewById(R.id.thumb_image_view);
+        mCast1ImageView.setOnClickListener(castClickListener);
+        mCast1TextView = (TextView) cast1View.findViewById(R.id.thumb_text_view);
+
+        View cast2View = view.findViewById(R.id.detail_cast_layout2);
+        mCast2ImageView = (ImageView) cast2View.findViewById(R.id.thumb_image_view);
+        mCast2ImageView.setOnClickListener(castClickListener);
+        mCast2TextView = (TextView) cast2View.findViewById(R.id.thumb_text_view);
+
+        View cast3View = view.findViewById(R.id.detail_cast_layout3);
+        mCast3ImageView = (ImageView) cast3View.findViewById(R.id.thumb_image_view);
+        mCast3ImageView.setOnClickListener(castClickListener);
+        mCast3TextView = (TextView) cast3View.findViewById(R.id.thumb_text_view);
+        mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
+        mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               // Util.showCastListActivity(getActivity(), mTvShow, ENT_TYPE_MOVIE);
+            }
+        });
       //  if (mListView != null)
             getTvShow();
 
@@ -270,12 +394,63 @@ public class TvDetailFragment extends Fragment implements Constants {
                     Util.reverseDateString(mTvShow.getFirstAirDate()));
             mReleaseDateTextView.setText(releaseDate);
 
-//            Spanned networks = Html.fromHtml("<b>" + getString(R.string.networks) + "</b>" + " " +
-//                    mTvShow.getNetworks());
-//            mNetworksTextView.setText(networks);
+            Spanned networks = Html.fromHtml("<b>" + getString(R.string.networks) + "</b>" + " " +
+                    getNetworkList(mTvShow.getNetworks()));
+            mNetworksTextView.setText(networks);
 
-            //mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideos());
-            // mListView.setAdapter(mVideoListAdapter);
+
+                        /*
+             * Set up Videos
+             */
+            if (mTvShow.getVideos().getVideos().size() > 0) {
+                mVideoListAdapter = new VideoListAdapter(getActivity(), (ArrayList) mTvShow.getVideos().getVideos(), new VideoListAdapter.VideoListAdapterOnClickHandler() {
+                    @Override
+                    public void onVideoClick(Video video, VideoListAdapter.VideoListAdapterViewHolder vh) {
+
+                        //Get youtube url from video and send it to view intent
+                        Uri youtubeUri = MovieDbAPI.buildYoutubeUri(video);
+                        Intent i = new Intent(Intent.ACTION_VIEW, youtubeUri);
+
+                        startActivity(i);
+                    }
+                });
+                mVideosRecylerView.setAdapter(mVideoListAdapter);
+
+            } else {
+                mVideoLayout.setVisibility(View.GONE);
+            }
+
+                        /*
+             * Set Up Cast Info
+             */
+            ArrayList<Cast> castList = (ArrayList) mTvShow.getCredits().getCast();
+
+            if (castList != null) {
+                Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
+                if (castList.size() >= 3) {
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(2).getProfilePath(), mCast3ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                    mCast2TextView.setText(castList.get(1).getName());
+                    mCast3TextView.setText(castList.get(2).getName());
+                } else if (castList.size() == 2) {
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                    mCast2TextView.setText(castList.get(1).getName());
+                } else if (castList.size() == 3) {
+                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    mCast1TextView.setText(castList.get(0).getName());
+                }
+                else {
+                    //Cast size is 0. Don't show cast card.
+                    mCastCardView.setVisibility(View.GONE);
+                }
+            } else {
+                //Did not return any cast. Don't show cast card.
+                mCastCardView.setVisibility(View.GONE);
+            }
         }
     }
     private void getTvShow() {
@@ -299,6 +474,21 @@ public class TvDetailFragment extends Fragment implements Constants {
         });
     }
 
+    private String getNetworkList(List<Network> list) {
+
+        String strList = "";
+
+        //Set up display string for networks.
+        for(int i = 0; i < list.size(); i++) {
+            strList += list.get(i).getName() + ", ";
+        }
+
+        if(list.size() > 0)
+            strList = strList.substring(0,strList.length() - 2);
+
+        return strList;
+
+    }
     private void setPaletteColors() {
 
         Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();

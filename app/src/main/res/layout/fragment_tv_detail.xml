@@ -24,7 +24,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/movie_detail_cardview"
+            android:id="@+id/color_detail_cardview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
@@ -32,7 +32,7 @@
 
 
             <RelativeLayout
-                android:id="@+id/layout_movie_detail"
+                android:id="@+id/color_detail_layout"
                 style="@style/detailLayoutSection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -95,145 +95,39 @@
 
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-        <!--
-        <LinearLayout
-            style="@style/detailLayoutSection"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/posterImageView"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:transitionName="@string/trans_poster" />
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp">
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/titleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp"
-                    android:textAlignment="center"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/releaseYearTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:id="@+id/runtimeTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp" />
-
-                <TextView
-                    android:id="@+id/createdByTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp" />
-
-                <TextView
-                    android:id="@+id/castTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp" />
-
-            </LinearLayout>
-        </LinearLayout>
-        -->
-        <!--
-        <LinearLayout
-            style="@style/detailLayoutSection"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/ratingTextView"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="30dp"
-                android:textStyle="bold" />
-        </LinearLayout>
--->
-        <LinearLayout
-            style="@style/detailLayoutSection"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
-
-
-            <com.ms.square.android.expandabletextview.ExpandableTextView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/overviewContentExpandableTextView"
+                style="@style/detailLayoutSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                expandableTextView:animDuration="300"
-                expandableTextView:maxCollapsedLines="4">
+                android:orientation="vertical">
+
+                <include layout="@layout/expandable_text_view"
+                    android:id="@+id/detail_overview_exp_text_view"/>
 
                 <TextView
-                    android:id="@id/expandable_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp" />
+                    android:id="@+id/genreTextView"
+                    style="@style/detailLightBackgroundTextView" />
 
-                <ImageButton
-                    android:id="@id/expand_collapse"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_margin="16dp"
-                    android:background="@android:color/transparent" />
-            </com.ms.square.android.expandabletextview.ExpandableTextView>
+                <TextView
+                    android:id="@+id/releaseDateTextView"
+                    style="@style/detailLightBackgroundTextView" />
 
-            <TextView
-                android:id="@+id/genreTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp" />
+                <TextView
+                    android:id="@+id/networksTextView"
+                    style="@style/detailLightBackgroundTextView" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/releaseDateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp" />
+        <include layout="@layout/video_list_layout"></include>
 
-            <TextView
-                android:id="@+id/networksTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="2dp" />
-        </LinearLayout>
+        <include layout="@layout/cast_list_layout"></include>
 
-        <LinearLayout
-            style="@style/detailLayoutSection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <ListView
-                android:id="@+id/videosListView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
-        </LinearLayout>
     </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

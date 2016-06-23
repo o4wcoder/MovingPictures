@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -117,6 +118,19 @@ public class PersonDetailFragment extends Fragment implements Constants {
         View view = inflater.inflate(R.layout.fragment_person_detail, container, false);
 
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG, "Back pressed");
+
+                    //Kill this activity
+                    getActivity().finish();
+                }
+            });
+        }
 
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapsing_toolbar);

@@ -82,7 +82,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     int mMovieId;
     //ListView mListView;
     //VideosListAdapter mVideoListAdapter;
-    VideoListAdapter mVideoListAdapter;
+
 
     ImageView mBackdropImageView;
     ImageView mPosterImageView;
@@ -98,26 +98,32 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mRevenueTextView;
     TextView mReviewsTextView;
 
-    TextView mCastShowAllTextView;
+
     // CheckBox mFavoritesToggleButton;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     FloatingActionButton mFavoritesFAB;
     RelativeLayout mDetailLayout;
 
-    CardView mVideoLayout;
+
     CardView mDetailCardView;
-    CardView mCastCardView;
-    RecyclerView mVideosRecylerView;
     CardView mReviewsCardView;
 
-    //Cast Image and Text
+    //Videos
+    CardView mVideoLayout;
+    RecyclerView mVideosRecylerView;
+    VideoListAdapter mVideoListAdapter;
+
+    //Cast
+    CardView mCastCardView;
     ImageView mCast1ImageView;
     ImageView mCast2ImageView;
     ImageView mCast3ImageView;
     TextView mCast1TextView;
     TextView mCast2TextView;
     TextView mCast3TextView;
+    TextView mCastShowAllTextView;
 
+    //Crew
     TextView mDirectorListTextView;
     TextView mWriterListTextView;
 
@@ -146,7 +152,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             Bundle arguments = getArguments();
             if (arguments != null) {
 
-                //Got MovieOld ID, will need to fetch data
+                //Got MovieO ID, will need to fetch data
                 mMovieId = arguments.getInt(EXTRA_ID);
                 Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
 
@@ -162,10 +168,49 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
+        //Set up back UP navigation arrow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG, "Back pressed");
+
+                    //Kill this activity
+                    getActivity().finish();
+                }
+            });
+        }
+
+        //Create animations when shared element transition is finished
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
+
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    Log.e(TAG, "Tansition start");
+                    mFavoritesFAB.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    Log.e(TAG, "Transition end. Scan in FAB");
+                    mFavoritesFAB.setVisibility(View.VISIBLE);
+                    if (getActivity() != null) {
+                        Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
+                                R.anim.scale_in_image);
+                        mFavoritesFAB.startAnimation(scaleAnimation);
+                    }
+                }
+            });
+        }
+
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-        mDetailCardView = (CardView) view.findViewById(R.id.movie_detail_cardview);
-        mDetailLayout = (RelativeLayout) view.findViewById(R.id.layout_movie_detail);
+        mDetailCardView = (CardView) view.findViewById(R.id.color_detail_cardview);
+        mDetailLayout = (RelativeLayout) view.findViewById(R.id.color_detail_layout);
 
         //Set image views
         mBackdropImageView = (ImageView) view.findViewById(R.id.backdropImageView);
@@ -203,50 +248,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            getActivity().getWindow().getSharedElementEnterTransition().addListener(new ImageTransitionListener() {
-
-                @Override
-                public void onTransitionStart(Transition transition) {
-                    Log.e(TAG, "Tansition start");
-                    mFavoritesFAB.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    Log.e(TAG, "Transition end. Scan in FAB");
-                    mFavoritesFAB.setVisibility(View.VISIBLE);
-                    if (getActivity() != null) {
-                        Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
-                                R.anim.scale_in_image);
-                        mFavoritesFAB.startAnimation(scaleAnimation);
-                    }
-                }
-            });
-        }
-
-
-        //Set up VideoOld RecyclerView for Horizontal Scrolling
-        mVideosRecylerView = (RecyclerView) view.findViewById(R.id.movie_detail_video_recycler_view);
+        //Set up Video layout and RecyclerView for Horizontal Scrolling
+        mVideoLayout = (CardView) view.findViewById(R.id.video_list_layout);
+        mVideosRecylerView = (RecyclerView) view.findViewById(R.id.video_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mVideosRecylerView.setLayoutManager(layoutManager);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e(TAG, "Back pressed");
 
-                    //Kill this activity
-                    getActivity().finish();
-                }
-            });
-        }
 
-        //Set textviews with MovieOld details
+        //Get textviews for Movie Details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
         mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
         mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
@@ -269,7 +280,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         });
 
 
-        mVideoLayout = (CardView) view.findViewById(R.id.videosLayout);
+
 
 
 
@@ -288,7 +299,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
         };
 
         //Get the 3 Top Billed Cast layouts and child views
-        mCastCardView = (CardView) view.findViewById(R.id.castLayout);
+        mCastCardView = (CardView) view.findViewById(R.id.cast_list_layout);
         View cast1View = view.findViewById(R.id.detail_cast_layout1);
         mCast1ImageView = (ImageView) cast1View.findViewById(R.id.thumb_image_view);
         mCast1ImageView.setOnClickListener(castClickListener);
