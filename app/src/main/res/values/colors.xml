@@ -25,4 +25,7 @@
     <color name="grey">#e6e6e6</color>
     <color name="black">#000000</color>
     <color name="yellow">#FFEB3B</color>
+
+    <!-- the activated state color -->
+    <color name="activated">#E0E0E0</color>
 </resources>

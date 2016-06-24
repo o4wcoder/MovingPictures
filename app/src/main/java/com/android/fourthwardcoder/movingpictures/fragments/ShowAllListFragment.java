@@ -18,7 +18,6 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -88,7 +87,7 @@ public class ShowAllListFragment extends Fragment implements Constants {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_person_filmograhy, container, false);
+        View view = inflater.inflate(R.layout.fragment_show_all_list, container, false);
 
         //mListView = (ListView) view.findViewById(R.id.listView);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.person_credit_list_recycler_view);
