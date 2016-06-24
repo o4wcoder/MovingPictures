@@ -153,14 +153,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
         mBiographyContentTextView = (ExpandableTextView) view.findViewById(R.id.person_biography_exp_text_view);
 
         mWebpageTextView = (TextView) view.findViewById(R.id.webPageTextView);
-        //PersonOld Filmography
+        //Person Filmography
         mFilmographyTextView = (TextView) view.findViewById(R.id.filmographyTextView);
         mFilmographyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent i = new Intent(getActivity(), PersonFilmographyTabActivity.class);
-                i.putExtra(MovieDetailFragment.EXTRA_ID, mPersonId);
+                i.putExtra(EXTRA_ID, mPersonId);
                 startActivity(i)
                 ;
             }
@@ -198,12 +198,14 @@ public class PersonDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-                if (v.equals(mKnownFor1ImageView)) {
-                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(0).getId(),ENT_TYPE_MOVIE,mKnownFor1ImageView);
-                } else if (v.equals(mKnownFor2ImageView)) {
-                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(1).getId(),ENT_TYPE_MOVIE,mKnownFor2ImageView);
-                } else if (v.equals(mKnownFor3ImageView)) {
-                   Util.startDetailActivity(getActivity(),mKnownForMovieList.get(2).getId(),ENT_TYPE_MOVIE,mKnownFor3ImageView);
+                if(mKnownForMovieList != null) {
+                    if (v.equals(mKnownFor1ImageView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(0).getId(), ENT_TYPE_MOVIE, mKnownFor1ImageView);
+                    } else if (v.equals(mKnownFor2ImageView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(1).getId(), ENT_TYPE_MOVIE, mKnownFor2ImageView);
+                    } else if (v.equals(mKnownFor3ImageView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(2).getId(), ENT_TYPE_MOVIE, mKnownFor3ImageView);
+                    }
                 }
             }
         };
@@ -348,13 +350,15 @@ public class PersonDetailFragment extends Fragment implements Constants {
             mNameTextView.setText(mPerson.getName());
 
             //Format birthday into form Jan 1, 2016
-            if(!(mPerson.getBirthday().equals(""))) {
-                String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
+            if(mPerson.getBirthday() != null) {
+                if (!(mPerson.getBirthday().equals(""))) {
+                    String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
 
-                Spanned bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
-                        strBirthDay);
+                    Spanned bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
+                            strBirthDay);
 
-                mBornDateTextView.setText(bornDate);
+                    mBornDateTextView.setText(bornDate);
+                }
             }
 
             mBornPlaceTextView.setText(mPerson.getPlaceOfBirth());

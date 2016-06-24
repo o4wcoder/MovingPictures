@@ -50,7 +50,7 @@ public interface Constants {
     int LIST_TYPE_MOVIE_CAST = 2;
     int LIST_TYPE_MOVIE_CREW = 3;
     int LIST_TYPE_TV_CAST = 4;
-    int LIST_TYPE_TV_CREW = 4;
+    int LIST_TYPE_TV_CREW = 5;
 
     public static final int NUM_CAST_DISPLAY = 3;
 

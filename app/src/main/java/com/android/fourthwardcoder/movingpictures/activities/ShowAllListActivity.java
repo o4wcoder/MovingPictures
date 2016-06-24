@@ -10,13 +10,13 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
 /**
- * Class CastListActivity
+ * Class ShowAllListActivity
  * Author: Chris Hare
  * Created: 9/25/15
  *
  * Activity to hold the Cast List of a MovieOld or TV show
  */
-public class CastListActivity extends ActionBarActivity implements Constants{
+public class ShowAllListActivity extends ActionBarActivity implements Constants{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +24,15 @@ public class CastListActivity extends ActionBarActivity implements Constants{
         setContentView(R.layout.activity_movie_cast);
 
         //Set Toolbar
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         int id = getIntent().getIntExtra(EXTRA_ID,0);
         int entType = getIntent().getIntExtra(EXTRA_ENT_TYPE,0);
         int listType = getIntent().getIntExtra(EXTRA_LIST_TYPE,0);
         String title = getIntent().getStringExtra(EXTRA_TITLE);
-        ShowAllListFragment fragment = ShowAllListFragment.newInstance(id,entType,listType);
+        com.android.fourthwardcoder.movingpictures.fragments.ShowAllListFragment fragment = com.android.fourthwardcoder.movingpictures.fragments.ShowAllListFragment.newInstance(id,entType,listType);
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.detail_container, fragment)

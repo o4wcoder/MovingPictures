@@ -25,7 +25,7 @@ import retrofit2.Response;
 
 
 /**
- * Class ShowAllListFragment
+ * Class ShowAllListActivity
  * Author: Chris Hare
  * Created: 8/15/15
  * <p/>

@@ -20,15 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.activities.CastListActivity;
+import com.android.fourthwardcoder.movingpictures.activities.ShowAllListActivity;
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Genre;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
-import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -163,7 +161,7 @@ public class Util implements Constants {
 
     public static void showListActivity(Context context, int id, String title, final int entType, final int listType) {
 
-        Intent i = new Intent(context, CastListActivity.class);
+        Intent i = new Intent(context, ShowAllListActivity.class);
         i.putExtra(EXTRA_ID, id);
         i.putExtra(EXTRA_TITLE, title);
         i.putExtra(EXTRA_ENT_TYPE, entType);
@@ -173,7 +171,7 @@ public class Util implements Constants {
 
 //    public static void showListActivity(Context context, TvShow tvShow, final int entType) {
 //
-//        Intent i = new Intent(context, CastListActivity.class);
+//        Intent i = new Intent(context, ShowAllListActivity.class);
 //        i.putExtra(EXTRA_ID, tvShow.getId());
 //        i.putExtra(EXTRA_TITLE, tvShow.getName());
 //            i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_TV);

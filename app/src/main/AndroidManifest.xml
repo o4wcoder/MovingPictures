@@ -79,7 +79,7 @@
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.CastListActivity"
+            android:name=".activities.ShowAllListActivity"
             android:label="@string/title_activity_movie_cast"
             android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" >
             <meta-data

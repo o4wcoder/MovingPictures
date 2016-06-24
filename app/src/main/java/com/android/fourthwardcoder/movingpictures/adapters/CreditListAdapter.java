@@ -84,14 +84,15 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
 
         }
         else if(mEntType == ENT_TYPE_PERSON) {
-            if(mListType == LIST_TYPE_MOVIE_CAST) {
+            if(mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST) {
+                Log.e(TAG,"------------- Load CAST -------------");
                 Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath())).into(holder.thumbImageView);
                 holder.titleTextView.setText(cast.getName());
                 holder.characterTextView.setText(cast.getCharacter());
             }
-            if(mListType == LIST_TYPE_MOVIE_CREW) {
+            else if(mListType == LIST_TYPE_MOVIE_CREW || mListType == LIST_TYPE_TV_CREW) {
+                Log.e(TAG,"------------- Load CREW -------------");
                 Crew crew = mCredits.getCrew().get(position);
-
                 Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath((String)crew.getProfilePath())).into(holder.thumbImageView);
                 holder.titleTextView.setText(crew.getName());
                 holder.characterTextView.setText(crew.getJob());
@@ -105,10 +106,10 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
     @Override
     public int getItemCount() {
 
-        if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST)
-            return mCredits.getCast().size();
-        else
+        if (mListType == LIST_TYPE_MOVIE_CREW || mListType == LIST_TYPE_TV_CREW)
             return mCredits.getCrew().size();
+        else
+            return mCredits.getCast().size();
     }
 
 
@@ -134,10 +135,10 @@ public class CreditListAdapter extends RecyclerView.Adapter<CreditListAdapter.Cr
         @Override
         public void onClick(View v) {
             int id = 0;
-            if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST)
-                id = mCredits.getCast().get(getAdapterPosition()).getId();
-            else
+            if (mListType == LIST_TYPE_MOVIE_CREW || mListType == LIST_TYPE_TV_CREW)
                 id = mCredits.getCrew().get(getAdapterPosition()).getId();
+            else
+                id = mCredits.getCast().get(getAdapterPosition()).getId();
 
             mClickHandler.onCreditClick(id, this);
         }
