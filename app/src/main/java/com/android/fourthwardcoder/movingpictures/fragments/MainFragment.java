@@ -77,6 +77,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     //ID for MovieOld Favorites Loader
     private static final int MOVIE_FAVORITES_LOADER = 0;
 
+    //Sort order argument
+    private static final String ARG_SORT = "arg_sort";
 
     /**************************************************/
     /*                Local Data                      */
@@ -90,6 +92,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     //ProgressDialog to be displayed while the data is being fetched and parsed
     ProgressDialog mProgressDialog;
 
+    public static MainFragment newInstance(int sortOrder) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_SORT, sortOrder);
+        MainFragment fragment = new MainFragment();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
     /**************************************************/
     /*               Override Methods                 */
     /**************************************************/
@@ -99,11 +109,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreate(savedInstanceState);
 
         Log.e(TAG, "onCreate");
-        //Set Option Menu
-        setHasOptionsMenu(true);
+//        //Set Option Menu
+//        setHasOptionsMenu(true);
 
         if(savedInstanceState != null) {
             mMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
+        } else {
+            Bundle bundle = getArguments();
+            mSortOrder = bundle.getInt(ARG_SORT);
         }
         //Get instanace of Shared Preferences
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity()
@@ -112,7 +125,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         //Get stored sort preference from shared resources. If non exists set it to sort by
         //popularity.
-        mSortOrder = sharedPrefs.getInt(PREF_SORT, DEFAULT_SORT);
+       // mSortOrder = sharedPrefs.getInt(PREF_SORT, DEFAULT_SORT);
     }
 
     @Override
@@ -179,73 +192,73 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if(mMovieList != null) {
             if (mMovieList.size() > 0) {
                 Log.e(TAG, "Calling on loadfinished");
-                ((Callback) getActivity()).onLoadFinished(mMovieList.get(0));
+                ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
             }
         }
     }
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        //super.onCreateOptionsMenu(menu, inflater);
+//
+//        //Pass the resource ID of the menu and populate the Menu
+//        //instance with the items defined in the xml file
+//        inflater.inflate(R.menu.menu_sort, menu);
+//
+//    }
 
-        //Pass the resource ID of the menu and populate the Menu
-        //instance with the items defined in the xml file
-        inflater.inflate(R.menu.menu_sort, menu);
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.menu_item_sort:
+//                //Get support Fragment Manager
+//                android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+//                SortDialogFragment dialog = SortDialogFragment.newInstance(mSortOrder);
+//                //Make MainFragment the target fragment of the SortDialogFragment instance
+//                dialog.setTargetFragment(MainFragment.this, REQUEST_SORT);
+//                dialog.show(fm, DIALOG_SORT);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_item_sort:
-                //Get support Fragment Manager
-                android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-                SortDialogFragment dialog = SortDialogFragment.newInstance(mSortOrder);
-                //Make MainFragment the target fragment of the SortDialogFragment instance
-                dialog.setTargetFragment(MainFragment.this, REQUEST_SORT);
-                dialog.show(fm, DIALOG_SORT);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    //Get results from Dialog boxes and other Activities
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-        if (resultCode != Activity.RESULT_OK)
-            return;
-
-        if (requestCode == REQUEST_SORT) {
-            //Get change in sort from dialog and store it in Shared Preferences
-            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT, DEFAULT_SORT);
-            prefsEditor.putInt(PREF_SORT, mSortOrder);
-            prefsEditor.commit();
-
-            Resources res = getResources();
-            String[] sortList = res.getStringArray(R.array.sort_list);
-            String sortOrder = sortList[mSortOrder];
-            getActivity().setTitle(sortOrder);
-            //Fetch new set of movies based on sort order
-            if (mRecyclerView != null)
-                if (mSortOrder == 4) {
-                    //Get Favorites
-                    getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
-                } else {
-                    if(Util.isNetworkAvailable(getActivity())) {
-                        //new FetchPhotosTask().execute(mSortOrder);
-                        getMovieList(mSortOrder);
-                    }
-                    else {
-                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                        connectToast.show();
-                    }
-                }
-        }
-    }
+//    //Get results from Dialog boxes and other Activities
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//
+//        if (resultCode != Activity.RESULT_OK)
+//            return;
+//
+//        if (requestCode == REQUEST_SORT) {
+//            //Get change in sort from dialog and store it in Shared Preferences
+//            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT, DEFAULT_SORT);
+//            prefsEditor.putInt(PREF_SORT, mSortOrder);
+//            prefsEditor.commit();
+//
+//            Resources res = getResources();
+//            String[] sortList = res.getStringArray(R.array.sort_list);
+//            String sortOrder = sortList[mSortOrder];
+//            getActivity().setTitle(sortOrder);
+//            //Fetch new set of movies based on sort order
+//            if (mRecyclerView != null)
+//                if (mSortOrder == 4) {
+//                    //Get Favorites
+//                    getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
+//                } else {
+//                    if(Util.isNetworkAvailable(getActivity())) {
+//                        //new FetchPhotosTask().execute(mSortOrder);
+//                        getMovieList(mSortOrder);
+//                    }
+//                    else {
+//                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+//                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+//                        connectToast.show();
+//                    }
+//                }
+//        }
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -363,7 +376,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 //If we are in two pane mode, set the first movie in the details fragment
                 if (mMovieList.size() > 0) {
                     Log.e(TAG, "Calling on loadfinished");
-                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0));
+                    ((Callback) getActivity()).onLoadFinished(mMovieList.get(0).getId());
                 }
             } else {
                 //If we get here, then the movieList was empty and something went wrong.
@@ -408,6 +421,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
          */
         void onItemSelected(int movieId, ImageView imageView);
 
-        void onLoadFinished(MovieBasic movie);
+        void onLoadFinished(int id);
     }
 }

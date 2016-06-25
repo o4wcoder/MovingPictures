@@ -54,6 +54,14 @@ public interface Constants {
 
     public static final int NUM_CAST_DISPLAY = 3;
 
+    //Sort order Annotations
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SORT_POPULAR,SORT_NOW_PLAYING,SORT_UPCOMING})
+    @interface SortType {}
+    int SORT_POPULAR = 0;
+    int SORT_NOW_PLAYING = 1;
+    int SORT_UPCOMING = 2;
+
 
 
 

@@ -489,55 +489,55 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         Log.e(TAG,"setLayout() Inside");
         if (getActivity() != null && mMovie != null && mVideosRecylerView != null) {
-          //  if (mMovie != null) {
-                 //  Log.e(TAG,"movie ")
-                //Got the data, can create share menu if there are videos
-                //   setHasOptionsMenu(true);
-                //Set title of MovieOld on Action Bar
-              //  getActivity().setTitle(mMovie.getTitle());
-                Log.e(TAG,"setLayout() call Picasso to pull backgdrop");
-                Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                         Log.e(TAG,"Loaded backdrop");
-                        //Set up color scheme
-                        setPaletteColors();
-                        //Start Shared Image transition now that we have the backdrop
-                        startPostponedEnterTransition();
+            //  if (mMovie != null) {
+            //  Log.e(TAG,"movie ")
+            //Got the data, can create share menu if there are videos
+            //   setHasOptionsMenu(true);
+            //Set title of MovieOld on Action Bar
+            //  getActivity().setTitle(mMovie.getTitle());
+            Log.e(TAG, "setLayout() call Picasso to pull backgdrop");
+            Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Log.e(TAG, "Loaded backdrop");
+                    //Set up color scheme
+                    setPaletteColors();
+                    //Start Shared Image transition now that we have the backdrop
+                    startPostponedEnterTransition();
 
-                    }
+                }
 
-                    @Override
-                    public void onError() {
-                        //Just get the default image since there was not backdrop image available
-                        Log.e(TAG,"Picasso onError()!!!");
-                        Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                //set up color scheme
-                                setPaletteColors();
-                                //Still want to start shared transition even it the backdrop image was not loaded.
-                                startPostponedEnterTransition();
-                            }
+                @Override
+                public void onError() {
+                    //Just get the default image since there was not backdrop image available
+                    Log.e(TAG, "Picasso onError()!!!");
+                    Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //set up color scheme
+                            setPaletteColors();
+                            //Still want to start shared transition even it the backdrop image was not loaded.
+                            startPostponedEnterTransition();
+                        }
 
-                            @Override
-                            public void onError() {
-                                //If we failed here, it's bad. Just do the shared transition as to not freeze up the UI
-                                startPostponedEnterTransition();
-                            }
-                        });
+                        @Override
+                        public void onError() {
+                            //If we failed here, it's bad. Just do the shared transition as to not freeze up the UI
+                            startPostponedEnterTransition();
+                        }
+                    });
 
-                    }
-                });
+                }
+            });
 
-                Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mMovie.getPosterPath())).into(mPosterImageView);
+            Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mMovie.getPosterPath())).into(mPosterImageView);
 
-                mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
-                mTitleTextView.setText(mMovie.getTitle());
-                mReleaseYearTextView.setText(mMovie.getReleaseYear());
+            mFavoritesFAB.setContentDescription(getString(R.string.acc_movie_details_favorite_button));
+            mTitleTextView.setText(mMovie.getTitle());
+            mReleaseYearTextView.setText(mMovie.getReleaseYear());
 //
-                mRuntimeTextView.setText(mMovie.getRuntime() + " min");
-                mRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
+            mRuntimeTextView.setText(mMovie.getRuntime() + " min");
+            mRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()) + "/10");
             //    mRatingTextView.setContentDescription(getString(R.string.acc_movie_rating, mMovie.getVoteAverage(), "10"));
 //
 //                Spanned director = Html.fromHtml("<b>" + getString(R.string.director) + "</b>" + " " +
@@ -546,27 +546,26 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //
 //                //Util.setCastLinks(getActivity(), mMovie, mCastTextView, ENT_TYPE_MOVIE);
 //
-                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-                        Util.reverseDateString(mMovie.getReleaseDate()));
-                mReleaseDateTextView.setText(releaseDate);
+            Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
+                    Util.reverseDateString(mMovie.getReleaseDate()));
+            mReleaseDateTextView.setText(releaseDate);
 
-                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
-                        mMovie.getOverview());
-                mOverviewTextView.setText(synopsis);
+            Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
+                    mMovie.getOverview());
+            mOverviewTextView.setText(synopsis);
 
-               Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
-                        mMovie.getGenreListString());
+            Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
+                    mMovie.getGenreListString());
 
-                mGenreTextView.setText(genre);
+            mGenreTextView.setText(genre);
 
-                if(mMovie.getRevenue() >0) {
-                    Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
-                            mMovie.getRevenue());
-                    mRevenueTextView.setText(revenue);
-                }
-                else {
-                    mRevenueTextView.setVisibility(View.GONE);
-                }
+            if (mMovie.getRevenue() > 0) {
+                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
+                        mMovie.getRevenue());
+                mRevenueTextView.setText(revenue);
+            } else {
+                mRevenueTextView.setVisibility(View.GONE);
+            }
 
             /*
              * Set up Videos
@@ -595,24 +594,23 @@ public class MovieDetailFragment extends Fragment implements Constants {
             ArrayList<Cast> castList = (ArrayList) mMovie.getCredits().getCast();
 
             if (castList != null) {
-                Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
+                Log.e(TAG, "setCast List. Cast list not null with size = " + castList.size());
                 if (castList.size() >= 3) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(2).getProfilePath(), mCast3ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                     mCast3TextView.setText(castList.get(2).getName());
                 } else if (castList.size() == 2) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                 } else if (castList.size() == 3) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
-                }
-                else {
+                } else {
                     //Cast size is 0. Don't show cast card.
                     mCastCardView.setVisibility(View.GONE);
                 }
@@ -622,22 +620,21 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
 
 
-            Util.setCrewLinks(getContext(),mMovie.getCredits().getDirectorList(),mDirectorListTextView,getString(R.string.director));
-            Util.setCrewLinks(getContext(),mMovie.getCredits().getWriterList(),mWriterListTextView,getString(R.string.writers));
+            Util.setCrewLinks(getContext(), mMovie.getCredits().getDirectorList(), mDirectorListTextView, getString(R.string.director));
+            Util.setCrewLinks(getContext(), mMovie.getCredits().getWriterList(), mWriterListTextView, getString(R.string.writers));
 
-            if(mMovie.getReviews().getReviews().size() > 0) {
+            if (mMovie.getReviews().getReviews().size() > 0) {
                 mReviewsTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(getActivity(), ReviewsActivity.class);
 //                        i.putExtra(EXTRA_MOVIE_ID, mMovie.getId());
-                        i.putParcelableArrayListExtra(EXTRA_REVIEW_LIST,(ArrayList)mMovie.getReviews().getReviews());
+                        i.putParcelableArrayListExtra(EXTRA_REVIEW_LIST, (ArrayList) mMovie.getReviews().getReviews());
                         i.putExtra(EXTRA_ENT_TYPE, ENT_TYPE_MOVIE);
                         startActivity(i);
                     }
                 });
-            }
-            else {
+            } else {
                 mReviewsCardView.setVisibility(View.GONE);
             }
 
@@ -658,18 +655,20 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //
 //                Log.e(TAG,"Start up FetchPersonTask!!!");
 //                new FetchPersonTask().execute(mMovie);
+
+            // }
+
+
+            //Pull out the Movie US Certification/Rating
+
+            for (ReleaseDateList list : mMovie.getReleaseDates().getResults()) {
+
+                if (list.getIso31661().equals(MovieDbAPI.CERT_US)) {
+                    mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
+                }
             }
-       // }
 
-
-        //Pull out the Movie US Certification/Rating
-        for(ReleaseDateList list :  mMovie.getReleaseDates().getResults()) {
-
-            if(list.getIso31661().equals(MovieDbAPI.CERT_US)) {
-                mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
-            }
         }
-
 
     }
 

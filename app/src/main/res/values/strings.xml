@@ -1,4 +1,9 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <!-- Sort Tabs -->
+    <string name="tab_popular">Popular</string>
+    <string name="tab_now_playing">Now Playing</string>
+    <string name="tab_upcoming">Upcoming</string>
+
     <string name="app_name">Moving Pictures</string>
     <string name="hello_world">Hello world!</string>
     <string name="dialog_sort">Sort By</string>

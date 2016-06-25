@@ -2,8 +2,11 @@ package com.android.fourthwardcoder.movingpictures.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.fourthwardcoder.movingpictures.R;
+import com.android.fourthwardcoder.movingpictures.adapters.DiscoverListPagerAdapter;
 import com.android.fourthwardcoder.movingpictures.fragments.MainFragment;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     /*                       Local Data                          */
     /*************************************************************/
     boolean mTwoPane;
+    TabLayout mTabLayout;
 
     public static String PACKAGE_NAME;
 
@@ -62,6 +67,38 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         //Set toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Create Tab layout
+        mTabLayout = (TabLayout)findViewById(R.id.tab_layout);
+        mTabLayout.addTab(mTabLayout.newTab()
+                .setText(getString(R.string.tab_popular)));
+        mTabLayout.addTab(mTabLayout.newTab()
+                .setText(getString(R.string.tab_now_playing)));
+        mTabLayout.addTab(mTabLayout.newTab()
+                .setText(getString(R.string.tab_upcoming)));
+
+        //Create view pager for tabs
+        final ViewPager viewPager = (ViewPager)findViewById(R.id.pager);
+        final PagerAdapter adapter = new DiscoverListPagerAdapter(getSupportFragmentManager(),
+                mTabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         if ((findViewById(R.id.movie_detail_container) != null)) {
             //The detail container view will be present only in the large-screen layouts
@@ -142,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     }
 
     @Override
-    public void onLoadFinished(MovieBasic movie) {
+    public void onLoadFinished(int id) {
 
         Log.e(TAG,"In onLoadFinsished()");
         if (mTwoPane) {
@@ -151,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             //transaction
             Log.e(TAG,"In two pane, setting details fragment");
             Bundle args = new Bundle();
-            args.putParcelable(EXTRA_MOVIE, movie);
+            args.putInt(EXTRA_ID, id);
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(args);
