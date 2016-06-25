@@ -2,11 +2,15 @@ package com.android.fourthwardcoder.movingpictures.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,7 +43,7 @@ import okhttp3.Response;
  * Main Activity of the PopularMovies App
  */
 public class MainActivity extends AppCompatActivity implements MainFragment.Callback,
-        Constants {
+        Constants, NavigationView.OnNavigationItemSelectedListener {
 
     /*************************************************************/
     /*                       Constants                           */
@@ -67,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         //Set toolbar
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Set Navigation Drawer
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //Create Tab layout
         mTabLayout = (TabLayout)findViewById(R.id.tab_layout);
@@ -122,6 +136,15 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,7 +168,25 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
+        if (id == R.id.nav_movies) {
+
+        } else if (id == R.id.nav_tv_shows) {
+
+        } else if (id == R.id.nav_people) {
+
+        } else if (id == R.id.nav_favorites) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
     @Override
     public void onItemSelected(int movieId, ImageView imageView) {
 

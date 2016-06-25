@@ -4,15 +4,12 @@
         <item>Most Popular</item>
         <item>Now Playing</item>
         <item>Upcoming</item>
-        <item>Top Grossing</item>
-        <item>Favorites</item>
     </string-array>
 
     <string-array name = "sort_url_list" translatable="false">
         <item>@string/sort_popularity</item>
-        <item>@string/sort_popularity</item>
         <item>@string/sort_release_date</item>
-        <item>@string/sort_revenue</item>
+        <item>@string/sort_release_date</item>
     </string-array>
 
 </resources>

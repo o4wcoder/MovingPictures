@@ -22,6 +22,15 @@ public interface MovieService {
     @GET("/3/movie/{sort_type}")
     Call<MovieList> getMovieList(@Path("sort_type") String sortType,
                                  @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
+
+    @GET("/3/discover/movie")
+    Call<MovieList> getNowPlayingMovies(@Query("primary_release_date.gte") String startDate,
+                                        @Query("primary_release_date.lte") String endDate,
+                                        @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
+//
+//    @GET("3/movie/upcoming")
+//    Call<MovieList> getUpcomingMovies();
+
     @GET("/3/movie/{id}?append_to_response=release_dates,credits,videos,reviews")
     Call<Movie> getMovie(@Path("id") int id);
 

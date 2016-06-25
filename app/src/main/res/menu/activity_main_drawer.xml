@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_movies"
+            android:title="@string/nav_movies"
+            android:icon="@drawable/ic_theaters"/>
+        <item
+            android:id="@+id/nav_tv_shows"
+            android:title="@string/nav_tv_shows"
+            android:icon="@drawable/ic_tv"/>
+        <item
+            android:id="@+id/nav_people"
+            android:title="@string/nav_people"
+            android:icon="@drawable/ic_people"/>
+        <item
+            android:id="@+id/nav_favorites"
+            android:title="@string/nav_favorites"
+            android:icon="@drawable/ic_star"/>
+    </group>
+</menu>

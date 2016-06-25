@@ -15,6 +15,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +40,10 @@ import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -139,6 +143,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         //Make sure we have a gridview
+
+
         if (mRecyclerView != null) {
 
             //We don't have any movies, go fetch them
@@ -151,14 +157,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     Log.e(TAG, "In OnCreateView: Got sort order 4, calling loader to get favorites");
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
-                    if (Util.isNetworkAvailable(getActivity())) {
-                        //new FetchPhotosTask().execute(mSortOrder);
                         getMovieList(mSortOrder);
-                    } else {
-                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                        connectToast.show();
-                    }
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
@@ -305,6 +304,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
+    private String[] getNowPlayingDates() {
+
+        String[] dateRange = new String[2];
+
+        Calendar calendar = Calendar.getInstance();
+        String todaysDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+        Log.e(TAG,"!!!!! Today's date = " + todaysDate);
+
+
+        calendar.add(Calendar.MONTH,-1);
+        String lastMonthDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+        Log.e(TAG,"!!!!! Last months date = " + lastMonthDate);
+        dateRange[0] = lastMonthDate;
+        dateRange[1] = todaysDate;
+
+        return dateRange;
+    }
     private void getMovieList(int sortPos) {
 
 
@@ -313,8 +329,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             String[] sortList = res.getStringArray(R.array.sort_url_list);
             String sortOrder = sortList[sortPos];
 
-            //Call Retrofit to get the Movie List by a specific sort
-            Call<MovieList> call = MovieDbAPI.getMovieApiService().getMovieList(getSortType(sortPos), sortOrder);
+          //  Call<MovieList> call;
+//            //Call Retrofit to get the Movie List by a specific sort
+//            if (sortPos == SORT_NOW_PLAYING) {
+//               String[] dateRange = getNowPlayingDates();
+//                call = MovieDbAPI.getMovieApiService().getNowPlayingMovies(dateRange[0], dateRange[1],sortOrder);
+////            } else if (sortPos == SORT_UPCOMING) {
+//                call = MovieDbAPI.getMovieApiService().getUpcomingMovies();
+//            } else
+              Call<MovieList> call = MovieDbAPI.getMovieApiService().getMovieList(getSortType(sortPos), sortOrder);
 
             call.enqueue(new retrofit2.Callback<MovieList>() {
                 @Override
@@ -403,9 +426,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             case 0:
                 return MovieDbAPI.PATH_POPULAR;
             case 1:
-                return MovieDbAPI.PATH_UPCOMING;
-            case 2:
                 return MovieDbAPI.PATH_NOW_PLAYING;
+            case 2:
+                return MovieDbAPI.PATH_UPCOMING;
             default:
                 return MovieDbAPI.PATH_POPULAR;
         }
