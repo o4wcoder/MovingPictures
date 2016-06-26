@@ -1,8 +1,22 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
-    <!-- Sort Tabs -->
+
+    <!-- Activity Titles -->
+    <string name="title_movies">Movies</string>
+    <string name="title_tv_shows">TV Shows</string>
+    <string name="title_people">People</string>
+    <string name="title_favorites">Favorites</string>
+    <!-- Movie Tabs -->
     <string name="tab_popular">Popular</string>
     <string name="tab_now_playing">Now Playing</string>
     <string name="tab_upcoming">Upcoming</string>
+
+    <!-- TV Show Tabs -->
+    <string name="tab_airing_tonight">Airing Tonight</string>
+
+    <!-- Favorite Tabs -->
+    <string name="tab_movies">Movies</string>
+    <string name="tab_tv_shows">TV Shows</string>
+    <string name="tab_people">People</string>
 
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -317,7 +317,7 @@ public class TvDetailFragment extends Fragment implements Constants {
         String endYear = yearEnd[0];
 
         //If TV show has not ended don't add a end date
-        if (tvShow.getStatus().equals(MovieDbAPI.STATUS_ENDED))
+        if (tvShow.getStatus().equals(MovieDbAPI.STATUS_ENDED) || tvShow.getStatus().equals(MovieDbAPI.STATUS_CANCELED) )
             return "(" + startYear + " - " + endYear + ")";
         else
             return "(" + startYear + " - ";

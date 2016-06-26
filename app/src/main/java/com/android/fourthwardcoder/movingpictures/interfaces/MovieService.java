@@ -19,8 +19,8 @@ import retrofit2.http.Query;
  */
 public interface MovieService {
 
-    @GET("/3/movie/{sort_type}")
-    Call<MovieList> getMovieList(@Path("sort_type") String sortType,
+    @GET("/3/{ent_type}/{sort_type}")
+    Call<MovieList> getMovieList(@Path("ent_type") String entType, @Path("sort_type") String sortType,
                                  @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
 
     @GET("/3/discover/movie")

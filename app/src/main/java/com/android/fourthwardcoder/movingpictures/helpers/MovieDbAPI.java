@@ -79,6 +79,7 @@ public class MovieDbAPI implements Constants {
     public static final String PATH_UPCOMING = "upcoming";
     public static final String PATH_NOW_PLAYING = "now_playing";
     public static final String PATH_POPULAR = "popular";
+    public static final String PATH_AIRING_TODAY = "airing_today";
     public static final String PATH_REVIEWS = "reviews";
     public static final String PATH_VIDEOS = "videos";
     public static final String PATH_PERSON = "person";
@@ -142,6 +143,7 @@ public class MovieDbAPI implements Constants {
     public static final String TAG_NETWORKS = "networks";
 
     public static final String STATUS_ENDED = "Ended";
+    public static final String STATUS_CANCELED = "Canceled";
 
 
     /******************************************************************/

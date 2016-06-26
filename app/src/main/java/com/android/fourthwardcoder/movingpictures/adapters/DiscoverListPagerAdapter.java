@@ -13,10 +13,12 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 public class DiscoverListPagerAdapter extends FragmentStatePagerAdapter implements Constants {
 
     int mNumOfTabs;
+    @EntertainmentType int mEntType;
 
-    public DiscoverListPagerAdapter(FragmentManager fm, int numOfTabs) {
+    public DiscoverListPagerAdapter( FragmentManager fm, @EntertainmentType int entType, int numOfTabs) {
         super(fm);
 
+        mEntType = entType;
         mNumOfTabs = numOfTabs;
     }
     @Override
@@ -24,13 +26,13 @@ public class DiscoverListPagerAdapter extends FragmentStatePagerAdapter implemen
 
         switch(position) {
             case 0:
-                MainFragment fragment1 = MainFragment.newInstance(SORT_POPULAR);
+                MainFragment fragment1 = MainFragment.newInstance(mEntType,SORT_POPULAR);
                 return fragment1;
             case 1:
-                MainFragment fragment2 = MainFragment.newInstance(SORT_NOW_PLAYING);
+                MainFragment fragment2 = MainFragment.newInstance(mEntType,SORT_NOW_PLAYING);
                 return fragment2;
             case 2:
-                MainFragment fragment3 = MainFragment.newInstance(SORT_UPCOMING);
+                MainFragment fragment3 = MainFragment.newInstance(mEntType,SORT_UPCOMING);
                 return fragment3;
             default:
                 return null;

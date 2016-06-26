@@ -35,11 +35,12 @@ public interface Constants {
 
     //Entertainment type Annotations
     @Retention(RetentionPolicy.SOURCE)
-            @IntDef({ENT_TYPE_MOVIE,ENT_TYPE_TV,ENT_TYPE_PERSON})
+            @IntDef({ENT_TYPE_MOVIE,ENT_TYPE_TV,ENT_TYPE_PERSON,ENT_TYPE_FAVORITE})
             @interface EntertainmentType {}
     int ENT_TYPE_MOVIE = 0;
     int ENT_TYPE_TV = 1;
     int ENT_TYPE_PERSON = 2;
+    int ENT_TYPE_FAVORITE = 3;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({LIST_TYPE_MOVIE,LIST_TYPE_TV,LIST_TYPE_MOVIE_CAST,LIST_TYPE_MOVIE_CREW,

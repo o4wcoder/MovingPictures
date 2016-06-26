@@ -17,15 +17,15 @@ import java.util.ArrayList;
 /**
  * Created by Chris Hare on 6/8/2016.
  */
-public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListAdapterViewHolder> {
+public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieListAdapterViewHolder> {
 
-    private static String TAG = MovieListAdapter.class.getSimpleName();
+    private static String TAG = EntListAdapter.class.getSimpleName();
 
     private Context mContext;
     private ArrayList<MovieBasic> mMovieList;
-    private MovieListAdapter.MovieListAdapterOnClickHandler mClickHandler;
+    private EntListAdapter.MovieListAdapterOnClickHandler mClickHandler;
 
-    public MovieListAdapter(Context context, ArrayList<MovieBasic> movieList, MovieListAdapterOnClickHandler clickHandler) {
+    public EntListAdapter(Context context, ArrayList<MovieBasic> movieList, MovieListAdapterOnClickHandler clickHandler) {
 
         mContext = context;
         mMovieList = movieList;
@@ -73,11 +73,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         }
         @Override
         public void onClick(View v) {
-            mClickHandler.onMovieClick(mMovieList.get((getAdapterPosition())),this);
+            mClickHandler.onClick(mMovieList.get((getAdapterPosition())),this);
         }
     }
 
     public interface MovieListAdapterOnClickHandler {
-        void onMovieClick(MovieBasic movie, MovieListAdapterViewHolder vh);
+        void onClick(MovieBasic movie, MovieListAdapterViewHolder vh);
     }
 }
