@@ -54,7 +54,12 @@ public class MovieBasic implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
-
+    @SerializedName("profile_path")
+    @Expose
+    private String profilePath;
+    @SerializedName("name")
+    @Expose
+    private String name;
     /**
      *
      * @return
@@ -307,7 +312,21 @@ public class MovieBasic implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
+    public String getProfilePath() {
+        return profilePath;
+    }
 
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     protected MovieBasic(Parcel in) {
         posterPath = in.readString();
@@ -331,6 +350,8 @@ public class MovieBasic implements Parcelable {
         byte videoVal = in.readByte();
         video = videoVal == 0x02 ? null : videoVal != 0x00;
         voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+        profilePath = in.readString();
+        name = in.readString();
     }
 
     @Override
@@ -387,6 +408,8 @@ public class MovieBasic implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeDouble(voteAverage);
         }
+        dest.writeString(profilePath);
+        dest.writeString(name);
     }
 
     @SuppressWarnings("unused")

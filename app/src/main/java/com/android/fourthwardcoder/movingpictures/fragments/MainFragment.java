@@ -145,7 +145,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     Log.e(TAG, "In OnCreateView: Got sort order 4, calling loader to get favorites");
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
-                    getApiList(mEntType, mSortOrder);
+                    getApiList();
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
@@ -308,23 +308,19 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 //
 //        return dateRange;
 //    }
-    private void getApiList(int entType, int sortPos) {
+    private void getApiList() {
 
 
         if (getActivity() != null) {
-            Resources res = getResources();
-            String[] sortList = res.getStringArray(R.array.sort_url_list);
-            String sortOrder = sortList[sortPos];
+//            Resources res = getResources();
+//            String[] sortList = res.getStringArray(R.array.sort_url_list);
+//            String sortOrder = sortList[sortPos];
 
             Call<MovieList> call = null;
 
+            Log.e(TAG,"Get API list with ent type = " + mEntType + " Sort type = " + mSortOrder);
+            call = MovieDbAPI.getMovieApiService().getMovieList(getUriPath(), getSortType());
 
-            if (entType == ENT_TYPE_MOVIE)
-                call = MovieDbAPI.getMovieApiService().getMovieList(MovieDbAPI.PATH_MOVIE, getSortType(entType, sortPos), sortOrder);
-            else if (entType == ENT_TYPE_TV)
-                call = MovieDbAPI.getMovieApiService().getMovieList(MovieDbAPI.PATH_TV, getSortType(entType, sortPos), sortOrder);
-            else if (entType == ENT_TYPE_PERSON)
-                call = MovieDbAPI.getMovieApiService().getMovieList(MovieDbAPI.PATH_PERSON,getSortType(entType,sortPos), sortOrder);
 
             if(call != null) {
                 call.enqueue(new retrofit2.Callback<MovieList>() {
@@ -371,7 +367,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 //Store global copy
                 mList = movieList;
                 //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
-                EntListAdapter adapter = new EntListAdapter(getActivity(), mList, new EntListAdapter.MovieListAdapterOnClickHandler() {
+                EntListAdapter adapter = new EntListAdapter(getActivity(), mList, mEntType,new EntListAdapter.MovieListAdapterOnClickHandler() {
                     @Override
                     public void onClick(MovieBasic movie, EntListAdapter.MovieListAdapterViewHolder vh) {
                         Log.e(TAG, "onClick RecyclerView movie list");
@@ -410,30 +406,43 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
-    private String getSortType(@EntertainmentType int entType, int sortType) {
+    private String getUriPath() {
 
-        if (entType == ENT_TYPE_MOVIE) {
-            switch (sortType) {
+        if (mEntType == ENT_TYPE_MOVIE) {
+            return MovieDbAPI.PATH_MOVIE;
+        } else if (mEntType == ENT_TYPE_TV) {
+            return MovieDbAPI.PATH_TV;
+        } else if (mEntType == ENT_TYPE_PERSON) {
+            return MovieDbAPI.PATH_PERSON;
+        }
 
-                case 0:
+        //Return nothing is somehow we don't have the type of query
+        return "";
+    }
+    private String getSortType() {
+
+        if (mEntType == ENT_TYPE_MOVIE) {
+            switch (mSortOrder) {
+
+                case SORT_POPULAR:
                     return MovieDbAPI.PATH_POPULAR;
-                case 1:
+                case SORT_NOW_PLAYING:
                     return MovieDbAPI.PATH_NOW_PLAYING;
-                case 2:
+                case SORT_UPCOMING:
                     return MovieDbAPI.PATH_UPCOMING;
                 default:
                     return MovieDbAPI.PATH_POPULAR;
             }
-        } else if (entType == ENT_TYPE_TV) {
-            switch (sortType) {
-                case 0:
+        } else if (mEntType == ENT_TYPE_TV) {
+            switch (mSortOrder) {
+                case SORT_POPULAR:
                     return MovieDbAPI.PATH_POPULAR;
-                case 1:
+                case SORT_AIRING_TONIGHT:
                     return MovieDbAPI.PATH_AIRING_TODAY;
                 default:
                     return MovieDbAPI.PATH_POPULAR;
             }
-        } else if (entType == ENT_TYPE_PERSON)
+        } else if (mEntType == ENT_TYPE_PERSON)
             return MovieDbAPI.PATH_POPULAR;
 
         //Something bad went wrong, return nothing

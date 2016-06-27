@@ -62,6 +62,10 @@ public interface Constants {
     int SORT_POPULAR = 0;
     int SORT_NOW_PLAYING = 1;
     int SORT_UPCOMING = 2;
+    int SORT_AIRING_TONIGHT = 3;
+    int SORT_MOVIES = 4;
+    int SORT_TV = 5;
+    int SORT_PERSON = 6;
 
 
 

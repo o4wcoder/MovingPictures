@@ -7,13 +7,6 @@
         <item name="colorAccent">@color/appAccentColor</item>
     </style>
 
-    <!--
-    <style name="MyActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    <item name="android:background">@color/appPrimaryColor</item>
-        <item name="background">@color/appPrimaryColor</item>
-        <item name="backgroundStacked">@color/appPrimaryColor</item>
-    </style>
-    -->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat" />
@@ -25,12 +18,6 @@
     <style name="AppTheme.TvShowDetail" parent="@style/AppTheme"></style>
     <style name="AppTheme.PersonPhotoDetail" parent="@style/AppTheme"></style>
 
-    <!--
-    <style name="MyActionBarTabs" parent="@style/Widget.AppCompat.ActionBar.TabView">
-        <item name="android:background">@drawable/actionbar_tab_indicator</item>
-        <item name="background">@drawable/actionbar_tab_indicator</item>
-    </style>
-    -->
 
     <style name="headerTextView">
         <item name="android:gravity">left</item>

@@ -2,13 +2,16 @@ package com.android.fourthwardcoder.movingpictures.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.squareup.picasso.Picasso;
 
@@ -23,12 +26,14 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
 
     private Context mContext;
     private ArrayList<MovieBasic> mMovieList;
+    private @Constants.EntertainmentType int mEntType;
     private EntListAdapter.MovieListAdapterOnClickHandler mClickHandler;
 
-    public EntListAdapter(Context context, ArrayList<MovieBasic> movieList, MovieListAdapterOnClickHandler clickHandler) {
+    public EntListAdapter(Context context, ArrayList<MovieBasic> movieList, @Constants.EntertainmentType int entType,  MovieListAdapterOnClickHandler clickHandler) {
 
         mContext = context;
         mMovieList = movieList;
+        mEntType = entType;
         mClickHandler = clickHandler;
     }
 
@@ -36,7 +41,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
     public MovieListAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View view = LayoutInflater.from(mContext).inflate(R.layout.movie_list_item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.ent_list_item,parent,false);
         final MovieListAdapterViewHolder vh = new MovieListAdapterViewHolder(view);
         return vh;
     }
@@ -47,7 +52,14 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
 
        MovieBasic movie = mMovieList.get(postition);
        // Log.e(TAG,"onBindViewHolder with movie poster = " + movie.getPosterPath());
-        Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getPosterPath())).into(holder.movieThumbImageView);
+        if(mEntType == Constants.ENT_TYPE_PERSON) {
+            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getProfilePath())).into(holder.movieThumbImageView);
+            Log.e(TAG,"Person name = " + movie.getName());
+            holder.imageGradient.setVisibility(View.VISIBLE);
+            holder.personNameTextView.setText(movie.getName());
+        }
+        else
+            Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getPosterPath())).into(holder.movieThumbImageView);
     }
 
     @Override
@@ -63,12 +75,17 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
 
 
         public ImageView movieThumbImageView;
+        public TextView personNameTextView;
+        public View imageGradient;
 
         public MovieListAdapterViewHolder(View view) {
             super(view);
 
             movieThumbImageView = (ImageView)view.findViewById(R.id.movie_thumbnail_image_view);
             movieThumbImageView.setOnClickListener(this);
+
+            personNameTextView = (TextView)view.findViewById(R.id.ent_list_person_name_textview);
+            imageGradient = (View)view.findViewById(R.id.ent_list_image_gradient);
 
         }
         @Override

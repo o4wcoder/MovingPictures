@@ -188,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                intent = new Intent(this, MovieDetailActivity.class);
             else if(entType == ENT_TYPE_TV)
                 intent = new Intent(this,TvDetailActivity.class);
+            else if(entType == ENT_TYPE_PERSON)
+                intent = new Intent(this,PersonDetailActivity.class);
 
             intent.putExtra(EXTRA_ID,movieId);
 
@@ -258,7 +260,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_popular)));
         } else if(entType == ENT_TYPE_FAVORITE) {
-
+            mTabLayout.addTab(mTabLayout.newTab()
+                    .setText(getString(R.string.tab_movies)));
+            mTabLayout.addTab(mTabLayout.newTab()
+                    .setText(getString(R.string.tab_tv_shows)));
+            mTabLayout.addTab(mTabLayout.newTab()
+                    .setText(getString(R.string.tab_people)));
         }
 
         //Create view pager for tabs
