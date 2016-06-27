@@ -55,7 +55,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
         if(mEntType == Constants.ENT_TYPE_PERSON) {
             Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getProfilePath())).into(holder.movieThumbImageView);
             Log.e(TAG,"Person name = " + movie.getName());
-            holder.imageGradient.setVisibility(View.VISIBLE);
+           // holder.imageGradient.setVisibility(View.VISIBLE);
             holder.personNameTextView.setText(movie.getName());
         }
         else
@@ -76,7 +76,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
 
         public ImageView movieThumbImageView;
         public TextView personNameTextView;
-        public View imageGradient;
+      //  public View imageGradient;
 
         public MovieListAdapterViewHolder(View view) {
             super(view);
@@ -85,7 +85,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
             movieThumbImageView.setOnClickListener(this);
 
             personNameTextView = (TextView)view.findViewById(R.id.ent_list_person_name_textview);
-            imageGradient = (View)view.findViewById(R.id.ent_list_image_gradient);
+          //  imageGradient = (View)view.findViewById(R.id.ent_list_image_gradient);
 
         }
         @Override
