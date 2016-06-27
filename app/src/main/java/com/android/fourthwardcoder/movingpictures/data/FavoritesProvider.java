@@ -8,18 +8,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 /**
- * Class MovieProvider
+ * Class FavoritesProvider
  * Author: Chris Hare
  * Created: 9/20/2015
  * <p/>
  * Content Provider
  */
-public class MovieProvider extends ContentProvider {
+public class FavoritesProvider extends ContentProvider {
 
     /**********************************************************************/
     /*                           Constants                                */
     /**********************************************************************/
-    private final static String TAG = MovieProvider.class.getSimpleName();
+    private final static String TAG = FavoritesProvider.class.getSimpleName();
 
     static final int MOVIE = 100;
     static final int MOVIE_WITH_ID = 101;
@@ -29,23 +29,23 @@ public class MovieProvider extends ContentProvider {
     /**********************************************************************/
     // The URI Mather used by this content provider
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private MovieDbHelper mMovieHelper;
+    private FavoritesDbHelper mMovieHelper;
 
     static UriMatcher buildUriMatcher() {
 
         UriMatcher sURIMather = new UriMatcher(UriMatcher.NO_MATCH);
 
-        String authority = MovieContract.CONTENT_AUTHORITY;
+        String authority = FavoritesContract.CONTENT_AUTHORITY;
 
-        sURIMather.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
-        sURIMather.addURI(authority, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
+        sURIMather.addURI(authority, FavoritesContract.PATH_MOVIE, MOVIE);
+        sURIMather.addURI(authority, FavoritesContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
 
         return sURIMather;
     }
 
     @Override
     public boolean onCreate() {
-        mMovieHelper = new MovieDbHelper(getContext());
+        mMovieHelper = new FavoritesDbHelper(getContext());
         return true;
     }
 
@@ -59,7 +59,7 @@ public class MovieProvider extends ContentProvider {
 
             case MOVIE: {
                 retCursor = mMovieHelper.getReadableDatabase().query(
-                        MovieContract.MovieEntry.TABLE_NAME,
+                        FavoritesContract.MovieEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -85,9 +85,9 @@ public class MovieProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE:
-                return MovieContract.MovieEntry.CONTENT_TYPE;
+                return FavoritesContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_WITH_ID:
-                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
+                return FavoritesContract.MovieEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -102,9 +102,9 @@ public class MovieProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE: {
-                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+                long _id = db.insert(FavoritesContract.MovieEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    returnUri = MovieContract.MovieEntry.buildMovieUri();
+                    returnUri = FavoritesContract.MovieEntry.buildMovieUri();
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -132,7 +132,7 @@ public class MovieProvider extends ContentProvider {
         switch (match) {
 
             case MOVIE: {
-                deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                deletedRows = db.delete(FavoritesContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
@@ -159,7 +159,7 @@ public class MovieProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE: {
-                updatedRows = db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                updatedRows = db.update(FavoritesContract.MovieEntry.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
             }
             default:

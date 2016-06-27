@@ -56,6 +56,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
             Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getProfilePath())).into(holder.movieThumbImageView);
             Log.e(TAG,"Person name = " + movie.getName());
            // holder.imageGradient.setVisibility(View.VISIBLE);
+            holder.personNameTextView.setVisibility(View.VISIBLE);
             holder.personNameTextView.setText(movie.getName());
         }
         else

@@ -2,7 +2,6 @@ package com.android.fourthwardcoder.movingpictures.fragments;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.adapters.EntListAdapter;
-import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
@@ -105,6 +104,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         if (savedInstanceState != null) {
             mList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
+            mEntType = savedInstanceState.getInt(ARG_ENT_TYPE);
         } else {
             Bundle bundle = getArguments();
             mEntType = bundle.getInt(ARG_ENT_TYPE);
@@ -251,7 +251,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         Log.e(TAG, "Inside onCreateLoader");
-        Uri movieFavoritesUri = MovieContract.MovieEntry.buildMovieUri();
+        Uri movieFavoritesUri = FavoritesContract.MovieEntry.buildMovieUri();
 
         return new CursorLoader(getActivity(),
                 movieFavoritesUri,
@@ -363,9 +363,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
             if (movieList != null) {
-                Log.e(TAG, "setMovieAdapter(): MovieBasic list is not null. Set adapter");
+
                 //Store global copy
                 mList = movieList;
+                Log.e(TAG, "setMovieAdapter(): MovieBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + mEntType);
                 //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
                 EntListAdapter adapter = new EntListAdapter(getActivity(), mList, mEntType,new EntListAdapter.MovieListAdapterOnClickHandler() {
                     @Override
@@ -402,6 +403,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST, mList);
+        savedInstanceState.putInt(ARG_ENT_TYPE,mEntType);
         super.onSaveInstanceState(savedInstanceState);
     }
 

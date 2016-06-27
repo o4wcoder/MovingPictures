@@ -8,13 +8,13 @@ import android.provider.BaseColumns;
 import com.android.fourthwardcoder.movingpictures.activities.MainActivity;
 
 /**
- * Class MovieContract
+ * Class FavoritesContract
  * Author:  Chris Hare
  * Created: 9/18/2015.
  * <p/>
  * Contract Provider MovieOld Contract
  */
-public class MovieContract {
+public class FavoritesContract {
 
     public static final String[] MOVIE_COLUMNS = {
             MovieEntry.TABLE_NAME,
@@ -22,20 +22,21 @@ public class MovieContract {
 
     };
 
-    public static final int COL_MOVIE = 0;
-    public static final int COL_MOVIE_ID = 1;
-    public static final int COL_MOVIE_TITLE = 2;
-    public static final int COL_MOVIE_OVERVIEW = 3;
-    public static final int COL_MOVIE_POSTER_PATH = 4;
-    public static final int COL_MOVIE_BACKDROP_PATH = 5;
-    public static final int COL_MOVIE_RELEASE_DATE = 6;
-    public static final int COL_MOVIE_RUNTIME = 7;
-    public static final int COL_MOVIE_RATING = 8;
-    public static final int COL_MOVIE_REVENUE = 9;
-    public static final int COL_MOVIE_GENRE_JSON = 10;
-    public static final int COL_MOVIE_DIRECTOR_JSON = 11;
-    public static final int COL_MOVIE_ACTOR_JSON = 12;
-    public static final int COL_MOVIE_VIDEO_JSON = 13;
+//    public static final int COL_MOVIE = 0;
+//    public static final int COL_MOVIE_ID = 1;
+//    public static final int COL_MOVIE_TITLE = 2;
+//    public static final int COL_MOVIE_OVERVIEW = 3;
+//    public static final int COL_MOVIE_POSTER_PATH = 4;
+//    public static final int COL_MOVIE_BACKDROP_PATH = 5;
+//    public static final int COL_MOVIE_RELEASE_DATE = 6;
+//    public static final int COL_MOVIE_RUNTIME = 7;
+//    public static final int COL_MOVIE_RATING = 8;
+//    public static final int COL_MOVIE_REVENUE = 9;
+//    public static final int COL_MOVIE_GENRE_JSON = 10;
+//    public static final int COL_MOVIE_DIRECTOR_JSON = 11;
+//    public static final int COL_MOVIE_ACTOR_JSON = 12;
+//    public static final int COL_MOVIE_VIDEO_JSON = 13;
+
 
     //Content provider authority for MovieOld DB
     public static final String CONTENT_AUTHORITY = "com.android.fourthwardcoder.movingpictures";

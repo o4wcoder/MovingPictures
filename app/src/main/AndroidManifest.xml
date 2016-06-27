@@ -92,7 +92,7 @@
         </activity>
 
         <provider
-            android:name="com.android.fourthwardcoder.movingpictures.data.MovieProvider"
+            android:name=".data.FavoritesProvider"
             android:authorities="com.android.fourthwardcoder.movingpictures" />
 
         <activity

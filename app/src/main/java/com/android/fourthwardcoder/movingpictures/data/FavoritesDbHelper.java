@@ -4,23 +4,23 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.android.fourthwardcoder.movingpictures.data.MovieContract.MovieEntry;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract.MovieEntry;
 
 /**
- * Class MovieDbHelper
+ * Class FavoritesDbHelper
  * Author: Chris Hare
  * Created: 9/18/2015.
  * <p/>
  * Database helper for the Movies Content Provider.
  */
-public class MovieDbHelper extends SQLiteOpenHelper {
+public class FavoritesDbHelper extends SQLiteOpenHelper {
 
 
     private static final int DATABASE_VERSION = 5;
 
     static final String DATABASE_NAME = "movie.db";
 
-    public MovieDbHelper(Context context) {
+    public FavoritesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

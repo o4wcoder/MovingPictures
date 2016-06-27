@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.google.gson.Gson;
@@ -223,23 +223,23 @@ public class MovieOld implements Parcelable, Constants {
     public ContentValues getContentValues() {
 
         ContentValues movieValues = new ContentValues();
-        movieValues.put(MovieContract.MovieEntry.COLUMN_ID, this.id);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, this.title);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, this.overview);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, this.posterPath);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, this.backdropPath);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, this.releaseDate);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, this.runtime);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RATING, this.rating);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_REVENUE, this.revenue);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_ID, this.id);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_TITLE, this.title);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_OVERVIEW, this.overview);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_POSTER_PATH, this.posterPath);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_BACKDROP_PATH, this.backdropPath);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_RELEASE_DATE, this.releaseDate);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_RUNTIME, this.runtime);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_RATING, this.rating);
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_REVENUE, this.revenue);
 
         //Store Array lists as JSON Strings. No need to create complicated SQL tabels
         //a
         // s these values will never change once the data has been fetched.
-        movieValues.put(MovieContract.MovieEntry.COLUMN_GENRE_JSON,new Gson().toJson(genres));
-        movieValues.put(MovieContract.MovieEntry.COLUMN_DIRECTOR_JSON, new Gson().toJson(directors));
-        movieValues.put(MovieContract.MovieEntry.COLUMN_ACTOR_JSON, new Gson().toJson(actors));
-        movieValues.put(MovieContract.MovieEntry.COLUMN_VIDEO_JSON, new Gson().toJson(videos));
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_GENRE_JSON,new Gson().toJson(genres));
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_DIRECTOR_JSON, new Gson().toJson(directors));
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_ACTOR_JSON, new Gson().toJson(actors));
+        movieValues.put(FavoritesContract.MovieEntry.COLUMN_VIDEO_JSON, new Gson().toJson(videos));
 
 
 
@@ -249,15 +249,15 @@ public class MovieOld implements Parcelable, Constants {
 
     public static MovieOld convertCursorToMovie(Cursor cursor) {
 
-        MovieOld movie = new MovieOld(cursor.getInt(MovieContract.COL_MOVIE_ID));
-        movie.setTitle(cursor.getString(MovieContract.COL_MOVIE_TITLE));
-        movie.setOverview(cursor.getString(MovieContract.COL_MOVIE_OVERVIEW));
-        movie.setPosterPath(cursor.getString(MovieContract.COL_MOVIE_POSTER_PATH));
-        movie.setBackdropPath(cursor.getString(MovieContract.COL_MOVIE_BACKDROP_PATH));
-        movie.setReleaseDate(cursor.getString(MovieContract.COL_MOVIE_RELEASE_DATE));
-        movie.setRuntime(cursor.getString(MovieContract.COL_MOVIE_RUNTIME));
-        movie.setRating(cursor.getDouble(MovieContract.COL_MOVIE_RATING));
-        movie.setRevenue(cursor.getString(MovieContract.COL_MOVIE_REVENUE));
+        MovieOld movie = new MovieOld(cursor.getInt(FavoritesContract.COL_MOVIE_ID));
+        movie.setTitle(cursor.getString(FavoritesContract.COL_MOVIE_TITLE));
+        movie.setOverview(cursor.getString(FavoritesContract.COL_MOVIE_OVERVIEW));
+        movie.setPosterPath(cursor.getString(FavoritesContract.COL_MOVIE_POSTER_PATH));
+        movie.setBackdropPath(cursor.getString(FavoritesContract.COL_MOVIE_BACKDROP_PATH));
+        movie.setReleaseDate(cursor.getString(FavoritesContract.COL_MOVIE_RELEASE_DATE));
+        movie.setRuntime(cursor.getString(FavoritesContract.COL_MOVIE_RUNTIME));
+        movie.setRating(cursor.getDouble(FavoritesContract.COL_MOVIE_RATING));
+        movie.setRevenue(cursor.getString(FavoritesContract.COL_MOVIE_REVENUE));
 
         //Get Json String and put them into ArrayLists
         Type stringType = new TypeToken<ArrayList<String>>(){}.getType();
@@ -265,16 +265,16 @@ public class MovieOld implements Parcelable, Constants {
         Type videoType = new TypeToken<ArrayList<VideoOld>>(){}.getType();
 
         //Parse genres
-        String genreJsonString = cursor.getString(MovieContract.COL_MOVIE_GENRE_JSON);
+        String genreJsonString = cursor.getString(FavoritesContract.COL_MOVIE_GENRE_JSON);
         movie.setGenres((ArrayList<String>)new Gson().fromJson(genreJsonString,stringType));
         //Parse directors
-        String directorJsonString = cursor.getString(MovieContract.COL_MOVIE_DIRECTOR_JSON);
+        String directorJsonString = cursor.getString(FavoritesContract.COL_MOVIE_DIRECTOR_JSON);
         movie.setDirectors((ArrayList<IdNamePair>) new Gson().fromJson(directorJsonString, idNamePairType));
         //Parse actors
-        String actorJsonString = cursor.getString(MovieContract.COL_MOVIE_ACTOR_JSON);
+        String actorJsonString = cursor.getString(FavoritesContract.COL_MOVIE_ACTOR_JSON);
         movie.setActors((ArrayList<IdNamePair>) new Gson().fromJson(actorJsonString, idNamePairType));
         //Parse videos
-        String videoJsonString = cursor.getString(MovieContract.COL_MOVIE_VIDEO_JSON);
+        String videoJsonString = cursor.getString(FavoritesContract.COL_MOVIE_VIDEO_JSON);
         movie.setVideos((ArrayList<VideoOld>) new Gson().fromJson(videoJsonString, videoType));
         return movie;
     }

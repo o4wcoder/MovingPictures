@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,7 +35,7 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
-import com.android.fourthwardcoder.movingpictures.data.MovieContract;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
@@ -44,7 +43,6 @@ import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Cast;
-import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.ReleaseDateList;
@@ -426,7 +424,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //        ContentValues movieValues = mMovie.getContentValues();
 //
 //        //Insert MovieOld data to the content provider
-//        Uri inserted = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, movieValues);
+//        Uri inserted = getActivity().getContentResolver().insert(FavoritesContract.MovieEntry.CONTENT_URI, movieValues);
     }
 
     /**
@@ -435,12 +433,12 @@ public class MovieDetailFragment extends Fragment implements Constants {
     private void removeMovieFromDb() {
 
         //Put togeter SQL selection
-        String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
+        String selection = FavoritesContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[1];
         selectionArgs[0] = String.valueOf(mMovie.getId());
 
         //Remove movie data from the content provider
-        int deletedRow = getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
+        int deletedRow = getActivity().getContentResolver().delete(FavoritesContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
     }
 
     /**
@@ -453,17 +451,17 @@ public class MovieDetailFragment extends Fragment implements Constants {
         //Get projection with MovieOld ID
         String[] projection =
                 {
-                        MovieContract.MovieEntry.COLUMN_ID
+                        FavoritesContract.MovieEntry.COLUMN_ID
                 };
 
         //Put together SQL selection
-        String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
+        String selection = FavoritesContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[1];
         selectionArgs[0] = String.valueOf(mMovie.getId());
 
         //Return cursor to the row that contains the movie
         Cursor cursor = getActivity().getContentResolver().query(
-                MovieContract.MovieEntry.CONTENT_URI,
+                FavoritesContract.MovieEntry.CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,

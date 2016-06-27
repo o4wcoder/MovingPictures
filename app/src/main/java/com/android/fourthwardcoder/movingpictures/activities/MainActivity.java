@@ -52,12 +52,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     /*************************************************************/
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+
+    //Saved Arguments
+    private static final String ARG_ENT_TYPE = "ent_type";
     /*************************************************************/
     /*                       Local Data                          */
     /*************************************************************/
     boolean mTwoPane;
     TabLayout mTabLayout;
     ViewPager mViewPager;
+    int mEntType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setPagerForSelection(ENT_TYPE_MOVIE);
+        if(savedInstanceState != null) {
+            mEntType = savedInstanceState.getInt(ARG_ENT_TYPE);
+            Log.e(TAG,"onCreate() Got saved ent type on rotation" + mEntType);
+        } else {
+            //First time through. Start with movies
+           mEntType = ENT_TYPE_MOVIE;
+        }
+
+        setPagerForSelection();
+
 
         if ((findViewById(R.id.movie_detail_container) != null)) {
             //The detail container view will be present only in the large-screen layouts
@@ -104,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         }
 
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.e(TAG,"onSaveInstanceState() with enty type = " + mEntType);
+        savedInstanceState.putInt(ARG_ENT_TYPE,mEntType);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -142,23 +162,18 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        @EntertainmentType int entType = 0;
 
         if (id == R.id.nav_movies) {
-            entType = ENT_TYPE_MOVIE;
-            setTitle(R.string.title_movies);
+            mEntType = ENT_TYPE_MOVIE;
         } else if (id == R.id.nav_tv_shows) {
-            entType = ENT_TYPE_TV;
-            setTitle(R.string.title_tv_shows);
+            mEntType = ENT_TYPE_TV;
         } else if (id == R.id.nav_people) {
-            entType = ENT_TYPE_PERSON;
-            setTitle(R.string.title_people);
+            mEntType = ENT_TYPE_PERSON;
         } else if (id == R.id.nav_favorites) {
-            entType = ENT_TYPE_FAVORITE;
-            setTitle(R.string.title_favorites);
+            mEntType = ENT_TYPE_FAVORITE;
         }
 
-        setPagerForSelection(entType);
+        setPagerForSelection();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -209,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     @Override
     public void onLoadFinished(int id) {
 
-        Log.e(TAG,"In onLoadFinsished()");
+      //  Log.e(TAG,"In onLoadFiished()");
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
@@ -228,22 +243,25 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commitAllowingStateLoss();
         }
-        else {
-            Log.e(TAG,"onLoadFinished(): NOt in two pane!!!!!!!!");
-        }
+//        else {
+//            Log.e(TAG,"onLoadFinished(): NOt in two pane!!!!!!!!");
+//        }
     }
 
     /***************************************************************************************/
     /*                                  Private Methods                                    */
     /***************************************************************************************/
 
-    private void setPagerForSelection(@EntertainmentType int entType) {
+    private void setPagerForSelection() {
 
         //Create Tab layout
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         mTabLayout.removeAllTabs();
-        if (entType == ENT_TYPE_MOVIE) {
+        if (mEntType == ENT_TYPE_MOVIE) {
+            //Set title of activity
+            setTitle(R.string.title_movies);
+
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_popular)));
             mTabLayout.addTab(mTabLayout.newTab()
@@ -251,15 +269,24 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_upcoming)));
 
-        } else if (entType == ENT_TYPE_TV) {
+        } else if (mEntType == ENT_TYPE_TV) {
+            //Set title of activity
+            setTitle(R.string.title_tv_shows);
+
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_popular)));
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_airing_tonight)));
-        } else if (entType == ENT_TYPE_PERSON) {
+        } else if (mEntType == ENT_TYPE_PERSON) {
+            //Set title of activity
+            setTitle(R.string.title_people);
+
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_popular)));
-        } else if(entType == ENT_TYPE_FAVORITE) {
+        } else if(mEntType == ENT_TYPE_FAVORITE) {
+            //Set title of activity
+            setTitle(R.string.title_favorites);
+
             mTabLayout.addTab(mTabLayout.newTab()
                     .setText(getString(R.string.tab_movies)));
             mTabLayout.addTab(mTabLayout.newTab()
@@ -270,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
         //Create view pager for tabs
         mViewPager = (ViewPager)findViewById(R.id.pager);
-        PagerAdapter adapter = new DiscoverListPagerAdapter(getSupportFragmentManager(),entType,
+        PagerAdapter adapter = new DiscoverListPagerAdapter(getSupportFragmentManager(),mEntType,
                 mTabLayout.getTabCount());
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
