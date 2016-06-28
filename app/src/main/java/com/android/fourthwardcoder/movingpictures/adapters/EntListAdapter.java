@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
+import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
     private static String TAG = EntListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private ArrayList<MovieBasic> mMovieList;
+    private ArrayList<MediaBasic> mMovieList;
     private @Constants.EntertainmentType int mEntType;
     private EntListAdapter.MovieListAdapterOnClickHandler mClickHandler;
 
-    public EntListAdapter(Context context, ArrayList<MovieBasic> movieList, @Constants.EntertainmentType int entType,  MovieListAdapterOnClickHandler clickHandler) {
+    public EntListAdapter(Context context, ArrayList<MediaBasic> movieList, @Constants.EntertainmentType int entType, MovieListAdapterOnClickHandler clickHandler) {
 
         mContext = context;
         mMovieList = movieList;
@@ -50,11 +50,11 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
     public void onBindViewHolder(MovieListAdapterViewHolder holder, int postition) {
 
 
-       MovieBasic movie = mMovieList.get(postition);
-       // Log.e(TAG,"onBindViewHolder with movie poster = " + movie.getPosterPath());
+       MediaBasic movie = mMovieList.get(postition);
+
         if(mEntType == Constants.ENT_TYPE_PERSON) {
             Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(movie.getProfilePath())).into(holder.movieThumbImageView);
-            Log.e(TAG,"Person name = " + movie.getName());
+
            // holder.imageGradient.setVisibility(View.VISIBLE);
             holder.personNameTextView.setVisibility(View.VISIBLE);
             holder.personNameTextView.setText(movie.getName());
@@ -96,6 +96,6 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
     }
 
     public interface MovieListAdapterOnClickHandler {
-        void onClick(MovieBasic movie, MovieListAdapterViewHolder vh);
+        void onClick(MediaBasic movie, MovieListAdapterViewHolder vh);
     }
 }

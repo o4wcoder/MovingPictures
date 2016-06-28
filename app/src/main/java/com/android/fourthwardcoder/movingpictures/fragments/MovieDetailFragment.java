@@ -1,5 +1,6 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -230,7 +231,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
                         toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.to_favorites);
-                        addMovieToFavoritesDb();
+                        Util.addToFavoritesDb(getActivity(),mMovie.getContentValues());
 
                     } else {
                         Log.e(TAG, "remove from favorite");
@@ -238,7 +239,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
                         toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
                                 + getString(R.string.from_favorites);
-                        removeMovieFromDb();
+                        Util.removeFromFavoritesDb(getActivity(),mMovie.getId());
                     }
                     Toast toast = Toast.makeText(getActivity().getApplicationContext(),
                             toastStr, Toast.LENGTH_SHORT);
@@ -414,71 +415,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
 //            }
 //        }
     }
-
-
-    /**
-     * Add this MovieOld to the Favorites DB
-     */
-    private void addMovieToFavoritesDb() {
-
-//        ContentValues movieValues = mMovie.getContentValues();
-//
-//        //Insert MovieOld data to the content provider
-//        Uri inserted = getActivity().getContentResolver().insert(FavoritesContract.MovieEntry.CONTENT_URI, movieValues);
-    }
-
-    /**
-     * Remove this MovieOld from the Favorites DB
-     */
-    private void removeMovieFromDb() {
-
-        //Put togeter SQL selection
-        String selection = FavoritesContract.MovieEntry.COLUMN_ID + "=?";
-        String[] selectionArgs = new String[1];
-        selectionArgs[0] = String.valueOf(mMovie.getId());
-
-        //Remove movie data from the content provider
-        int deletedRow = getActivity().getContentResolver().delete(FavoritesContract.MovieEntry.CONTENT_URI, selection, selectionArgs);
-    }
-
-    /**
-     * Check if this movie is in the Favorites Database
-     *
-     * @return If movie is in the Favorites DB
-     */
-    private boolean checkIfFavorite() {
-
-        //Get projection with MovieOld ID
-        String[] projection =
-                {
-                        FavoritesContract.MovieEntry.COLUMN_ID
-                };
-
-        //Put together SQL selection
-        String selection = FavoritesContract.MovieEntry.COLUMN_ID + "=?";
-        String[] selectionArgs = new String[1];
-        selectionArgs[0] = String.valueOf(mMovie.getId());
-
-        //Return cursor to the row that contains the movie
-        Cursor cursor = getActivity().getContentResolver().query(
-                FavoritesContract.MovieEntry.CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                null);
-
-        if (cursor != null) {
-
-            //If the cursor is empty, than the movie is not in the DB; else it is in the DB
-            if (cursor.getCount() < 1)
-                return false;
-            else
-                return true;
-        }
-
-        //Something went wrong. Just return false.
-        return false;
-    }
     
     /**
      * Set the layout of the Fragment
@@ -636,23 +572,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 mReviewsCardView.setVisibility(View.GONE);
             }
 
-//
-//                //        //See if this is a favorite movie and set the state of the star button
-//                Log.e(TAG, "Check if favorite movie");
-//                if (checkIfFavorite()) {
-//                    //  mFavoritesToggleButton.setChecked(true);
-//                    Log.e(TAG, "Already favorite, set tag to true");
-//                    mFavoritesFAB.setTag(true);
-//                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
-//                } else {
-//                    //  mFavoritesToggleButton.setChecked(false);
-//                    Log.e(TAG, "Not favorite, set tag to false");
-//                    mFavoritesFAB.setTag(false);
-//                    mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
-//                }
-//
-//                Log.e(TAG,"Start up FetchPersonTask!!!");
-//                new FetchPersonTask().execute(mMovie);
+             //See if this is a favorite movie and set the state of the star button
+            Util.setFavoritesButton(mFavoritesFAB,getActivity(),mMovie.getId());
 
             // }
 

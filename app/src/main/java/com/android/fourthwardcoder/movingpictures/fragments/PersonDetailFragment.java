@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
@@ -24,6 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,13 +36,12 @@ import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListene
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
+import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity;
-import com.android.fourthwardcoder.movingpictures.models.PersonOld;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -84,6 +85,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private NestedScrollView mNestedScrollView;
+    FloatingActionButton mFavoritesFAB;
 
     //Known For Image and Text
     ImageView mKnownFor1ImageView;
@@ -94,7 +96,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mKnownFor3TextView;
     CardView mKnownForCardView;
     
-    ArrayList<MovieBasic> mKnownForMovieList;
+    ArrayList<MediaBasic> mKnownForMovieList;
 
     public PersonDetailFragment() {
     }
@@ -185,14 +187,54 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 @Override
                 public void onTransitionStart(Transition transition) {
                     mNameTextView.setAlpha(0f);
+                    mFavoritesFAB.setVisibility(View.GONE);
                 }
                 @Override
                 public void onTransitionEnd(Transition transition) {
                     Log.e(TAG,"Transition end. Scan in FAB");
                     mNameTextView.animate().setDuration(TEXT_FADE_DURATION).alpha(1f);
+                    mFavoritesFAB.setVisibility(View.VISIBLE);
+
+                    //Scale in FAB
+                    if(getActivity() != null) {
+                        Animation scaleAnimation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),
+                                R.anim.scale_in_image);
+                        mFavoritesFAB.startAnimation(scaleAnimation);
+                    }
                 }
             });
         }
+
+        mFavoritesFAB = (FloatingActionButton) view.findViewById(R.id.favorites_fab);
+
+        mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPerson != null) {
+                    String toastStr = "";
+                    if (v.getTag().equals(false)) {
+                        Log.e(TAG, "Set to favorite");
+                        mFavoritesFAB.setTag(true);
+                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
+                        toastStr = getString(R.string.added) + " " + mPerson.getName() + " "
+                                + getString(R.string.to_favorites);
+                        Util.addToFavoritesDb(getActivity(),mPerson.getContentValues());
+
+                    } else {
+                        Log.e(TAG, "remove from favorite");
+                        mFavoritesFAB.setTag(false);
+                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
+                        toastStr = getString(R.string.removed) + " " + mPerson.getName() + " "
+                                + getString(R.string.from_favorites);
+                        Util.removeFromFavoritesDb(getActivity(),mPerson.getId());
+                    }
+                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                            toastStr, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+            }
+        });
 
         View.OnClickListener knownForClickListener = new View.OnClickListener() {
             @Override
@@ -406,6 +448,9 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
             else
                 setKnownForLayout();
+
+            //See if this is a favorite movie and set the state of the star button
+            Util.setFavoritesButton(mFavoritesFAB,getActivity(),mPerson.getId());
         }
 
     }

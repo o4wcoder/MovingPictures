@@ -25,9 +25,8 @@ import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
+import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
-import com.android.fourthwardcoder.movingpictures.models.MovieOld;
 
 import java.util.ArrayList;
 
@@ -73,7 +72,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     //  GridView mGridView;
     RecyclerView mRecyclerView;
     // ArrayList<MovieOld> mList = null;
-    ArrayList<MovieBasic> mList = null;
+    ArrayList<MediaBasic> mList = null;
     int mEntType;
     int mSortOrder;
     SharedPreferences.Editor prefsEditor;
@@ -97,27 +96,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        Log.e(TAG, "onCreate");
 //        //Set Option Menu
 //        setHasOptionsMenu(true);
 
         if (savedInstanceState != null) {
             mList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
             mEntType = savedInstanceState.getInt(ARG_ENT_TYPE);
+            mSortOrder = savedInstanceState.getInt(ARG_SORT);
         } else {
             Bundle bundle = getArguments();
             mEntType = bundle.getInt(ARG_ENT_TYPE);
             mSortOrder = bundle.getInt(ARG_SORT);
         }
-        //Get instanace of Shared Preferences
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity()
-//                .getApplicationContext());
-//        prefsEditor = sharedPrefs.edit();
-
-        //Get stored sort preference from shared resources. If non exists set it to sort by
-        //popularity.
-        // mSortOrder = sharedPrefs.getInt(PREF_SORT, DEFAULT_SORT);
     }
 
     @Override
@@ -140,18 +130,22 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 //Start up thread to pull in movie data. Send in sort
                 //type. If we are pulling favorites (4) then use a cursorLoader. Otherwise
                 //use AsynTAsk
-                if (mSortOrder == 4) {
+                if (mEntType == ENT_TYPE_FAVORITE) {
                     //Get Favorites
-                    Log.e(TAG, "In OnCreateView: Got sort order 4, calling loader to get favorites");
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
                     getApiList();
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
-                //Just apply the current list of movies
-                Log.e(TAG, "-----------Apply current movie list --------------");
-                setAdapter(mList);
+                //Just apply the current list of movies. If this is the favorites, then
+                //Need to adjust the ent type
+                if(mEntType == ENT_TYPE_FAVORITE) {
+
+                    setAdapter(mList, convertFavoriteSortToMediaType());
+                }
+                else
+                    setAdapter(mList,mEntType);
 
             }
         }
@@ -193,79 +187,46 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 //
 //    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.menu_item_sort:
-//                //Get support Fragment Manager
-//                android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
-//                SortDialogFragment dialog = SortDialogFragment.newInstance(mSortOrder);
-//                //Make MainFragment the target fragment of the SortDialogFragment instance
-//                dialog.setTargetFragment(MainFragment.this, REQUEST_SORT);
-//                dialog.show(fm, DIALOG_SORT);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    private int convertFavoriteSortToMediaType() {
 
-//    //Get results from Dialog boxes and other Activities
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//
-//
-//        if (resultCode != Activity.RESULT_OK)
-//            return;
-//
-//        if (requestCode == REQUEST_SORT) {
-//            //Get change in sort from dialog and store it in Shared Preferences
-//            mSortOrder = data.getIntExtra(SortDialogFragment.EXTRA_SORT, DEFAULT_SORT);
-//            prefsEditor.putInt(PREF_SORT, mSortOrder);
-//            prefsEditor.commit();
-//
-//            Resources res = getResources();
-//            String[] sortList = res.getStringArray(R.array.sort_list);
-//            String sortOrder = sortList[mSortOrder];
-//            getActivity().setTitle(sortOrder);
-//            //Fetch new set of movies based on sort order
-//            if (mRecyclerView != null)
-//                if (mSortOrder == 4) {
-//                    //Get Favorites
-//                    getLoaderManager().restartLoader(MOVIE_FAVORITES_LOADER, null, this);
-//                } else {
-//                    if(Util.isNetworkAvailable(getActivity())) {
-//                        //new FetchPhotosTask().execute(mSortOrder);
-//                        getMovieList(mSortOrder);
-//                    }
-//                    else {
-//                        Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-//                                getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-//                        connectToast.show();
-//                    }
-//                }
-//        }
-//    }
+        switch(mSortOrder) {
+            case SORT_MOVIES:
+                return ENT_TYPE_MOVIE;
+            case SORT_TV:
+                return ENT_TYPE_TV;
+            case SORT_PERSON:
+                return ENT_TYPE_PERSON;
+            default:
+                return ENT_TYPE_MOVIE;
 
+        }
+    }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Log.e(TAG, "Inside onCreateLoader");
-        Uri movieFavoritesUri = FavoritesContract.MovieEntry.buildMovieUri();
+        Log.e(TAG, "Inside onCreateLoader with sortOrder = " + mSortOrder);
+        Uri movieFavoritesUri = FavoritesContract.FavoritesEntry.buildMovieUri();
+
+        String selection = FavoritesContract.FavoritesEntry.COLUMN_MEDIA_TYPE +"=?";
+        String[] selectionArgs = new String[1];
+        selectionArgs[0] = String.valueOf(convertFavoriteSortToMediaType());
 
         return new CursorLoader(getActivity(),
                 movieFavoritesUri,
                 null,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null);
+
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-        Log.e(TAG, "inside onLoadFinished");
-        //  setMovieAdapter(convertCursorToMovieList(cursor));
+        Log.e(TAG, "inside onLoadFinished with cursor size = " + cursor.getCount());
+
+        //For Favorites, we will use the sort order as the ent type as it contains
+        setAdapter(convertCursorToList(cursor),convertFavoriteSortToMediaType());
     }
 
     @Override
@@ -273,18 +234,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-    private ArrayList<MovieOld> convertCursorToMovieList(Cursor cursor) {
+    private ArrayList<MediaBasic> convertCursorToList(Cursor cursor) {
 
         if (cursor != null) {
-            ArrayList<MovieOld> movieList = new ArrayList<>(cursor.getCount());
+            ArrayList<MediaBasic> mediaList = new ArrayList<>(cursor.getCount());
 
             while (cursor.moveToNext()) {
-                MovieOld movie = MovieOld.convertCursorToMovie(cursor);
-                Log.e(TAG, "Conver favorite movie " + movie.getTitle());
-                movieList.add(movie);
+                MediaBasic media = new MediaBasic(cursor);
+                Log.e(TAG,"convertCusorToList() MediaBasic from cursor. Id = " + media.getId() +
+                        " " + " poster path = " + media.getPosterPath());
+               // Log.e(TAG, "Conver favorite movie " + movie.getTitle());
+                mediaList.add(media);
             }
 
-            return movieList;
+            return mediaList;
         } else {
             return null;
         }
@@ -318,7 +281,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             Call<MovieList> call = null;
 
-            Log.e(TAG,"Get API list with ent type = " + mEntType + " Sort type = " + mSortOrder);
+            Log.e(TAG,"getApiList() with ent type = " + mEntType + " Sort type = " + mSortOrder);
             call = MovieDbAPI.getMovieApiService().getMovieList(getUriPath(), getSortType());
 
 
@@ -329,7 +292,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                         if (response.isSuccessful()) {
                             Log.e(TAG, "onResponse()");
-                            setAdapter((ArrayList) response.body().getMovies());
+                            setAdapter((ArrayList) response.body().getMovies(),mEntType);
                         } else {
                             Log.e(TAG, "!!! Response was not sucessful!!!");
                             //parse the response to find the error. Display a message
@@ -355,8 +318,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      *
      * @param movieList ArrayList of Movies
      */
-    private void setAdapter(ArrayList<MovieBasic> movieList) {
+    private void setAdapter(ArrayList<MediaBasic> movieList, final int entType) {
 
+        final int localEntType;
         Log.e(TAG, "setMovieAdapter() Inside");
         if (getActivity() != null && mRecyclerView != null) {
 
@@ -364,36 +328,44 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             //GridView
             if (movieList != null) {
 
-                //Store global copy
-                mList = movieList;
-                Log.e(TAG, "setMovieAdapter(): MovieBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + mEntType);
-                //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
-                EntListAdapter adapter = new EntListAdapter(getActivity(), mList, mEntType,new EntListAdapter.MovieListAdapterOnClickHandler() {
-                    @Override
-                    public void onClick(MovieBasic movie, EntListAdapter.MovieListAdapterViewHolder vh) {
-                        Log.e(TAG, "onClick RecyclerView movie list");
-                        //                //Get selected movie from the GridView
-                        //Start intent to bring up Details Activity
+                if (movieList.size() > 0) {
+                    //Store global copy
+                    mList = movieList;
 
-                        Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
-                        ((Callback) getActivity()).onItemSelected(mEntType, movie.getId(), vh.movieThumbImageView);
+                    //If this is from favorites, then change the ent type
+                    if(entType == ENT_TYPE_FAVORITE)
+                        localEntType = convertFavoriteSortToMediaType();
+                    Log.e(TAG, "setMovieAdapter(): MediaBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + entType);
+                    //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
+                    EntListAdapter adapter = new EntListAdapter(getActivity(), mList, entType, new EntListAdapter.MovieListAdapterOnClickHandler() {
+                        @Override
+                        public void onClick(MediaBasic movie, EntListAdapter.MovieListAdapterViewHolder vh) {
+                            Log.e(TAG, "onClick RecyclerView movie list");
+                            //                //Get selected movie from the GridView
+                            //Start intent to bring up Details Activity
+
+                            Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
+                            ((Callback) getActivity()).onItemSelected(entType, movie.getId(), vh.movieThumbImageView);
+                        }
+                    });
+
+                    mRecyclerView.setAdapter(adapter);
+                    mRecyclerView.scheduleLayoutAnimation();
+                    Log.e(TAG, "MovieOld list not null, if there is anthing in the list set 1st pos");
+                    //If we are in two pane mode, set the first movie in the details fragment
+                    if (mList.size() > 0) {
+                        Log.e(TAG, "Calling on loadfinished");
+                        ((Callback) getActivity()).onLoadFinished(mList.get(0).getId());
                     }
-                });
-
-                mRecyclerView.setAdapter(adapter);
-                mRecyclerView.scheduleLayoutAnimation();
-                Log.e(TAG, "MovieOld list not null, if there is anthing in the list set 1st pos");
-                //If we are in two pane mode, set the first movie in the details fragment
-                if (mList.size() > 0) {
-                    Log.e(TAG, "Calling on loadfinished");
-                    ((Callback) getActivity()).onLoadFinished(mList.get(0).getId());
+                } else {
+                    //If we get here, then the movieList was empty and something went wrong.
+                    //Most likely a network connection problem
+//                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
+//                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+//                    connectToast.show();
                 }
             } else {
-                //If we get here, then the movieList was empty and something went wrong.
-                //Most likely a network connection problem
-                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                connectToast.show();
+                Log.e(TAG,"setAdapter() List was empty. Nothing to set in adapter");
             }
 
         }
@@ -404,6 +376,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST, mList);
         savedInstanceState.putInt(ARG_ENT_TYPE,mEntType);
+        savedInstanceState.putInt(ARG_SORT,mSortOrder);
         super.onSaveInstanceState(savedInstanceState);
     }
 

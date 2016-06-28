@@ -227,4 +227,6 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <include layout="@layout/favorites_fab"></include>
 </android.support.design.widget.CoordinatorLayout>

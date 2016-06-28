@@ -1,16 +1,18 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 //@Generated("org.jsonschema2pojo")
-public class MovieBasic implements Parcelable {
+public class MediaBasic implements Parcelable {
 
     @SerializedName("poster_path")
     @Expose
@@ -60,6 +62,16 @@ public class MovieBasic implements Parcelable {
     @SerializedName("name")
     @Expose
     private String name;
+
+    public MediaBasic(Cursor cursor) {
+
+        this.id = cursor.getInt(FavoritesContract.COL_ID);
+        this.posterPath = cursor.getString(FavoritesContract.COL_POSTER_PATH);
+        this.profilePath = cursor.getString(FavoritesContract.COL_POSTER_PATH);
+        this.title = cursor.getString(FavoritesContract.COL_NAME);
+        this.name = cursor.getString(FavoritesContract.COL_NAME);
+
+    }
     /**
      *
      * @return
@@ -328,7 +340,7 @@ public class MovieBasic implements Parcelable {
         this.name = name;
     }
 
-    protected MovieBasic(Parcel in) {
+    protected MediaBasic(Parcel in) {
         posterPath = in.readString();
         byte adultVal = in.readByte();
         adult = adultVal == 0x02 ? null : adultVal != 0x00;
@@ -413,15 +425,15 @@ public class MovieBasic implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<MovieBasic> CREATOR = new Parcelable.Creator<MovieBasic>() {
+    public static final Parcelable.Creator<MediaBasic> CREATOR = new Parcelable.Creator<MediaBasic>() {
         @Override
-        public MovieBasic createFromParcel(Parcel in) {
-            return new MovieBasic(in);
+        public MediaBasic createFromParcel(Parcel in) {
+            return new MediaBasic(in);
         }
 
         @Override
-        public MovieBasic[] newArray(int size) {
-            return new MovieBasic[size];
+        public MediaBasic[] newArray(int size) {
+            return new MediaBasic[size];
         }
     };
 }

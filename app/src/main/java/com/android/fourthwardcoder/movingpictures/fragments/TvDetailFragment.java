@@ -184,29 +184,29 @@ public class TvDetailFragment extends Fragment implements Constants {
         mFavoritesFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mTvShow != null) {
+                    String toastStr = "";
+                    if (v.getTag().equals(false)) {
+                        Log.e(TAG, "Set to favorite");
+                        mFavoritesFAB.setTag(true);
+                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
+                        toastStr = getString(R.string.added) + " " + mTvShow.getName() + " "
+                                + getString(R.string.to_favorites);
+                        Util.addToFavoritesDb(getActivity(),mTvShow.getContentValues());
 
-//                if (mMovie != null) {
-//                    String toastStr = "";
-//                    if (v.getTag().equals(false)) {
-//                        Log.e(TAG, "Set to favorite");
-//                        mFavoritesFAB.setTag(true);
-//                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
-//                        toastStr = getString(R.string.added) + " " + mMovie.getTitle() + " "
-//                                + getString(R.string.to_favorites);
-//                        addMovieToFavoritesDb();
-//
-//                    } else {
-//                        Log.e(TAG, "remove from favorite");
-//                        mFavoritesFAB.setTag(false);
-//                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
-//                        toastStr = getString(R.string.removed) + " " + mMovie.getTitle() + " "
-//                                + getString(R.string.from_favorites);
-//                        removeMovieFromDb();
-//                    }
-//                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-//                            toastStr, Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
+                    } else {
+                        Log.e(TAG, "remove from favorite");
+                        mFavoritesFAB.setTag(false);
+                        mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
+                        toastStr = getString(R.string.removed) + " " + mTvShow.getName() + " "
+                                + getString(R.string.from_favorites);
+                        Util.removeFromFavoritesDb(getActivity(),mTvShow.getId());
+                    }
+                    Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                            toastStr, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
             }
         });
 
@@ -452,6 +452,9 @@ public class TvDetailFragment extends Fragment implements Constants {
                 //Did not return any cast. Don't show cast card.
                 mCastCardView.setVisibility(View.GONE);
             }
+
+            //See if this is a favorite movie and set the state of the star button
+            Util.setFavoritesButton(mFavoritesFAB,getActivity(),mTvShow.getId());
         }
     }
     private void getTvShow() {

@@ -50,7 +50,7 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 //            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
 //                Log.e(TAG,"--------------- Getting whol object movie");
 //                //Get MovieOld object from Main Activity
-//                MovieBasic movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+//                MediaBasic movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
 //                arguments.putParcelable(EXTRA_MOVIE, movie);
 //            }
 //            else {

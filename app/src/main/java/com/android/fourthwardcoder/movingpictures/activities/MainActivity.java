@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -27,15 +25,9 @@ import com.android.fourthwardcoder.movingpictures.fragments.MainFragment;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.crashlytics.android.Crashlytics;
 
-import java.io.IOException;
-
 import io.fabric.sdk.android.Fabric;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
 
 /**
  * Class MainActivity
@@ -199,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                     .commit();
         } else {
             Intent intent = null;
+            Log.e(TAG,"onItemSelected with entType = " + entType + " id = " + movieId);
             if(entType == ENT_TYPE_MOVIE)
                intent = new Intent(this, MovieDetailActivity.class);
             else if(entType == ENT_TYPE_TV)

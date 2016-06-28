@@ -16,10 +16,8 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Cast;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Crew;
-import com.android.fourthwardcoder.movingpictures.models.MovieBasic;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**

@@ -1,15 +1,19 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Person implements Parcelable {
+public class Person implements Parcelable, Constants {
 
     @SerializedName("adult")
     @Expose
@@ -285,6 +289,16 @@ public class Person implements Parcelable {
         this.profilePath = profilePath;
     }
 
+    public ContentValues getContentValues() {
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_ID, this.id);
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_POSTER_PATH, this.profilePath);
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_MEDIA_TYPE, ENT_TYPE_PERSON );
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_NAME,this.name);
+
+        return movieValues;
+    }
 
     protected Person(Parcel in) {
         byte adultVal = in.readByte();

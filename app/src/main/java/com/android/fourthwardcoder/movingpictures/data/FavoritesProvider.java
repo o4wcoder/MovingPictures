@@ -37,8 +37,8 @@ public class FavoritesProvider extends ContentProvider {
 
         String authority = FavoritesContract.CONTENT_AUTHORITY;
 
-        sURIMather.addURI(authority, FavoritesContract.PATH_MOVIE, MOVIE);
-        sURIMather.addURI(authority, FavoritesContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
+        sURIMather.addURI(authority, FavoritesContract.PATH_FAVORITES, MOVIE);
+        sURIMather.addURI(authority, FavoritesContract.PATH_FAVORITES + "/#", MOVIE_WITH_ID);
 
         return sURIMather;
     }
@@ -59,7 +59,7 @@ public class FavoritesProvider extends ContentProvider {
 
             case MOVIE: {
                 retCursor = mMovieHelper.getReadableDatabase().query(
-                        FavoritesContract.MovieEntry.TABLE_NAME,
+                        FavoritesContract.FavoritesEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -85,9 +85,9 @@ public class FavoritesProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE:
-                return FavoritesContract.MovieEntry.CONTENT_TYPE;
+                return FavoritesContract.FavoritesEntry.CONTENT_TYPE;
             case MOVIE_WITH_ID:
-                return FavoritesContract.MovieEntry.CONTENT_ITEM_TYPE;
+                return FavoritesContract.FavoritesEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -102,9 +102,9 @@ public class FavoritesProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE: {
-                long _id = db.insert(FavoritesContract.MovieEntry.TABLE_NAME, null, contentValues);
+                long _id = db.insert(FavoritesContract.FavoritesEntry.TABLE_NAME, null, contentValues);
                 if (_id > 0)
-                    returnUri = FavoritesContract.MovieEntry.buildMovieUri();
+                    returnUri = FavoritesContract.FavoritesEntry.buildMovieUri();
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -132,7 +132,7 @@ public class FavoritesProvider extends ContentProvider {
         switch (match) {
 
             case MOVIE: {
-                deletedRows = db.delete(FavoritesContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                deletedRows = db.delete(FavoritesContract.FavoritesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default:
@@ -159,7 +159,7 @@ public class FavoritesProvider extends ContentProvider {
 
         switch (match) {
             case MOVIE: {
-                updatedRows = db.update(FavoritesContract.MovieEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+                updatedRows = db.update(FavoritesContract.FavoritesEntry.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
             }
             default:

@@ -1,11 +1,15 @@
 package com.android.fourthwardcoder.movingpictures.helpers;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.text.Html;
@@ -24,6 +28,7 @@ import com.android.fourthwardcoder.movingpictures.activities.ShowAllListActivity
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Genre;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
@@ -375,4 +380,66 @@ public class Util implements Constants {
 //
 //        return shareIntent;
 //    }
+
+    public static void addToFavoritesDb(Context context, ContentValues contentValues) {
+        Uri inserted = context.getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI, contentValues);
+    }
+
+    public static void removeFromFavoritesDb(Context context, int id) {
+
+        //Put togeter SQL selection
+        String selection = FavoritesContract.FavoritesEntry.COLUMN_ID + "=?";
+        String[] selectionArgs = new String[1];
+        selectionArgs[0] = String.valueOf(id);
+
+        //Remove movie data from the content provider
+        int deletedRow = context.getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI, selection, selectionArgs);
+    }
+
+    private static boolean checkIfInFavoritesDb(Context context, int id)  {
+
+        //Get projection with MovieOld ID
+        String[] projection =
+                {
+                        FavoritesContract.FavoritesEntry.COLUMN_ID
+                };
+
+        //Put together SQL selection
+        String selection = FavoritesContract.FavoritesEntry.COLUMN_ID + "=?";
+        String[] selectionArgs = new String[1];
+        selectionArgs[0] = String.valueOf(id);
+
+        //Return cursor to the row that contains the movie
+        Cursor cursor = context.getContentResolver().query(
+                FavoritesContract.FavoritesEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null);
+
+        if (cursor != null) {
+
+            //If the cursor is empty, than the movie is not in the DB; else it is in the DB
+            if (cursor.getCount() < 1)
+                return false;
+            else
+                return true;
+        }
+
+        //Something went wrong. Just return false.
+        return false;
+    }
+    public static void setFavoritesButton(FloatingActionButton fab, Context context, int id) {
+
+        if (Util.checkIfInFavoritesDb(context,id)) {
+            Log.e(TAG, "Already favorite, set tag to true");
+            fab.setTag(true);
+            fab.setColorFilter(context.getResources().getColor(R.color.yellow));
+        } else {
+
+            Log.e(TAG, "Not favorite, set tag to false");
+            fab.setTag(false);
+            fab.setColorFilter(context.getResources().getColor(R.color.white));
+        }
+    }
 }

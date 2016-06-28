@@ -1,11 +1,16 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.content.ContentValues;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvShow {
+public class TvShow implements Constants{
 
     @SerializedName("backdrop_path")
     @Expose
@@ -609,6 +614,17 @@ public class TvShow {
             str = str.substring(0,str.length() - 2);
 
         return str;
+    }
+
+    public ContentValues getContentValues() {
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_ID, this.id);
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_POSTER_PATH, this.posterPath);
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_MEDIA_TYPE, ENT_TYPE_TV );
+        movieValues.put(FavoritesContract.FavoritesEntry.COLUMN_NAME,this.name);
+
+        return movieValues;
     }
 
 }

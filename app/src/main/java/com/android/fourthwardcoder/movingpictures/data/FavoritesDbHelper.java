@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.android.fourthwardcoder.movingpictures.data.FavoritesContract.MovieEntry;
+import com.android.fourthwardcoder.movingpictures.data.FavoritesContract.FavoritesEntry;
 
 /**
  * Class FavoritesDbHelper
@@ -16,9 +16,9 @@ import com.android.fourthwardcoder.movingpictures.data.FavoritesContract.MovieEn
 public class FavoritesDbHelper extends SQLiteOpenHelper {
 
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "movie.db";
+    static final String DATABASE_NAME = "favorites.db";
 
     public FavoritesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,28 +30,19 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
         /*
          * Create MovieOld's Table
          */
-        final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + FavoritesEntry.TABLE_NAME + " (" +
 
-                MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                FavoritesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the movie entry associated with this movie data
-                MovieEntry.COLUMN_ID + " INTEGER NOT NULL, " +
-                MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
-                MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
-                MovieEntry.COLUMN_BACKDROP_PATH + " TEXT, " +
-                MovieEntry.COLUMN_RELEASE_DATE + " TEXT, " +
-                MovieEntry.COLUMN_RUNTIME + " TEXT, " +
-                MovieEntry.COLUMN_RATING + " REAL, " +
-                MovieEntry.COLUMN_REVENUE + " TEXT, " +
-                MovieEntry.COLUMN_GENRE_JSON + " TEXT, " +
-                MovieEntry.COLUMN_DIRECTOR_JSON + " TEXT, " +
-                MovieEntry.COLUMN_ACTOR_JSON + " TEXT, " +
-                MovieEntry.COLUMN_VIDEO_JSON + " TEXT, " +
+                FavoritesEntry.COLUMN_ID + " INTEGER NOT NULL, " +
+                FavoritesEntry.COLUMN_POSTER_PATH + " TEXT, " +
+                FavoritesEntry.COLUMN_MEDIA_TYPE + " TEXT, " +
+                FavoritesEntry.COLUMN_NAME + " TEXT, " +
 
 
-                " UNIQUE (" + MovieEntry.COLUMN_ID + ", " +
-                MovieEntry.COLUMN_ID + ") ON CONFLICT REPLACE);";
+                " UNIQUE (" + FavoritesEntry.COLUMN_ID + ", " +
+                FavoritesEntry.COLUMN_ID + ") ON CONFLICT REPLACE);";
 
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
 
@@ -61,6 +52,6 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         //!!! May need to use ALTER TABLE here.
-        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + FavoritesEntry.TABLE_NAME);
     }
 }
