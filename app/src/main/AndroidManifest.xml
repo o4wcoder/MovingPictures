@@ -72,7 +72,7 @@
         <activity
             android:name="com.android.fourthwardcoder.movingpictures.activities.PersonPhotoPagerActivity"
             android:label="@string/title_activity_person_single_photo"
-            android:theme="@style/AppTheme.PersonPhotoDetail"
+            android:theme="@style/AppTheme.PersonPhotoPager"
             android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

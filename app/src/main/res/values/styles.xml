@@ -17,6 +17,7 @@
     <style name="AppTheme.PersonDetail" parent="@style/AppTheme"></style>
     <style name="AppTheme.TvShowDetail" parent="@style/AppTheme"></style>
     <style name="AppTheme.PersonPhotoDetail" parent="@style/AppTheme"></style>
+    <style name="AppTheme.PersonPhotoPager" parent="@style/AppTheme"></style>
 
 
     <style name="headerTextView">

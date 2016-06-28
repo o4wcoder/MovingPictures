@@ -2,9 +2,13 @@ package com.android.fourthwardcoder.movingpictures.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
@@ -21,6 +25,10 @@ import com.squareup.picasso.Picasso;
  */
 public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
+    /*************************************************************************/
+    /*                           Constants                                   */
+    /*************************************************************************/
+    private static final String TAG = PersonSinglePhotoFragment.class.getSimpleName();
     /*************************************************************************/
     /*                           Local Data                                  */
     /*************************************************************************/
@@ -58,7 +66,17 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
         View view = inflater.inflate(R.layout.person_image, container, false);
 
+
+
         ImageView imageView = (ImageView) view.findViewById(R.id.movie_imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"onClick() ");
+
+                ((OnPhotoClick)getActivity()).onSetBottomPanelVisibility();
+            }
+        });
 
         if ((imageView != null) && (mPhotoPath != null)) {
 
@@ -66,5 +84,10 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
         }
 
         return view;
+    }
+
+    public interface OnPhotoClick {
+
+        void onSetBottomPanelVisibility();
     }
 }
