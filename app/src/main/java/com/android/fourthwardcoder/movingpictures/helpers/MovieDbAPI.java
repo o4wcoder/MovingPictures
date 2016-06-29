@@ -11,7 +11,7 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 import com.android.fourthwardcoder.movingpictures.models.CreditOld;
 import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
-import com.android.fourthwardcoder.movingpictures.models.TvShowOld;
+
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 

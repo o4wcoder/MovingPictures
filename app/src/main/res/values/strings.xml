@@ -1,5 +1,6 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
 
+
     <!-- Activity Titles -->
     <string name="title_movies">Movies</string>
     <string name="title_tv_shows">TV Shows</string>
@@ -74,6 +75,9 @@
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>
+    <string name="share_storage_directory" translatable="false">movingpictures</string>
+    <string name="share_image" translatable="false">person_share.png</string>
+    <string name="share_title">Share Photo</string>
 
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>

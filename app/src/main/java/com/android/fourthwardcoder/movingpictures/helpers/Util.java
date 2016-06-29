@@ -35,10 +35,13 @@ import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.view.WindowManager.*;
 
@@ -442,4 +445,6 @@ public class Util implements Constants {
             fab.setColorFilter(context.getResources().getColor(R.color.white));
         }
     }
+
+
 }

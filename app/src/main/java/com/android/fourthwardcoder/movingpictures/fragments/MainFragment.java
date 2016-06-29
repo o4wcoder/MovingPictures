@@ -305,7 +305,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     @Override
                     public void onFailure(Call<MovieList> call, Throwable t) {
                         Log.e(TAG, "onFailure() " + t.getMessage());
-                        Toast.makeText(getContext(), getContext().getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+                        if(getActivity() != null)
+                            Toast.makeText(getContext(), getContext().getString(R.string.toast_network_error), Toast.LENGTH_LONG);
 
                     }
                 });

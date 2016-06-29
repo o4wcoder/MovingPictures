@@ -1,6 +1,11 @@
 package com.android.fourthwardcoder.movingpictures.activities;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,15 +14,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.PersonSinglePhotoFragment;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.PersonPhoto;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -42,6 +54,7 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
     FrameLayout mBottomPanel;
     Toolbar mToolbar;
     boolean mIsToolbarVisible = true;
+    Button mShareButton;
 
     //Argument for saving state of toolbars
     private final String ARG_TOOLBAR_VISIBLE = "arg_toolbar_visible";
@@ -58,6 +71,7 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         mPager = (ViewPager)findViewById(R.id.pager);
         mBottomPanel = (FrameLayout)findViewById(R.id.person_photo_bottom_panel);
 
+
         if(savedInstanceState != null) {
 
             mIsToolbarVisible = savedInstanceState.getBoolean(ARG_TOOLBAR_VISIBLE);
@@ -71,7 +85,41 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
 
         setTitle(personName);
 
+        //Set up Share button
+        mShareButton = (Button)findViewById(R.id.person_photo_share_button);
+        mShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"onClick() Share Button with current item = " +  mPager.getCurrentItem());
 
+                final PersonPhoto photo = mPhotoList.get(mPager.getCurrentItem());
+                Picasso.with(getApplicationContext()).load(photo.getFullImagePath()).into(new Target() {
+
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                        if(bitmap != null) {
+                            Log.e(TAG, "Got bitmap! with byte size = " + bitmap.getHeight() + " x " + bitmap.getWidth());
+                            shareBitmap(bitmap,photo);
+                        }
+                        else
+                            Log.e(TAG,"Bitmap was null");
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+
+
+            }
+        });
 
         //Get Activities instance of the Fragment Manager
         FragmentManager fm = getSupportFragmentManager();
@@ -93,6 +141,10 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         //Start pager on the position of the photo selected so we just don't start on the first one
         int photoPos = getIntent().getIntExtra(EXTRA_PERSON_PHOTO_ID,0);
         mPager.setCurrentItem(photoPos);
+
+
+
+
     }
 
     @Override
@@ -140,4 +192,42 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         }
 
     }
+
+    private void shareBitmap(Bitmap bitmap,PersonPhoto photo) {
+
+        File dir = new File(getExternalCacheDir(),getString(R.string.share_storage_directory));
+
+        if(!dir.exists()) {
+
+            if(dir.mkdirs())
+                Log.e(TAG,"Success creating new directory");
+            else
+                Log.e(TAG,"Failed creating new directory");
+        } else {
+            Log.e(TAG,"Directory already exists");
+        }
+
+
+       // String imageName = photo.g
+        File file = new File(dir,getString(R.string.share_image));
+
+        FileOutputStream fOut;
+
+        try {
+            fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG,85,fOut);
+            fOut.flush();
+            fOut.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        Uri uri = Uri.fromFile(file);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_STREAM,uri);
+        startActivity(Intent.createChooser(intent,getString(R.string.share_title)));
+    }
+
 }

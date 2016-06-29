@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 
@@ -68,7 +69,7 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
 
 
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.movie_imageView);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.movie_imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +87,15 @@ public class PersonSinglePhotoFragment extends Fragment implements Constants {
         return view;
     }
 
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            Log.e(TAG,"OnSuccess() with visible photo " + mPhotoPath);
+//        }
+//        else {
+//        }
+//    }
     public interface OnPhotoClick {
 
         void onSetBottomPanelVisibility();

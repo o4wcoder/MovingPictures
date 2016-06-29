@@ -31,8 +31,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/person_photo_share_button"
             android:padding="16dp"
-
             style="@style/Widget.AppCompat.Button.Borderless"
             android:background="?android:selectableItemBackground"
             android:drawableTop="@drawable/ic_share_white"

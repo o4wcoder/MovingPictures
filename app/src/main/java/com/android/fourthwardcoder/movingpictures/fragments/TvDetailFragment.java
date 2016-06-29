@@ -48,7 +48,6 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Cast;
 import com.android.fourthwardcoder.movingpictures.models.Network;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
-import com.android.fourthwardcoder.movingpictures.models.TvShowOld;
 import com.android.fourthwardcoder.movingpictures.models.Video;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;

@@ -53,7 +53,9 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -494,8 +496,13 @@ public class MovieDetailFragment extends Fragment implements Constants {
             mGenreTextView.setText(genre);
 
             if (mMovie.getRevenue() > 0) {
-                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " +
-                        mMovie.getRevenue());
+                Locale locale = new Locale("en", "US");
+                NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+                String strRevenue = numberFormat.format(mMovie.getRevenue());
+
+                Spanned revenue = Html.fromHtml("<b>" + getString(R.string.revenue) + "</b>" + " " + strRevenue);
+
+
                 mRevenueTextView.setText(revenue);
             } else {
                 mRevenueTextView.setVisibility(View.GONE);
