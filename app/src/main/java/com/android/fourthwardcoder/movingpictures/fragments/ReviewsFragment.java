@@ -1,17 +1,13 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
-import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Review;
@@ -63,25 +59,4 @@ public class ReviewsFragment extends Fragment implements Constants {
         return view;
     }
 
-//    private class FetchReviewsTask extends AsyncTask<Integer, Void, ArrayList<ReviewOld>> {
-//
-//        @Override
-//        protected ArrayList<ReviewOld> doInBackground(Integer... params) {
-//
-//            //Get ID of movie or tv show
-//            int id = params[0];
-//            int entType = params[1];
-//
-//            return MovieDbAPI.getReviewList(id, entType);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ArrayList<ReviewOld> reviewsList) {
-//
-//            if ((getActivity() != null) && (reviewsList != null)) {
-//                ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), reviewsList);
-//                mListView.setAdapter(adapter);
-//            }
-//        }
-//    }
 }
