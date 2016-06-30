@@ -47,6 +47,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -140,18 +141,18 @@ public class PersonDetailFragment extends Fragment implements Constants {
         //Get NestedScrollView;
         mNestedScrollView = (NestedScrollView)view.findViewById(R.id.scrollview);
 
-        //PersonOld Profile Image
+        //Person Profile Image
         mProfileImageView = (ImageView) view.findViewById(R.id.profileImageView);
-        //PersonOld Name
+        //Person Name
         mNameTextView = (TextView) view.findViewById(R.id.detail_person_name_text_view);
-        //PersonOld Birth Date
+        //Person Birth Date
         mBornDateTextView = (TextView) view.findViewById(R.id.bornDateTextView);
-        //PersonOld Birth Place
+        //Person Birth Place
         mBornPlaceTextView = (TextView) view.findViewById(R.id.bornPlaceTextView);
-        //PersonOld Death Date
+        //Person Death Date
         mDeathDateTextView = (TextView) view.findViewById(R.id.deathDateTextView);
 
-        //PersonOld Biography Content
+        //Person Biography Content
         mBiographyContentTextView = (ExpandableTextView) view.findViewById(R.id.person_biography_exp_text_view);
 
         mWebpageTextView = (TextView) view.findViewById(R.id.webPageTextView);
@@ -397,7 +398,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
 
                     Spanned bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
-                            strBirthDay);
+                            strBirthDay + " " + getString(R.string.age,getAge(mPerson.getBirthday())));
+
 
                     mBornDateTextView.setText(bornDate);
                 }
@@ -501,6 +503,29 @@ public class PersonDetailFragment extends Fragment implements Constants {
     }
 
 
+    private int getAge(String strBirthDate) {
+
+        Log.e(TAG,"Got string birthdate = " + strBirthDate);
+
+        String[] dobArray = strBirthDate.split("-");
+
+        //Get data of birth calendar
+        Calendar dob = Calendar.getInstance();
+        dob.set(Integer.parseInt(dobArray[0]),Integer.parseInt(dobArray[1]),Integer.parseInt(dobArray[2]));
+
+        //Get today's calendar
+        Calendar today = Calendar.getInstance();
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) {
+            age--;
+        } else if (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)
+                && today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+            age--;
+        }
+
+        return age;
+
+    }
 
 
 }

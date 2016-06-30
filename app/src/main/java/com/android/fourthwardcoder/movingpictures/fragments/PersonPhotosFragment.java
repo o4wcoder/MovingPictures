@@ -1,32 +1,30 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.adapters.ProfileListAdapter;
+import com.android.fourthwardcoder.movingpictures.helpers.APIError;
+import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
-import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.adapters.PersonImageAdapter;
-import com.android.fourthwardcoder.movingpictures.models.PersonPhoto;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.PersonPhotoPagerActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.android.fourthwardcoder.movingpictures.models.PersonPhotoList;
+import com.android.fourthwardcoder.movingpictures.models.Profile;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 /**
@@ -36,168 +34,148 @@ import java.util.ArrayList;
  * <p/>
  * Fragment to hold the GridView of a person's photos
  */
-public class PersonPhotosFragment extends Fragment implements Constants {
+public class PersonPhotosFragment extends Fragment implements Constants, ProfileListAdapter.ProfileListAdapterOnClickHandler {
 
     /************************************************************************/
     /*                              Constanta                               */
     /************************************************************************/
     private static final String TAG = PersonPhotosFragment.class.getSimpleName();
 
+    private static final String ARG_PERSON_ID = "person_id";
+    private static final String ARG_PERSON_NAME = "person_name";
+    private static final String ARG_PHOTO_LIST = "photo_list";
+
     /************************************************************************/
     /*                             Local Data                               */
     /************************************************************************/
-    GridView mGridView;
-    ArrayList<PersonPhoto> mPhotoList;
+    //GridView mGridView;
+  //  ArrayList<PersonPhoto> mPhotoList;
     String mPersonName;
+    private int mPersonId;
+    private RecyclerView mRecyclerView;
+    ArrayList<Profile> mProfileList;
+    ProfileListAdapter mAdapter;
+    boolean mFetchData = false;
 
-    public PersonPhotosFragment() {
+    public static PersonPhotosFragment newInstance(int personId, String mPersonName) {
+
+        Log.e(TAG,"newInstance()");
+        Bundle args = new Bundle();
+        args.putInt(ARG_PERSON_ID,personId);
+        args.putString(ARG_PERSON_NAME,mPersonName);
+        PersonPhotosFragment fragment = new PersonPhotosFragment();
+
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Log.e(TAG,"onCreate()");
+        if (savedInstanceState != null) {
 
-        //Retain fragment across Activity re-creation
-        setRetainInstance(true);
+            mPersonId = savedInstanceState.getInt(ARG_PERSON_ID);
+            mPersonName = savedInstanceState.getString(ARG_PERSON_NAME);
+            mProfileList = savedInstanceState.getParcelableArrayList(ARG_PHOTO_LIST);
+
+        } else {
+            Bundle bundle = getArguments();
+            mPersonId = bundle.getInt(ARG_PERSON_ID);
+            mPersonName = bundle.getString(ARG_PERSON_NAME);
+            //Fetch data
+            mFetchData = true;
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_person_photos, container, false);
+        View view = inflater.inflate(R.layout.fragment_grid_recycler_view, container, false);
 
-        final int personId = getActivity().getIntent().getIntExtra(EXTRA_ID, 0);
-        mPersonName = getActivity().getIntent().getStringExtra(EXTRA_PERSON_NAME);
+        Log.e(TAG,"onCreateView()");
+        //Set Up RecyclerView in Grid Layout
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.grid_recycler_view);
+        //Set Layout Manager for RecyclerView
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
-        getActivity().setTitle(getString(R.string.photos_toolbar) + " " + mPersonName);
 
-        mGridView = (GridView) view.findViewById(R.id.personPhotoGridView);
+        if(mRecyclerView != null) {
 
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //PersonPhoto personPhoto = mPhotoList.get(position);
-                Intent i = new Intent(getActivity(), PersonPhotoPagerActivity.class);
-                i.putParcelableArrayListExtra(EXTRA_PERSON_PHOTO, mPhotoList);
-                i.putExtra(EXTRA_PERSON_NAME, mPersonName);
-                i.putExtra(EXTRA_PERSON_PHOTO_ID, position);
-                startActivity(i);
-
-            }
-        });
-
-        if (mGridView != null) {
-
-            if(Util.isNetworkAvailable(getActivity())) {
-                new FetchPersonPhotosTask().execute(personId);
+            //If we don't have a list, then go fetch it. Otherwise just set the adapter
+            if(mFetchData) {
+                Log.e(TAG,"Go fetch data");
+                getPersonsPhotos();
             }
             else {
-                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                connectToast.show();
+                Log.e(TAG,"Already have data, setAdapter");
+                setAdapter();
             }
-        } else {
-            //Hit this when we retained our instance of the fragment on a rotation.
-            //Just apply the current list of photos
-            PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(), mPhotoList);
-            mGridView.setAdapter(adapter);
         }
         return view;
     }
 
-    /****************************************************************************/
-    /*                            Inner Classes                                 */
-    /****************************************************************************/
-    private class FetchPersonPhotosTask extends AsyncTask<Integer, Void, ArrayList<PersonPhoto>> {
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        //ProgressDialog to be displayed while the data is being fetched and parsed
-        private ProgressDialog progressDialog;
+        savedInstanceState.putInt(ARG_PERSON_ID,mPersonId);
+        savedInstanceState.putString(ARG_PERSON_NAME,mPersonName);
+        savedInstanceState.putParcelableArrayList(ARG_PHOTO_LIST,mProfileList);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
-        @Override
-        protected void onPreExecute() {
+    private void getPersonsPhotos() {
 
-            //Start ProgressDialog on Main Thread UI before precessing begins
-            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.progress_downloading_photos), true);
-        }
+        Log.e(TAG,"getPersonPhotos()");
+        Call<PersonPhotoList> call = MovieDbAPI.getMovieApiService().getPersonsPhotos(mPersonId);
 
-        @Override
-        protected ArrayList<PersonPhoto> doInBackground(Integer... params) {
+        call.enqueue(new retrofit2.Callback<PersonPhotoList>() {
 
-            //Get ID of movie
-            int personId = params[0];
+            @Override
+            public void onResponse(Call<PersonPhotoList> call, Response<PersonPhotoList> response) {
 
-            Uri personPhotosUri = Uri.parse(MovieDbAPI.BASE_MOVIE_DB_URL).buildUpon()
-                    .appendPath(MovieDbAPI.PATH_PERSON)
-                    .appendPath(String.valueOf(personId))
-                    .appendPath(MovieDbAPI.PATH_IMAGES)
-                    .appendQueryParameter(MovieDbAPI.PARAM_API_KEY, MovieDbAPI.API_KEY_MOVIE_DB)
-                    .build();
+                if(response.isSuccessful()) {
 
-            //Log.e(TAG, "Phot URI: " + personPhotosUri);
+                    mProfileList = (ArrayList)response.body().getProfiles();
+                    setAdapter();
 
-            String personPhotosJSONStr = MovieDbAPI.queryMovieDatabase(personPhotosUri);
-            Log.e(TAG, personPhotosJSONStr);
-
-            ArrayList<PersonPhoto> photoList = null;
-
-            try {
-                JSONObject obj = new JSONObject(personPhotosJSONStr);
-
-                JSONArray profilesArray = obj.getJSONArray(MovieDbAPI.TAG_PROFILES);
-
-                photoList = new ArrayList<>(profilesArray.length());
-
-                for (int i = 0; i < profilesArray.length(); i++) {
-
-                    JSONObject photoProfile = profilesArray.getJSONObject(i);
-
-                    PersonPhoto personPhoto = new PersonPhoto(personId);
-
-                    personPhoto.setThumbnailImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL +
-                            MovieDbAPI.getPosterSize(getActivity()) + photoProfile.getString(MovieDbAPI.TAG_FILE_PATH));
-
-                    personPhoto.setFullImagePath(MovieDbAPI.BASE_MOVIE_IMAGE_URL +
-                            MovieDbAPI.IMAGE_500_SIZE + photoProfile.getString(MovieDbAPI.TAG_FILE_PATH));
-
-                    Log.e(TAG, personPhoto.getThumbnailImagePath());
-                    photoList.add(personPhoto);
-
-                }
-            } catch (JSONException e) {
-                Log.e(TAG, "Caught JSON Exception " + e.getMessage());
-            }
-
-            return photoList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<PersonPhoto> photoList) {
-
-            //Done processing the movie query, kill Progress Dialog on main UI
-            progressDialog.dismiss();
-
-            if (getActivity() != null && mGridView != null) {
-
-                //If we've got movies in the list, then send them to the adapter fro the
-                //GridView
-                if (photoList != null) {
-
-                    //Store global copy
-                    mPhotoList = photoList;
-                    PersonImageAdapter adapter = new PersonImageAdapter(getActivity().getApplicationContext(), photoList);
-                    mGridView.setAdapter(adapter);
                 } else {
 
-                    //If we get here, then the movieList was empty and something went wrong.
-                    //Most likely a network connection problem
-                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-                    connectToast.show();
+                    APIError error = ErrorUtils.parseError(response);
+                    Log.e(TAG, "Error message = " + error.message());
+                    Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
                 }
-
             }
-        }
+
+            @Override
+            public void onFailure(Call<PersonPhotoList> call, Throwable t) {
+
+                Toast.makeText(getContext(), getContext().getString(R.string.toast_network_error), Toast.LENGTH_LONG);
+            }
+        });
     }
+
+    private void setAdapter() {
+
+        mAdapter = new ProfileListAdapter(getActivity(),mProfileList,this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        //Only show animation if we've fetched data
+        if(mFetchData)
+            mRecyclerView.scheduleLayoutAnimation();
+    }
+
+    @Override
+    public void onProfileClick(int position, ProfileListAdapter.ProfileListAdapterViewHolder vh) {
+
+        Log.e(TAG,"onProfileClick()");
+        Intent i = new Intent(getActivity(), PersonPhotoPagerActivity.class);
+                i.putParcelableArrayListExtra(EXTRA_PERSON_PHOTO, mProfileList);
+                i.putExtra(EXTRA_PERSON_NAME, mPersonName);
+                i.putExtra(EXTRA_PERSON_PHOTO_POSITION, position);
+                startActivity(i);
+
+    }
+
 }

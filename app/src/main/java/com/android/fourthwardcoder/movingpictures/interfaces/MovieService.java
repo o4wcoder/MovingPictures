@@ -5,7 +5,7 @@ import com.android.fourthwardcoder.movingpictures.models.Credits;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
 import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.Person;
-import com.android.fourthwardcoder.movingpictures.models.PersonOld;
+import com.android.fourthwardcoder.movingpictures.models.PersonPhotoList;
 import com.android.fourthwardcoder.movingpictures.models.SearchResult;
 import com.android.fourthwardcoder.movingpictures.models.SearchResultList;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
@@ -59,6 +59,9 @@ public interface MovieService {
 
     @GET("3/search/multi")
     Call<SearchResultList> getSearchResultList(@Query("query") String query);
+
+    @GET("3/person/{id}/images")
+    Call<PersonPhotoList> getPersonsPhotos(@Path("id") int id);
 
 
 

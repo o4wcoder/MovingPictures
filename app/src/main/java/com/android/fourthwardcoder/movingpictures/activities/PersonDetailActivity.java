@@ -45,6 +45,11 @@ public class PersonDetailActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //If we are being restored from a previous state, then don't recreate the fragment
+        //or it will get built twice. Just return
+        if(savedInstanceState != null)
+            return;
+
         PersonDetailFragment fragment = new PersonDetailFragment();
         //fragment.setArguments(arguments);
 

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,17 +13,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.PersonSinglePhotoFragment;
+import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
-import com.android.fourthwardcoder.movingpictures.models.PersonPhoto;
+import com.android.fourthwardcoder.movingpictures.models.Profile;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -50,11 +48,14 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
     /*                             Local Data                             */
     /**********************************************************************/
     ViewPager mPager;
-    ArrayList<PersonPhoto> mPhotoList;
+   // ArrayList<PersonPhoto> mPhotoList;
+    ArrayList<Profile> mProfileList;
     FrameLayout mBottomPanel;
     Toolbar mToolbar;
     boolean mIsToolbarVisible = true;
     Button mShareButton;
+    int mStartingPosition;
+    String mPersonName;
 
     //Argument for saving state of toolbars
     private final String ARG_TOOLBAR_VISIBLE = "arg_toolbar_visible";
@@ -80,10 +81,11 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         //Change status bar color
       //  Util.setStatusBarColor(this);
 
-        mPhotoList = getIntent().getParcelableArrayListExtra(EXTRA_PERSON_PHOTO);
-        String personName = getIntent().getStringExtra(EXTRA_PERSON_NAME);
+        mProfileList = getIntent().getParcelableArrayListExtra(EXTRA_PERSON_PHOTO);
+        mPersonName = getIntent().getStringExtra(EXTRA_PERSON_NAME);
+        mStartingPosition = getIntent().getIntExtra(EXTRA_PERSON_PHOTO_POSITION,0);
 
-        setTitle(personName);
+        setTitle(mPersonName);
 
         //Set up Share button
         mShareButton = (Button)findViewById(R.id.person_photo_share_button);
@@ -92,15 +94,15 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
             public void onClick(View v) {
                 Log.e(TAG,"onClick() Share Button with current item = " +  mPager.getCurrentItem());
 
-                final PersonPhoto photo = mPhotoList.get(mPager.getCurrentItem());
-                Picasso.with(getApplicationContext()).load(photo.getFullImagePath()).into(new Target() {
+                final Profile profile = mProfileList.get(mPager.getCurrentItem());
+                Picasso.with(getApplicationContext()).load(MovieDbAPI.getFullPosterPath(profile.getFilePath())).into(new Target() {
 
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
                         if(bitmap != null) {
                             Log.e(TAG, "Got bitmap! with byte size = " + bitmap.getHeight() + " x " + bitmap.getWidth());
-                            shareBitmap(bitmap,photo);
+                            shareBitmap(bitmap);
                         }
                         else
                             Log.e(TAG,"Bitmap was null");
@@ -127,20 +129,19 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         mPager.setAdapter(new FragmentPagerAdapter(fm) {
             @Override
             public Fragment getItem(int position) {
-                PersonPhoto personPhoto = mPhotoList.get(position);
+                Profile profile = mProfileList.get(position);
 
-                return PersonSinglePhotoFragment.newInstance(personPhoto.getFullImagePath());
+                return PersonSinglePhotoFragment.newInstance(MovieDbAPI.getFullPosterPath(profile.getFilePath()));
             }
 
             @Override
             public int getCount() {
-                return mPhotoList.size();
+                return mProfileList.size();
             }
         });
 
         //Start pager on the position of the photo selected so we just don't start on the first one
-        int photoPos = getIntent().getIntExtra(EXTRA_PERSON_PHOTO_ID,0);
-        mPager.setCurrentItem(photoPos);
+        mPager.setCurrentItem(mStartingPosition);
 
 
 
@@ -175,7 +176,6 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
             mBottomPanel.startAnimation(bottomAnimHide);
 
             //Set the toolbars visibility and switch flag.
-
             mIsToolbarVisible = false;
             setToolbarVisibility();
         }
@@ -193,7 +193,7 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
 
     }
 
-    private void shareBitmap(Bitmap bitmap,PersonPhoto photo) {
+    private void shareBitmap(Bitmap bitmap) {
 
         File dir = new File(getExternalCacheDir(),getString(R.string.share_storage_directory));
 
@@ -208,8 +208,8 @@ public class PersonPhotoPagerActivity extends AppCompatActivity implements Const
         }
 
 
-       // String imageName = photo.g
-        File file = new File(dir,getString(R.string.share_image));
+        String filename = mPersonName.replace(" ","_");
+        File file = new File(dir,filename + ".png");
 
         FileOutputStream fOut;
 

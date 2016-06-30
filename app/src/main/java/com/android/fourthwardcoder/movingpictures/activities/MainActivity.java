@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     ViewPager mViewPager;
     int mEntType;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

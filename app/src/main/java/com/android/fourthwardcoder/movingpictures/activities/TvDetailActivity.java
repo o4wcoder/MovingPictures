@@ -30,19 +30,16 @@ public class TvDetailActivity extends AppCompatActivity implements Constants {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Change status bar color
-       // Util.setStatusBarColor(this);
 
         setContentView(R.layout.activity_detail);
 
         //Start postpone element transition
         supportPostponeEnterTransition();
 
-//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-      //  mPersonId = getIntent().getIntExtra(EXTRA_ID, 0);
+        //If we are being restored from a previous state, then don't recreate the fragment
+        //or it will get built twice. Just return
+        if(savedInstanceState != null)
+            return;
 
         TvDetailFragment fragment = new TvDetailFragment();
         //fragment.setArguments(arguments);

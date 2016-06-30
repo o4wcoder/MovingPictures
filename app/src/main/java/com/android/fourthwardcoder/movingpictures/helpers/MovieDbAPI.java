@@ -5,19 +5,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.util.Log;
 
-//import com.android.fourthwardcoder.popularmovies.interfaces.APIKeys;
 import com.android.fourthwardcoder.movingpictures.interfaces.APIKeys;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
-import com.android.fourthwardcoder.movingpictures.models.CreditOld;
-import com.android.fourthwardcoder.movingpictures.models.IdNamePair;
 
 import com.android.fourthwardcoder.movingpictures.models.Video;
-import com.android.fourthwardcoder.movingpictures.models.VideoOld;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;

@@ -95,7 +95,7 @@ public class Util implements Constants {
 
 
     /**
-     * Start PersonOld Detail Activity of the cast memmber
+     * Start Person Detail Activity of the cast memmber
      * @param context context of calling activity
      * @param id      id of person
      */
@@ -206,7 +206,7 @@ public class Util implements Constants {
         return strList;
     }
     /**
-     * Create clickable links on the names of the cast. When clicked, it will go to that PersonOld's
+     * Create clickable links on the names of the cast. When clicked, it will go to that Person's
      * detail page activity.
      * @param passContext context of calling activity
      * @param passMovie   movie/tv object

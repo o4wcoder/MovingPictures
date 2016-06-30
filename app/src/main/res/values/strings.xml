@@ -28,6 +28,7 @@
     <string name="nav_favorites">Favorites</string>
 
     <string name="app_name">Moving Pictures</string>
+    <string name="app_designer">Fourth Ward Mobile</string>
     <string name="hello_world">Hello world!</string>
     <string name="dialog_sort">Sort By</string>
     <string name="title_activity_movie_detail">MovieDetail</string>
@@ -72,11 +73,11 @@
     <string name="show_all_cast">SHOW ALL CAST</string>
     <string name="show_all_crew">SHOW ALL CREW</string>
     <string name="show_all_filmography">SHOW ALL FILMOGRAPHY</string>
+    <string name="age">(age <xliff:g id="age">%s</xliff:g>)</string>
 
     <string name="share_movie_subject">from Movie</string>
     <string name="share_tvshow_subject">from TV Show</string>
     <string name="share_storage_directory" translatable="false">movingpictures</string>
-    <string name="share_image" translatable="false">person_share.png</string>
     <string name="share_title">Share Photo</string>
 
     <!-- Text attributes -->

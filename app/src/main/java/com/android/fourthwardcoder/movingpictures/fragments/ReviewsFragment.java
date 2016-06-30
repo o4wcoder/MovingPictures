@@ -15,7 +15,6 @@ import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.models.Review;
-import com.android.fourthwardcoder.movingpictures.models.ReviewOld;
 import com.android.fourthwardcoder.movingpictures.adapters.ReviewsListAdapter;
 
 import java.util.ArrayList;

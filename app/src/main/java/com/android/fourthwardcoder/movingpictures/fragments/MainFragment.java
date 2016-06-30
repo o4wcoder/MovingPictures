@@ -114,15 +114,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_grid_recycler_view, container, false);
 
         //Set Up RecyclerView in Grid Layout
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.movie_list_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.grid_recycler_view);
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
         //Make sure we have a gridview
-
-
         if (mRecyclerView != null) {
 
             //We don't have any movies, go fetch them
@@ -254,30 +253,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-    //    private String[] getNowPlayingDates() {
-//
-//        String[] dateRange = new String[2];
-//
-//        Calendar calendar = Calendar.getInstance();
-//        String todaysDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-//        Log.e(TAG,"!!!!! Today's date = " + todaysDate);
-//
-//
-//        calendar.add(Calendar.MONTH,-1);
-//        String lastMonthDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
-//        Log.e(TAG,"!!!!! Last months date = " + lastMonthDate);
-//        dateRange[0] = lastMonthDate;
-//        dateRange[1] = todaysDate;
-//
-//        return dateRange;
-//    }
     private void getApiList() {
 
 
         if (getActivity() != null) {
-//            Resources res = getResources();
-//            String[] sortList = res.getStringArray(R.array.sort_url_list);
-//            String sortOrder = sortList[sortPos];
 
             Call<MovieList> call = null;
 
