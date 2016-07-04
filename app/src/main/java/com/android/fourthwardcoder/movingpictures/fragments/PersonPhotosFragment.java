@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.adapters.ProfileListAdapter;
@@ -55,6 +56,7 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
     private RecyclerView mRecyclerView;
     ArrayList<Profile> mProfileList;
     ProfileListAdapter mAdapter;
+    LinearLayout mProgressLayout;
     boolean mFetchData = false;
 
     public static PersonPhotosFragment newInstance(int personId, String mPersonName) {
@@ -100,6 +102,7 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
+        mProgressLayout = (LinearLayout)view.findViewById(R.id.progress_layout);
 
         if(mRecyclerView != null) {
 
@@ -157,6 +160,9 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
     }
 
     private void setAdapter() {
+
+        //Remove progress indicator
+        mProgressLayout.setVisibility(View.GONE);
 
         mAdapter = new ProfileListAdapter(getActivity(),mProfileList,this);
         mRecyclerView.setAdapter(mAdapter);

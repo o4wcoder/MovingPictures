@@ -8,7 +8,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp">
+        style="@style/detailCardStyle">
 
         <LinearLayout
             style="@style/detailLayoutSection"
@@ -41,9 +41,7 @@
     <!-- CREW Layout -->
     <android.support.v7.widget.CardView
         android:id="@+id/crewLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp">
+        style="@style/detailCardStyle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,20 +98,24 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/detail_reviews_layout"
-        style="@style/detailLayoutSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/detailCardStyle">
 
-        <TextView
-            android:id="@+id/reviewsTextView"
-            style="@style/headerLinkTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="4dp"
-            android:background="?android:selectableItemBackground"
-            android:text="@string/user_reviews" />
+        <FrameLayout
+            style="@style/detailLayoutSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/reviewsTextView"
+                style="@style/headerLinkTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
+                android:background="?android:selectableItemBackground"
+                android:text="@string/user_reviews" />
+        </FrameLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>
