@@ -216,6 +216,8 @@ public class TvDetailFragment extends Fragment implements Constants {
         mVideosRecylerView = (RecyclerView) view.findViewById(R.id.video_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mVideosRecylerView.setLayoutManager(layoutManager);
+        mVideosRecylerView.setHasFixedSize(true);
+        mVideosRecylerView.setNestedScrollingEnabled(false);
 
         //Get textviews for TvShow Details
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);

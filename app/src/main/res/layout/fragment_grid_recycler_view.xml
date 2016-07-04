@@ -16,4 +16,23 @@
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </com.android.fourthwardcoder.movingpictures.helpers.GridRecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:id="@+id/progress_layout">
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:text="@string/progress_loading"/>
+    </LinearLayout>
 </FrameLayout>

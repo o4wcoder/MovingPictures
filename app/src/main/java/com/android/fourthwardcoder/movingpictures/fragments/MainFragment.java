@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
@@ -75,9 +76,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     ArrayList<MediaBasic> mList = null;
     int mEntType;
     int mSortOrder;
-    SharedPreferences.Editor prefsEditor;
-    //ProgressDialog to be displayed while the data is being fetched and parsed
-    ProgressDialog mProgressDialog;
+    LinearLayout mProgressLayout;
 
     public static MainFragment newInstance(@EntertainmentType int entType, int sortOrder) {
         Bundle args = new Bundle();
@@ -119,8 +118,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         //Set Up RecyclerView in Grid Layout
         mRecyclerView = (RecyclerView) view.findViewById(R.id.grid_recycler_view);
         //Set Layout Manager for RecyclerView
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.list_columns
+        )));
 
+        mProgressLayout = (LinearLayout)view.findViewById(R.id.progress_layout);
         //Make sure we have a gridview
         if (mRecyclerView != null) {
 
@@ -155,10 +156,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onPause() {
         super.onPause();
         //Done processing the movie query, kill Progress Dialog on main UI
-        if (mProgressDialog != null) {
-            if (mProgressDialog.isShowing())
-                mProgressDialog.dismiss();
-        }
+//        if (mProgressDialog != null) {
+//            if (mProgressDialog.isShowing())
+//                mProgressDialog.dismiss();
+//        }
     }
 
     @Override
@@ -302,6 +303,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         final int localEntType;
         Log.e(TAG, "setMovieAdapter() Inside");
+
+        //Remove progress indicator
+        mProgressLayout.setVisibility(View.GONE);
+
         if (getActivity() != null && mRecyclerView != null) {
 
             //If we've got movies in the list, then send them to the adapter from the

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
@@ -168,21 +170,28 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+
+        View view;
 
         //Set up back UP navigation arrow
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e(TAG, "Back pressed");
+        if(getActivity() instanceof MovieDetailActivity) {
 
-                    //Kill this activity
-                    getActivity().finish();
-                }
-            });
+            view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e(TAG, "Back pressed");
+
+                        //Kill this activity
+                        getActivity().finish();
+                    }
+                });
+            }
+        } else {
+            view = inflater.inflate(R.layout.fragment_movie_detail_two_pane, container, false);
         }
 
         //Create animations when shared element transition is finished
@@ -194,6 +203,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 public void onTransitionStart(Transition transition) {
                     Log.e(TAG, "Tansition start");
                     mFavoritesFAB.setVisibility(View.GONE);
+
                 }
 
                 @Override
@@ -256,6 +266,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
         mVideosRecylerView = (RecyclerView) view.findViewById(R.id.video_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mVideosRecylerView.setLayoutManager(layoutManager);
+        mVideosRecylerView.setHasFixedSize(true);
+        mVideosRecylerView.setNestedScrollingEnabled(false);
 
 
 
@@ -392,31 +404,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-
-//        //Dont' display the share menu option if there are no videos to share
-//        if(mMovie.getVideos() != null) {
-//            if (mMovie.getVideos().size() > 0) {
-//                inflater.inflate(R.menu.menu_share, menu);
-//
-//                //Retrieve teh share menu item
-//                MenuItem menuItem = menu.findItem(R.id.action_share);
-//
-//                //Get the provider and hold onto it to set/change the share intent.
-//                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
-//                        .getActionProvider(menuItem);
-//
-//                //Attach and intent to this ShareActionProvider
-//                if (shareActionProvider != null) {
-//                    shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(), mMovie));
-//                } else {
-//                    Log.e(TAG, "Share Action Provider is null!");
-//                }
-//            }
-//        }
-    }
     
     /**
      * Set the layout of the Fragment
@@ -644,21 +631,5 @@ public class MovieDetailFragment extends Fragment implements Constants {
         });
     }
 
-
-//    private void getCastThumbnails(String uri, final ImageView imageView) {
-//
-//        Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
-//            @Override
-//            public void onSuccess() {
-//                Log.e(TAG,"getCastThumbnail() onSuccess()");
-//            }
-//
-//            @Override
-//            public void onError() {
-//                Log.e(TAG,"getCastThumbnail() onError()");
-//                imageView.setImageResource(R.drawable.person_no_pic_thumnail);
-//            }
-//        });
-//    }
 
 }

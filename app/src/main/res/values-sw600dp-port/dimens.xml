@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="detail_horizontal_margin">32dp</dimen>
+    <dimen name="detail_top_overlap">64dp</dimen>
+
+</resources>

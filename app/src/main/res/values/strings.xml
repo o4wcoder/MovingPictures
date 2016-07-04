@@ -47,6 +47,7 @@
     <string name="progress_downloading_movies">Downloading Movies...</string>
     <string name="progress_downloading_details">Downloading Details...</string>
     <string name="progress_downloading_photos">Downloading Photos...</string>
+    <string name="progress_loading">Loading</string>
     <string name="title_activity_actor_detail">Actor Details</string>
     <string name="title_activity_movie_reviews">Movie Reviews</string>
     <string name="user_reviews">User Reviews</string>

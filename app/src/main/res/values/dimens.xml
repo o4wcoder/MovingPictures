@@ -7,10 +7,12 @@
 
     <dimen name="detail_horizontal_margin">0dp</dimen>
 
+
     <!-- Detail UI margins -->
     <dimen name="detail_title_vert_padding">16dp</dimen>
     <dimen name="detail_title_horiz_padding">16dp</dimen>
     <dimen name="detail_title_horiz_padding_right">80dp</dimen>
+    <dimen name="detail_top_overlap">0dp</dimen>
 
     <dimen name="list_item_extra_padding">0dp</dimen>
     <dimen name="detail_view_padding">@dimen/abc_list_item_padding_horizontal_material</dimen>
