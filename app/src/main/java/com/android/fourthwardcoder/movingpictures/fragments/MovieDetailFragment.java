@@ -586,7 +586,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
             for (ReleaseDateList list : mMovie.getReleaseDates().getResults()) {
 
                 if (list.getIso31661().equals(MovieDbAPI.CERT_US)) {
-                    mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
+
+                    if(!(list.getReleaseDates().get(0).getCertification().equals("")))
+                        mCertificationTextView.setText(list.getReleaseDates().get(0).getCertification());
+                    else
+                        mCertificationTextView.setText("NR");
                 }
             }
 
