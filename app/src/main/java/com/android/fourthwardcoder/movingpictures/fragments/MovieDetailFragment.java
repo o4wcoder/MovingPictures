@@ -398,8 +398,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 } else {
                     Log.e(TAG,"Get Movie list call was not successful");
                     //parse the response to find the error. Display a message
-                    APIError error = ErrorUtils.parseError(response);
-                    Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
+                  //  APIError error = ErrorUtils.parseError(response);
+                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
 
                 }
             }
@@ -599,7 +599,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
 
-        if(bitmap != null) {
+        if(bitmap != null && getActivity() != null) {
             Palette p = Palette.generate(bitmap, 12);
             //   mMutedColor = p.getDarkMutedColor(0xFF333333);
 

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
     //Saved Arguments
     private static final String ARG_ENT_TYPE = "ent_type";
+    private static final String ARG_SORT_ORDER = "sort_order";
     /*************************************************************/
     /*                       Local Data                          */
     /*************************************************************/
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     TabLayout mTabLayout;
     ViewPager mViewPager;
     int mEntType;
+    int mSortOrder;
 
     //First Movie Ids
     int mMoviePopularId;
@@ -67,6 +69,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     //First TV Ids
     int mTvPopularId;
     int mTvAiringTonightId;
+
+    //Firt Person Id
+    int mPersonPopularId;
+
+    //First Favorites Ids
+    int mFavoriteMovieId;
+    int mFavoriteTvId;
+    int mFavoritPeopleId;
 
 
 
@@ -95,10 +105,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
         if(savedInstanceState != null) {
             mEntType = savedInstanceState.getInt(ARG_ENT_TYPE);
+            mSortOrder = savedInstanceState.getInt(ARG_SORT_ORDER);
             Log.e(TAG,"onCreate() Got saved ent type on rotation" + mEntType);
         } else {
             //First time through. Start with movies
            mEntType = ENT_TYPE_MOVIE;
+            mSortOrder = SORT_POPULAR;
         }
 
         setPagerForSelection();
@@ -108,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
 
+            //    Log.e(TAG,"onTabSelected() with ent type = " + mEntType);
                 int firstId = 0;
                 if(mEntType == ENT_TYPE_MOVIE) {
 
@@ -131,10 +144,34 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
                             firstId = mTvAiringTonightId;
                             break;
                     }
+
+                } else if(mEntType == ENT_TYPE_PERSON) {
+                    switch (tab.getPosition()) {
+                        case 0:
+                            firstId = mPersonPopularId;
+                            break;
+                    }
+                }
+                else if(mEntType == ENT_TYPE_FAVORITE) {
+                    switch(tab.getPosition()) {
+                        case 0:
+                            firstId = mFavoriteMovieId;
+                            mSortOrder = SORT_MOVIES;
+                            break;
+                        case 1:
+                            firstId = mFavoriteTvId;
+                            mSortOrder = SORT_TV;
+                            break;
+                        case 2:
+                            firstId = mFavoritPeopleId;
+                            mSortOrder = SORT_PERSON;
+                            break;
+                    }
                 }
 
-                Log.e(TAG,"onTabSelected() with popId = " + mMoviePopularId + ", npId = "
-                        + mMovieNowPlayingId + ", upUd = " + mMovieUpcomingId);
+
+//                Log.e(TAG,"onTabSelected() with popId = " + mMoviePopularId + ", npId = "
+//                        + mMovieNowPlayingId + ", upUd = " + mMovieUpcomingId);
                 setTwoFrameDetailFragment(mEntType,firstId);
             }
 
@@ -175,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(ARG_ENT_TYPE,mEntType);
+        savedInstanceState.putInt(ARG_SORT_ORDER,mSortOrder);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -223,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             mEntType = ENT_TYPE_PERSON;
         } else if (id == R.id.nav_favorites) {
             mEntType = ENT_TYPE_FAVORITE;
+            mSortOrder = SORT_MOVIES;
         }
 
         setPagerForSelection();
@@ -246,12 +285,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             Fragment fragment = null;
 
             if(entType == ENT_TYPE_MOVIE) {
-
-                Log.e(TAG,"onItemSelected() Get Movie Fragment");
                 fragment = MovieDetailFragment.newInstance(id);
             }
             else if(entType == ENT_TYPE_TV) {
-                Log.e(TAG,"onItemSelected() Get Tv Fragment");
                 fragment = TvDetailFragment.newInstance(id);
             }
             else if(entType == ENT_TYPE_PERSON)
@@ -294,12 +330,23 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
-          Log.e(TAG,"onLoadFinished() In two pane, setting details fragment withe ent type = " + entType +
-             ", sortOrder = " + sortOrder + ", id = " + id);
+//          Log.e(TAG,"onLoadFinished() In two pane, setting details fragment withe ent type = " + entType +
+//             ", sortOrder = " + sortOrder + ", id = " + id);
 
+            //Store sort order. Need this for Favorites.
+            mSortOrder = sortOrder;
+            //Store off ids from the loading fragments in each tab
             setFirstDetailId(entType,sortOrder,id);
-            if(sortOrder == mTabLayout.getSelectedTabPosition())
-               setTwoFrameDetailFragment(entType,id);
+
+            //Set the first detail fragment from the first tab. This works because Movies, TV
+            // and People all have the same first sort (Popular)
+            if(sortOrder == mTabLayout.getSelectedTabPosition()) {
+                setTwoFrameDetailFragment(entType, id);
+            }
+            //For the favorites we need to check the sort order to see if it's the first one (movies)
+            else if(entType == ENT_TYPE_FAVORITE && sortOrder == SORT_MOVIES && mTabLayout.getSelectedTabPosition() == 0) {
+                setTwoFrameDetailFragment(entType,id);
+            }
         }
 //        else {
 //            Log.e(TAG,"onLoadFinished(): NOt in two pane!!!!!!!!");
@@ -312,62 +359,94 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
     private void setTwoFrameDetailFragment(@EntertainmentType int entType, int id) {
 
-        Fragment fragment = null;
+        if(mTwoPane) {
+//            Log.e(TAG, "setTwoFramDetailFragment() with entType = " + entType + ", id = " + id +
+//            ", sort order = " + mSortOrder);
+            //If we don't have an ID, don't bother trying to set up a detail fragment
+            if (id > 0) {
+                Fragment fragment = null;
 
-        Log.e(TAG,"setTwoFramDetailFragment() with entType = " + entType + ", id = " + id);
-        if(entType == ENT_TYPE_MOVIE) {
+                //Select the fragment type based on ENT type (Movie, TV or Person). Or by
+                //the sort type if it's a Favorites type.
+                if (entType == ENT_TYPE_MOVIE || mSortOrder == SORT_MOVIES) {
+                    fragment = MovieDetailFragment.newInstance(id);
+                } else if (entType == ENT_TYPE_TV || mSortOrder == SORT_TV) {
+                    fragment = TvDetailFragment.newInstance(id);
+                } else if (entType == ENT_TYPE_PERSON || mSortOrder == SORT_PERSON)
+                    fragment = PersonDetailFragment.newInstance(id);
+                else {
+                    return;
+                }
 
-            fragment = MovieDetailFragment.newInstance(id);
+                //Set first movie in detail pane. Needed to use "commitAllowingStateLoss"
+                //instead of just "commit" because calling this directly when the loader
+                //was done causes an "illegal state exception"
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                        .commitAllowingStateLoss();
+            }
         }
-        else if(entType == ENT_TYPE_TV) {
-
-            fragment = TvDetailFragment.newInstance(id);
-        }
-        else if(entType == ENT_TYPE_PERSON)
-            fragment = PersonDetailFragment.newInstance(id);
-
-
-        //Set first movie in detail pane. Needed to use "commitAllowingStateLoss"
-        //instead of just "commit" because calling this directly when the loader
-        //was done causes an "illegal state exception"
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
-                .commitAllowingStateLoss();
 
     }
 
     private void setFirstDetailId(@EntertainmentType int entType, int sortOrder, int id) {
 
-       // Log.e(TAG,"setFirstDetailId() with sort order = " + sortOrder + ", id = " + id);
+//        Log.e(TAG,"setFirstDetailId() with sort order = " + sortOrder + ", id = " + id);
         if (entType == ENT_TYPE_MOVIE) {
             switch (sortOrder) {
 
                 case SORT_POPULAR:
-                  mMoviePopularId = id;
+                    mMoviePopularId = id;
                     break;
                 case SORT_NOW_PLAYING:
                     mMovieNowPlayingId = id;
                     break;
                 case SORT_UPCOMING:
-                   mMovieUpcomingId = id;
+                    mMovieUpcomingId = id;
+                    break;
+                case SORT_MOVIES:
+                    mFavoriteMovieId = id;
                     break;
             }
         } else if (entType == ENT_TYPE_TV) {
             switch (sortOrder) {
                 case SORT_POPULAR:
-                   mTvPopularId = id;
+                    mTvPopularId = id;
                     break;
                 case SORT_AIRING_TONIGHT:
-                   mTvAiringTonightId = id;
+                    mTvAiringTonightId = id;
+                    break;
+                case SORT_TV:
+                    mFavoriteTvId = id;
                     break;
             }
         } else if (entType == ENT_TYPE_PERSON) {
-
+            switch (sortOrder) {
+                case SORT_POPULAR:
+                    mPersonPopularId = id;
+                    break;
+                case SORT_PERSON:
+                    mFavoritPeopleId = id;
+                    break;
+            }
+        } else if (entType == ENT_TYPE_FAVORITE) {
+            switch (sortOrder) {
+                case SORT_MOVIES:
+                    mFavoriteMovieId = id;
+                    break;
+                case SORT_TV:
+                    mFavoriteTvId = id;
+                    break;
+                case SORT_PERSON:
+                    mFavoritPeopleId = id;
+                    break;
+            }
         }
 
-        //Log.e(TAG,"setFirtDetailId() with popId = " + mMoviePopularId + ", npId = "
-           //     + mMovieNowPlayingId + ", upUd = " + mMovieUpcomingId);
+//        Log.e(TAG,"setFirstDetailId() for Favorites with movieId = " + mFavoriteMovieId + ", tvId = "
+//             + mFavoriteTvId + ", personId = " + mFavoritPeopleId);
     }
+
     private void setPagerForSelection() {
 
         //Create Tab layout

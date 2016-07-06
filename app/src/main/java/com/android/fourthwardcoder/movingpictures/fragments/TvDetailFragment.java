@@ -521,7 +521,7 @@ public class TvDetailFragment extends Fragment implements Constants {
 
         Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
 
-        if(bitmap != null) {
+        if(bitmap != null && getActivity() != null) {
             Palette p = Palette.generate(bitmap, 12);
             //   mMutedColor = p.getDarkMutedColor(0xFF333333);
 

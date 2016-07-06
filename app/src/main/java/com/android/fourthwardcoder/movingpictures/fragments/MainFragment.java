@@ -112,7 +112,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView() with sortOrder = " + mSortOrder);
+
         View view = inflater.inflate(R.layout.fragment_grid_recycler_view, container, false);
 
         //Set Up RecyclerView in Grid Layout
@@ -138,14 +138,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
-                //Just apply the current list of movies. If this is the favorites, then
-                //Need to adjust the ent type
-                if(mEntType == ENT_TYPE_FAVORITE) {
-
-                    setAdapter(mList, convertFavoriteSortToMediaType());
-                }
-                else
-                    setAdapter(mList,mEntType);
+                //Just apply the current list of movies.
+                setAdapter(mList);
 
             }
         }
@@ -221,7 +215,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.e(TAG, "inside onLoadFinished with cursor size = " + cursor.getCount());
 
         //For Favorites, we will use the sort order as the ent type as it contains
-        setAdapter(convertCursorToList(cursor),convertFavoriteSortToMediaType());
+        setAdapter(convertCursorToList(cursor));
     }
 
     @Override
@@ -263,8 +257,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     public void onResponse(Call<MovieList> call, Response<MovieList> response) {
 
                         if (response.isSuccessful()) {
-                            Log.e(TAG, "onResponse()");
-                            setAdapter((ArrayList) response.body().getMovies(),mEntType);
+
+                            setAdapter((ArrayList) response.body().getMovies());
                         } else {
                             Log.e(TAG, "!!! Response was not sucessful!!!");
                             //parse the response to find the error. Display a message
@@ -289,9 +283,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Set the adapter of the movie list
      *
-     * @param movieList ArrayList of Movies
      */
-    private void setAdapter(ArrayList<MediaBasic> movieList, final int entType) {
+    private void setAdapter(ArrayList<MediaBasic> mediaList) {
 
 
         //Remove progress indicator
@@ -301,15 +294,24 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             //If we've got movies in the list, then send them to the adapter from the
             //GridView
-            if (movieList != null) {
+            if (mediaList != null) {
 
-                if (movieList.size() > 0) {
+                if (mediaList.size() > 0) {
                     //Store global copy
-                    mList = movieList;
+                    mList = mediaList;
 
-                    Log.e(TAG, "setMovieAdapter(): MediaBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + entType);
+
+                    //If this is favorites, switch the ent type to either movies, tv, or person
+                    //depending on the favorites sort type.
+                    final @EntertainmentType int localEntType;
+                    if (mEntType == ENT_TYPE_FAVORITE) {
+                        localEntType = convertFavoriteSortToMediaType();
+                    } else {
+                        localEntType = mEntType;
+                    }
+                    Log.e(TAG, "setMovieAdapter(): MediaBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + localEntType);
                     //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
-                    EntListAdapter adapter = new EntListAdapter(getActivity(), mList, entType, new EntListAdapter.MovieListAdapterOnClickHandler() {
+                    EntListAdapter adapter = new EntListAdapter(getActivity(), mList, localEntType, new EntListAdapter.MovieListAdapterOnClickHandler() {
                         @Override
                         public void onClick(MediaBasic movie, EntListAdapter.MovieListAdapterViewHolder vh) {
                             Log.e(TAG, "onClick RecyclerView movie list");
@@ -317,7 +319,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                             //Start intent to bring up Details Activity
 
                             Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
-                            ((Callback) getActivity()).onItemSelected(entType, movie.getId(), vh.movieThumbImageView);
+                            ((Callback) getActivity()).onItemSelected(localEntType, movie.getId(), vh.movieThumbImageView);
                         }
                     });
 
@@ -326,11 +328,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     //If we are in two pane mode, set the first movie in the details fragment
                     if (mList.size() > 0) {
-                        Log.e(TAG, "Calling onLoadfinished");
-                        if (mEntType == ENT_TYPE_FAVORITE)
-                            ((Callback) getActivity()).onLoadFinished(convertFavoriteSortToMediaType(), mSortOrder, mList.get(0).getId());
-                        else
-                            ((Callback) getActivity()).onLoadFinished(mEntType, mSortOrder, mList.get(0).getId());
+                        Log.e(TAG, "Calling onLoadfinished with ent type = " + localEntType + ", Sort order = " + mSortOrder);
+//                      //Calll back to Main Activity to set the first detail fragment in the list if we are in
+                        //tablet 2 pane mode. Note we are using the unmodified version ot the ENT type because
+                        //we need to know if we are set to favorites or not.
+                        ((Callback) getActivity()).onLoadFinished(mEntType, mSortOrder, mList.get(0).getId());
                     }
                 } else {
                     //If we get here, then the movieList was empty and something went wrong.
