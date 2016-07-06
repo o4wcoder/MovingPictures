@@ -40,6 +40,8 @@ import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
+import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
+import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
@@ -114,35 +116,57 @@ public class TvDetailFragment extends Fragment implements Constants {
     TextView mCast3TextView;
     TextView mCastShowAllTextView;
 
+    private static final String ARG_ID = "id";
+
     public TvDetailFragment() {
+    }
+
+    public static TvDetailFragment newInstance(int id) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_ID,id);
+        TvDetailFragment fragment = new TvDetailFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mTvId = getActivity().getIntent().getIntExtra(EXTRA_ID, 0);
+        if(savedInstanceState != null) {
 
+        } else {
+         Bundle bundle = getArguments();
+            mTvId = bundle.getInt(ARG_ID);
+            Log.e(TAG,"onCreate() with id = " + mTvId);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tv_detail, container, false);
 
-        //Set up back UP navigation arrow
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e(TAG, "Back pressed");
+        View view = null;
+        if(getActivity() instanceof TvDetailActivity) {
+             view = inflater.inflate(R.layout.fragment_tv_detail, container, false);
+            //Set up back UP navigation arrow
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e(TAG, "Back pressed");
 
-                    //Kill this activity
-                    getActivity().finish();
-                }
-            });
+                        //Kill this activity
+                        getActivity().finish();
+                    }
+                });
+            }
+        } else {
+            view = inflater.inflate(R.layout.fragment_tv_detail_two_pane, container, false);
         }
 
         //Create animations when shared element transition is finished
@@ -334,7 +358,6 @@ public class TvDetailFragment extends Fragment implements Constants {
             setHasOptionsMenu(true);
             //Set title of MovieOld on Action Bar
             String historyDate = getDateHistory(mTvShow);
-            getActivity().setTitle(mTvShow.getName() + " " + historyDate);
 
             Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mTvShow.getBackdropPath())).into(mBackdropImageView, new Callback() {
                 @Override

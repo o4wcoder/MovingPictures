@@ -112,7 +112,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView");
+        Log.e(TAG, "onCreateView() with sortOrder = " + mSortOrder);
         View view = inflater.inflate(R.layout.fragment_grid_recycler_view, container, false);
 
         //Set Up RecyclerView in Grid Layout
@@ -129,7 +129,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             if (mList == null)
                 //Start up thread to pull in movie data. Send in sort
                 //type. If we are pulling favorites (4) then use a cursorLoader. Otherwise
-                //use AsynTAsk
+                //fetch the data
                 if (mEntType == ENT_TYPE_FAVORITE) {
                     //Get Favorites
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
@@ -166,26 +166,21 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.e(TAG, "onActivityCreated()");
-
-        //Need to set the details view to the first movie when in 2 pane mode. Hit this
-        //situation when we first come up on a tablet in portrait and rotate to landscape
-        if (mList != null) {
-            if (mList.size() > 0) {
-                Log.e(TAG, "Calling on loadfinished");
-                ((Callback) getActivity()).onLoadFinished(mList.get(0).getId());
-            }
-        }
+//        Log.e(TAG, "onActivityCreated()");
+//
+//        //Need to set the details view to the first movie when in 2 pane mode. Hit this
+//        //situation when we first come up on a tablet in portrait and rotate to landscape
+//        if (mList != null) {
+//            if (mList.size() > 0) {
+//                Log.e(TAG, "Calling on loadfinished");
+//                if (mEntType == ENT_TYPE_FAVORITE)
+//                    ((Callback) getActivity()).onLoadFinished(convertFavoriteSortToMediaType(), mSortOrder, mList.get(0).getId());
+//                else
+//                    ((Callback) getActivity()).onLoadFinished(mEntType, mSortOrder,mList.get(0).getId());
+//            }
+//        }
     }
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        //super.onCreateOptionsMenu(menu, inflater);
-//
-//        //Pass the resource ID of the menu and populate the Menu
-//        //instance with the items defined in the xml file
-//        inflater.inflate(R.menu.menu_sort, menu);
-//
-//    }
+
 
     private int convertFavoriteSortToMediaType() {
 
@@ -204,7 +199,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Log.e(TAG, "Inside onCreateLoader with sortOrder = " + mSortOrder);
+
         Uri movieFavoritesUri = FavoritesContract.FavoritesEntry.buildMovieUri();
 
         String selection = FavoritesContract.FavoritesEntry.COLUMN_MEDIA_TYPE +"=?";
@@ -241,9 +236,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             while (cursor.moveToNext()) {
                 MediaBasic media = new MediaBasic(cursor);
-                Log.e(TAG,"convertCusorToList() MediaBasic from cursor. Id = " + media.getId() +
-                        " " + " poster path = " + media.getPosterPath());
-               // Log.e(TAG, "Conver favorite movie " + movie.getTitle());
                 mediaList.add(media);
             }
 
@@ -301,8 +293,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private void setAdapter(ArrayList<MediaBasic> movieList, final int entType) {
 
-        final int localEntType;
-        Log.e(TAG, "setMovieAdapter() Inside");
 
         //Remove progress indicator
         mProgressLayout.setVisibility(View.GONE);
@@ -317,9 +307,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     //Store global copy
                     mList = movieList;
 
-                    //If this is from favorites, then change the ent type
-                    if(entType == ENT_TYPE_FAVORITE)
-                        localEntType = convertFavoriteSortToMediaType();
                     Log.e(TAG, "setMovieAdapter(): MediaBasic list is not null. Set adapter with list size = " + mList.size() + " Ent type = " + entType);
                     //MovieImageListViewAdapter adapter = new MovieImageListViewAdapter(getActivity().getApplicationContext(), movieList);
                     EntListAdapter adapter = new EntListAdapter(getActivity(), mList, entType, new EntListAdapter.MovieListAdapterOnClickHandler() {
@@ -336,11 +323,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     mRecyclerView.setAdapter(adapter);
                     mRecyclerView.scheduleLayoutAnimation();
-                    Log.e(TAG, "MovieOld list not null, if there is anthing in the list set 1st pos");
+
                     //If we are in two pane mode, set the first movie in the details fragment
                     if (mList.size() > 0) {
-                        Log.e(TAG, "Calling on loadfinished");
-                        ((Callback) getActivity()).onLoadFinished(mList.get(0).getId());
+                        Log.e(TAG, "Calling onLoadfinished");
+                        if (mEntType == ENT_TYPE_FAVORITE)
+                            ((Callback) getActivity()).onLoadFinished(convertFavoriteSortToMediaType(), mSortOrder, mList.get(0).getId());
+                        else
+                            ((Callback) getActivity()).onLoadFinished(mEntType, mSortOrder, mList.get(0).getId());
                     }
                 } else {
                     //If we get here, then the movieList was empty and something went wrong.
@@ -418,8 +408,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(@Constants.EntertainmentType int entType, int movieId, ImageView imageView);
+        void onItemSelected(@Constants.EntertainmentType int entType, int idd, ImageView imageView);
 
-        void onLoadFinished(int id);
+        void onLoadFinished(@Constants.EntertainmentType int entType, int sortOrder, int id);
     }
 }

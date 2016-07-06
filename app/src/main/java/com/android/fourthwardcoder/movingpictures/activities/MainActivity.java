@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -23,6 +24,9 @@ import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.adapters.DiscoverListPagerAdapter;
 import com.android.fourthwardcoder.movingpictures.fragments.MainFragment;
 import com.android.fourthwardcoder.movingpictures.fragments.MovieDetailFragment;
+import com.android.fourthwardcoder.movingpictures.fragments.PersonDetailFragment;
+import com.android.fourthwardcoder.movingpictures.fragments.TvDetailFragment;
+import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.crashlytics.android.Crashlytics;
@@ -54,6 +58,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     TabLayout mTabLayout;
     ViewPager mViewPager;
     int mEntType;
+
+    //First Movie Ids
+    int mMoviePopularId;
+    int mMovieNowPlayingId;
+    int mMovieUpcomingId;
+
+    //First TV Ids
+    int mTvPopularId;
+    int mTvAiringTonightId;
+
 
 
     @Override
@@ -89,6 +103,52 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
         setPagerForSelection();
 
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+
+                int firstId = 0;
+                if(mEntType == ENT_TYPE_MOVIE) {
+
+                    switch (tab.getPosition()) {
+                        case 0:
+                            firstId = mMoviePopularId;
+                            break;
+                        case 1:
+                            firstId = mMovieNowPlayingId;
+                            break;
+                        case 2:
+                            firstId = mMovieUpcomingId;
+                            break;
+                    }
+                } else if(mEntType == ENT_TYPE_TV) {
+                    switch (tab.getPosition()) {
+                        case 0:
+                            firstId = mTvPopularId;
+                            break;
+                        case 1:
+                            firstId = mTvAiringTonightId;
+                            break;
+                    }
+                }
+
+                Log.e(TAG,"onTabSelected() with popId = " + mMoviePopularId + ", npId = "
+                        + mMovieNowPlayingId + ", upUd = " + mMovieUpcomingId);
+                setTwoFrameDetailFragment(mEntType,firstId);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
 
         if ((findViewById(R.id.movie_detail_container) != null)) {
             //The detail container view will be present only in the large-screen layouts
@@ -114,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.e(TAG,"onSaveInstanceState() with enty type = " + mEntType);
         savedInstanceState.putInt(ARG_ENT_TYPE,mEntType);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -174,25 +233,36 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     }
 
     @Override
-    public void onItemSelected(@EntertainmentType int entType,int movieId, ImageView imageView) {
+    public void onItemSelected(@EntertainmentType int entType,int id, ImageView imageView) {
 
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
-            Log.e(TAG,"onItemSelected(): with twoPane");
+            Log.e(TAG,"onItemSelected(): with twoPane with entType = " + entType);
             Bundle args = new Bundle();
-            args.putInt(EXTRA_ID, movieId);
+            args.putInt(EXTRA_ID, id);
 
-            MovieDetailFragment fragment = new MovieDetailFragment();
-            fragment.setArguments(args);
+            Fragment fragment = null;
+
+            if(entType == ENT_TYPE_MOVIE) {
+
+                Log.e(TAG,"onItemSelected() Get Movie Fragment");
+                fragment = MovieDetailFragment.newInstance(id);
+            }
+            else if(entType == ENT_TYPE_TV) {
+                Log.e(TAG,"onItemSelected() Get Tv Fragment");
+                fragment = TvDetailFragment.newInstance(id);
+            }
+            else if(entType == ENT_TYPE_PERSON)
+                fragment = PersonDetailFragment.newInstance(id);
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
                     .commit();
         } else {
             Intent intent = null;
-            Log.e(TAG,"onItemSelected with entType = " + entType + " id = " + movieId);
+            Log.e(TAG,"onItemSelected with entType = " + entType + " id = " + id);
             if(entType == ENT_TYPE_MOVIE)
                intent = new Intent(this, MovieDetailActivity.class);
             else if(entType == ENT_TYPE_TV)
@@ -200,7 +270,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             else if(entType == ENT_TYPE_PERSON)
                 intent = new Intent(this,PersonDetailActivity.class);
 
-            intent.putExtra(EXTRA_ID,movieId);
+            Log.e(TAG,"onItemSelected() put extra id = " + id);
+            intent.putExtra(EXTRA_ID,id);
 
 
             if(intent != null) {
@@ -216,26 +287,19 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     }
 
     @Override
-    public void onLoadFinished(int id) {
+    public void onLoadFinished(@EntertainmentType int entType, int sortOrder, int id) {
 
       //  Log.e(TAG,"In onLoadFiished()");
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by
             //adding or replacing the detail fragment using a fragment
             //transaction
-            Log.e(TAG,"In two pane, setting details fragment");
-            Bundle args = new Bundle();
-            args.putInt(EXTRA_ID, id);
+          Log.e(TAG,"onLoadFinished() In two pane, setting details fragment withe ent type = " + entType +
+             ", sortOrder = " + sortOrder + ", id = " + id);
 
-            MovieDetailFragment fragment = new MovieDetailFragment();
-            fragment.setArguments(args);
-
-            //Set first movie in detail pane. Needed to use "commitAllowingStateLoss"
-            //instead of just "commit" because calling this directly when the loader
-            //was done causes an "illegal state exception"
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
-                    .commitAllowingStateLoss();
+            setFirstDetailId(entType,sortOrder,id);
+            if(sortOrder == mTabLayout.getSelectedTabPosition())
+               setTwoFrameDetailFragment(entType,id);
         }
 //        else {
 //            Log.e(TAG,"onLoadFinished(): NOt in two pane!!!!!!!!");
@@ -246,6 +310,64 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     /*                                  Private Methods                                    */
     /***************************************************************************************/
 
+    private void setTwoFrameDetailFragment(@EntertainmentType int entType, int id) {
+
+        Fragment fragment = null;
+
+        Log.e(TAG,"setTwoFramDetailFragment() with entType = " + entType + ", id = " + id);
+        if(entType == ENT_TYPE_MOVIE) {
+
+            fragment = MovieDetailFragment.newInstance(id);
+        }
+        else if(entType == ENT_TYPE_TV) {
+
+            fragment = TvDetailFragment.newInstance(id);
+        }
+        else if(entType == ENT_TYPE_PERSON)
+            fragment = PersonDetailFragment.newInstance(id);
+
+
+        //Set first movie in detail pane. Needed to use "commitAllowingStateLoss"
+        //instead of just "commit" because calling this directly when the loader
+        //was done causes an "illegal state exception"
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                .commitAllowingStateLoss();
+
+    }
+
+    private void setFirstDetailId(@EntertainmentType int entType, int sortOrder, int id) {
+
+       // Log.e(TAG,"setFirstDetailId() with sort order = " + sortOrder + ", id = " + id);
+        if (entType == ENT_TYPE_MOVIE) {
+            switch (sortOrder) {
+
+                case SORT_POPULAR:
+                  mMoviePopularId = id;
+                    break;
+                case SORT_NOW_PLAYING:
+                    mMovieNowPlayingId = id;
+                    break;
+                case SORT_UPCOMING:
+                   mMovieUpcomingId = id;
+                    break;
+            }
+        } else if (entType == ENT_TYPE_TV) {
+            switch (sortOrder) {
+                case SORT_POPULAR:
+                   mTvPopularId = id;
+                    break;
+                case SORT_AIRING_TONIGHT:
+                   mTvAiringTonightId = id;
+                    break;
+            }
+        } else if (entType == ENT_TYPE_PERSON) {
+
+        }
+
+        //Log.e(TAG,"setFirtDetailId() with popId = " + mMoviePopularId + ", npId = "
+           //     + mMovieNowPlayingId + ", upUd = " + mMovieUpcomingId);
+    }
     private void setPagerForSelection() {
 
         //Create Tab layout
@@ -296,22 +418,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         mViewPager.setAdapter(adapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
-        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
     }
 
 //    private void updateFragment(Fragment fragment) {

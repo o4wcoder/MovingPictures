@@ -45,22 +45,12 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
         //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 
-        if(savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-//            if(getIntent().getExtras().containsKey(EXTRA_MOVIE)) {
-//                Log.e(TAG,"--------------- Getting whol object movie");
-//                //Get MovieOld object from Main Activity
-//                MediaBasic movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-//                arguments.putParcelable(EXTRA_MOVIE, movie);
-//            }
-//            else {
-                Log.e(TAG,"-----Just have the id");
-                //Must have just the id of the movie
-                int movieId = getIntent().getIntExtra(EXTRA_ID,0);
-                arguments.putInt(EXTRA_ID,movieId);
-      //      }
-            MovieDetailFragment fragment = new MovieDetailFragment();
-            fragment.setArguments(arguments);
+        if (savedInstanceState == null) {
+
+            //Must have just the id of the movie
+            int movieId = getIntent().getIntExtra(EXTRA_ID, 0);
+            Log.e(TAG,"onCreate with extra id = " + movieId);
+            MovieDetailFragment fragment = MovieDetailFragment.newInstance(movieId);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_container, fragment)

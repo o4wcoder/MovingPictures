@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.PersonDetailFragment;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
+import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
 import java.util.Stack;
 
@@ -19,7 +20,7 @@ import java.util.Stack;
  * <p/>
  * Activity to show the details of a particular movie
  */
-public class PersonDetailActivity extends AppCompatActivity {
+public class PersonDetailActivity extends AppCompatActivity implements Constants{
 
     /**********************************************************************/
     /*                         Local Data                                 */
@@ -50,7 +51,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         if(savedInstanceState != null)
             return;
 
-        PersonDetailFragment fragment = new PersonDetailFragment();
+        int id = getIntent().getIntExtra(EXTRA_ID, 0);
+        PersonDetailFragment fragment = PersonDetailFragment.newInstance(id);
         //fragment.setArguments(arguments);
 
         getSupportFragmentManager().beginTransaction()

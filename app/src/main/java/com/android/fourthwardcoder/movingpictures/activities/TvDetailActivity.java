@@ -41,7 +41,8 @@ public class TvDetailActivity extends AppCompatActivity implements Constants {
         if(savedInstanceState != null)
             return;
 
-        TvDetailFragment fragment = new TvDetailFragment();
+        int id = getIntent().getIntExtra(EXTRA_ID,0);
+        TvDetailFragment fragment = TvDetailFragment.newInstance(id);
         //fragment.setArguments(arguments);
 
         getSupportFragmentManager().beginTransaction()

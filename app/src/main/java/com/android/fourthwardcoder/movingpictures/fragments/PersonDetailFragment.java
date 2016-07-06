@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
@@ -99,7 +100,19 @@ public class PersonDetailFragment extends Fragment implements Constants {
     
     ArrayList<MediaBasic> mKnownForMovieList;
 
+    private static final String ARG_ID = "id";
+
     public PersonDetailFragment() {
+    }
+
+    public static final PersonDetailFragment newInstance(int id) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_ID,id);
+        PersonDetailFragment fragment = new PersonDetailFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
@@ -111,7 +124,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
             mKnownForMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
         }
         else {
-            mPersonId = getActivity().getIntent().getIntExtra(EXTRA_ID, 0);
+            Bundle bundle = getArguments();
+            mPersonId = bundle.getInt(ARG_ID);
             mFetchData = true;
         }
     }
@@ -119,21 +133,27 @@ public class PersonDetailFragment extends Fragment implements Constants {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_person_detail, container, false);
+        View view = null;
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.e(TAG, "Back pressed");
+        if(getActivity() instanceof PersonDetailActivity) {
 
-                    //Kill this activity
-                    getActivity().finish();
-                }
-            });
+            view = inflater.inflate(R.layout.fragment_person_detail, container, false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e(TAG, "Back pressed");
+
+                        //Kill this activity
+                        getActivity().finish();
+                    }
+                });
+            }
+        } else {
+            view = inflater.inflate(R.layout.fragment_person_detail_two_pane, container, false);
         }
 
         //Get CollapsingToolbarLayout
@@ -388,8 +408,6 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 }
             });
 
-            //Set title of MovieOld on Action Bar
-            getActivity().setTitle(mPerson.getName());
             mNameTextView.setText(mPerson.getName());
 
             //Format birthday into form Jan 1, 2016

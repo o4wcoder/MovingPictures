@@ -133,14 +133,23 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
     boolean mFetchData = false;
 
+    private static final String ARG_ID = "id";
     /*****************************************************************/
     /*                       Constructor                             */
-
     /*****************************************************************/
     public MovieDetailFragment() {
 
     }
 
+    public static MovieDetailFragment newInstance(int id) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_ID,id);
+        MovieDetailFragment fragment = new MovieDetailFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,7 +166,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             if (arguments != null) {
 
                 //Got MovieO ID, will need to fetch data
-                mMovieId = arguments.getInt(EXTRA_ID);
+                mMovieId = arguments.getInt(ARG_ID);
                 Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
 
                 mFetchData = true;
