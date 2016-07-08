@@ -31,14 +31,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
-import com.android.fourthwardcoder.movingpictures.helpers.APIError;
-import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
-import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.MediaList;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity;
@@ -339,16 +337,16 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
     private void getPersonsTopMovies() {
 
-        Call<MovieList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
+        Call<MediaList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
 
-        call.enqueue(new retrofit2.Callback<MovieList>() {
+        call.enqueue(new retrofit2.Callback<MediaList>() {
 
             @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
 
                 if (response.isSuccessful()) {
                     Log.e(TAG, "onResponse()");
-                    mKnownForMovieList = ((ArrayList)response.body().getMovies());
+                    mKnownForMovieList = ((ArrayList)response.body().getMediaResults());
                     
                     setKnownForLayout();
                
@@ -362,7 +360,7 @@ public class PersonDetailFragment extends Fragment implements Constants {
             }
 
             @Override
-            public void onFailure(Call<MovieList> call, Throwable t) {
+            public void onFailure(Call<MediaList> call, Throwable t) {
 
             }
         });

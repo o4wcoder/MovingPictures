@@ -80,7 +80,7 @@ public class UnusedHttpMethods {
      * @param movieUri  URI string use to poll data from movie database
      * @return          ArrayList of Simple Movies
      */
-//    public static ArrayList<MovieOld> getMovieList(Context context, Uri movieUri) {
+//    public static ArrayList<MovieOld> getMediaList(Context context, Uri movieUri) {
 //
 //        Log.e(TAG,"MovieURI: " + movieUri);
 //        String movieJsonStr = queryMovieDatabase(movieUri);
@@ -771,5 +771,82 @@ public class UnusedHttpMethods {
 //        return castList;
 //    }
 
+    /******************************************************************/
+    /*                        Public Methods                          */
+    /******************************************************************/
+    /**
+     * Takes the URI passed in and fetches the data from the movie DB. Returns that data
+     * as a JSON String
+     *
+     * @param builtUri URI string use to poll data from movie database
+     * @return JSONString of movie data from the query
+     */
+//    public static String queryMovieDatabase(Uri builtUri) {
+//
+//        String moviesJsonStr = null;
+//        HttpURLConnection urlConnection = null;
+//        BufferedReader reader = null;
+//
+//        try {
+//
+//            //Log.e(TAG, builtUri.toString());
+//
+//            URL url = new URL(builtUri.toString());
+//
+//            // Create the request to OpenWeatherMap, and open the connection
+//            urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setRequestMethod("GET");
+//            urlConnection.connect();
+//
+//
+//            // Read the input stream into a String
+//            InputStream inputStream = urlConnection.getInputStream();
+//
+//            StringBuffer buffer = new StringBuffer();
+//            if (inputStream == null) {
+//                // Nothing to do.
+//                return null;
+//            }
+//
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+//
+//            String line;
+//
+//            while ((line = reader.readLine()) != null) {
+//                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+//                // But it does make debugging a *lot* easier if you print out the completed
+//                // buffer for debugging.
+//                buffer.append(line + "\n");
+//            }
+//
+//            if (buffer.length() == 0) {
+//                // Stream was empty.  No point in parsing.
+//                return null;
+//            }
+//
+//            moviesJsonStr = buffer.toString();
+//
+//        } catch (IOException e) {
+//            Log.e(TAG,"queryMovieDB() Exception: " + e.toString());
+//            e.printStackTrace();
+//            return null;
+//        } finally {
+//            if (urlConnection != null) {
+//                urlConnection.disconnect();
+//            }
+//            if (reader != null) {
+//                try {
+//                    reader.close();
+//                } catch (final IOException e) {
+//                    Log.e(TAG, "Error closing stream", e);
+//                }
+//            }
+//
+//            //Return list of Movies
+//            return moviesJsonStr;
+//        }
+//
+//
+//    }
 
 }

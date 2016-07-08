@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.fourthwardcoder.movingpictures" >
+    package="com.android.fourthwardcoder.movingpictures">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Main">
@@ -24,57 +24,57 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity"
+            android:name=".activities.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.MovieDetails"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MainActivity" >
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.MovieDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.MainActivity" />
->
+            >
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity"
+            android:name=".activities.PersonDetailActivity"
             android:label="@string/title_activity_actor_detail"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.PersonDetail"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" >
+            android:parentActivityName=".activities.MovieDetailActivity"
+            android:theme="@style/AppTheme.PersonDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.ReviewsActivity"
+            android:name=".activities.ReviewsActivity"
             android:label="@string/title_activity_movie_reviews"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" >
+            android:parentActivityName=".activities.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity"
+            android:name=".activities.PersonFilmographyTabActivity"
             android:label="@string/title_activity_filmography"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" >
+            android:parentActivityName=".activities.PersonDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity"
+            android:name=".activities.PersonPhotosActivity"
             android:label="@string/title_activity_person_photos"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.PersonPhotoDetail"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" >
+            android:parentActivityName=".activities.PersonDetailActivity"
+            android:theme="@style/AppTheme.PersonPhotoDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.PersonPhotoPagerActivity"
+            android:name=".activities.PersonPhotoPagerActivity"
             android:label="@string/title_activity_person_single_photo"
-            android:theme="@style/AppTheme.PersonPhotoPager"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity" >
+            android:parentActivityName=".activities.PersonPhotosActivity"
+            android:theme="@style/AppTheme.PersonPhotoPager">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity" />
@@ -82,32 +82,47 @@
         <activity
             android:name=".activities.ShowAllListActivity"
             android:label="@string/title_activity_movie_cast"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" >
+            android:parentActivityName=".activities.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
         </activity>
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
 
         <provider
             android:name=".data.FavoritesProvider"
             android:authorities="com.android.fourthwardcoder.movingpictures" />
 
+        <provider
+            android:name=".data.MediaSuggestionProvider"
+            android:authorities="com.android.fourthwardcoder.movingpictures.mediasuggestion"
+            android:enabled="true"
+            android:exported="true"/>
+
         <activity
-            android:name="com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity"
+            android:name=".activities.TvDetailActivity"
             android:label="@string/title_activity_tv_detail"
-            android:theme="@style/AppTheme.TvShowDetail"
-            android:parentActivityName="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity" >
+            android:parentActivityName=".activities.PersonFilmographyTabActivity"
+            android:theme="@style/AppTheme.TvShowDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity" />
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d7b07e10152213ba68ccb9155de07f4ee46527b0" />
+
+        <activity android:name=".activities.SearchableActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>

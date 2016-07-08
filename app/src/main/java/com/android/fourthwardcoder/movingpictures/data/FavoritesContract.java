@@ -21,7 +21,7 @@ public class FavoritesContract {
     public static final int COL_MEDIA_TYPE = 3;
     public static final int COL_NAME = 4;
 
-    //Content provider authority for MovieOld DB
+    //Content provider authority for Favorites Movie DB
     public static final String CONTENT_AUTHORITY = "com.android.fourthwardcoder.movingpictures";
 
     //Base URI for content provider
@@ -57,10 +57,10 @@ public class FavoritesContract {
             return CONTENT_URI;
         }
 
-        public static Uri buildMovieWithIdUri(int id) {
-
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
+//        public static Uri buildMovieWithIdUri(int id) {
+//
+//            return ContentUris.withAppendedId(CONTENT_URI, id);
+//        }
     }
 
 }

@@ -2,12 +2,10 @@ package com.android.fourthwardcoder.movingpictures.interfaces;
 
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
+import com.android.fourthwardcoder.movingpictures.models.MediaList;
 import com.android.fourthwardcoder.movingpictures.models.Movie;
-import com.android.fourthwardcoder.movingpictures.models.MovieList;
 import com.android.fourthwardcoder.movingpictures.models.Person;
 import com.android.fourthwardcoder.movingpictures.models.PersonPhotoList;
-import com.android.fourthwardcoder.movingpictures.models.SearchResult;
-import com.android.fourthwardcoder.movingpictures.models.SearchResultList;
 import com.android.fourthwardcoder.movingpictures.models.TvShow;
 import com.android.fourthwardcoder.movingpictures.models.VideoList;
 
@@ -22,19 +20,19 @@ import retrofit2.http.Query;
 public interface MovieService {
 
 //    @GET("/3/{ent_type}/{sort_type}")
-  //  Call<MovieList> getMovieList(@Path("ent_type") String entType, @Path("sort_type") String sortType,
+  //  Call<MediaList> getMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType,
     //                             @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
 
     @GET("/3/{ent_type}/{sort_type}")
-    Call<MovieList> getMovieList(@Path("ent_type") String entType, @Path("sort_type") String sortType);
+    Call<MediaList> getMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType);
 
     @GET("/3/discover/movie")
-    Call<MovieList> getNowPlayingMovies(@Query("primary_release_date.gte") String startDate,
+    Call<MediaList> getNowPlayingMovies(@Query("primary_release_date.gte") String startDate,
                                         @Query("primary_release_date.lte") String endDate,
                                         @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
 //
 //    @GET("3/movie/upcoming")
-//    Call<MovieList> getUpcomingMovies();
+//    Call<MediaList> getUpcomingMovies();
 
     @GET("/3/movie/{id}?append_to_response=release_dates,credits,videos,reviews")
     Call<Movie> getMovie(@Path("id") int id);
@@ -49,7 +47,7 @@ public interface MovieService {
     Call<Person> getPerson(@Path("id") int id);
 
     @GET("3/discover/movie?sort_by=popularity.desc")
-    Call<MovieList> getPersonsTopMovies(@Query("with_cast") int id);
+    Call<MediaList> getPersonsTopMovies(@Query("with_cast") int id);
 
     @GET("3/person/{id}/{credit_type}")
     Call<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
@@ -58,7 +56,7 @@ public interface MovieService {
     Call<TvShow> getTvShow(@Path("id") int id);
 
     @GET("3/search/multi")
-    Call<SearchResultList> getSearchResultList(@Query("query") String query);
+    Call<MediaList> getSearchResultList(@Query("query") String query);
 
     @GET("3/person/{id}/images")
     Call<PersonPhotoList> getPersonsPhotos(@Path("id") int id);

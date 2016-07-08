@@ -62,6 +62,9 @@ public class MediaBasic implements Parcelable {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("media_type")
+    @Expose
+    private String mediaType;
 
     public MediaBasic(Cursor cursor) {
 
@@ -340,6 +343,14 @@ public class MediaBasic implements Parcelable {
         this.name = name;
     }
 
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
     protected MediaBasic(Parcel in) {
         posterPath = in.readString();
         byte adultVal = in.readByte();
@@ -364,6 +375,7 @@ public class MediaBasic implements Parcelable {
         voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
         profilePath = in.readString();
         name = in.readString();
+        mediaType = in.readString();
     }
 
     @Override
@@ -422,6 +434,7 @@ public class MediaBasic implements Parcelable {
         }
         dest.writeString(profilePath);
         dest.writeString(name);
+        dest.writeString(mediaType);
     }
 
     @SuppressWarnings("unused")

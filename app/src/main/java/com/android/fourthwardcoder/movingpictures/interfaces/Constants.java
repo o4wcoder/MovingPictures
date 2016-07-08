@@ -67,6 +67,11 @@ public interface Constants {
     int SORT_TV = 5;
     int SORT_PERSON = 6;
 
+    //Media Types used in searching
+    String MEDIA_TYPE_MOVIE = "movie";
+    String MEDIA_TYPE_TV = "tv";
+    String MEDIA_TYPE_PERSON = "person";
+
 
 
 

@@ -1,7 +1,5 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +25,7 @@ import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
-import com.android.fourthwardcoder.movingpictures.models.MovieList;
+import com.android.fourthwardcoder.movingpictures.models.MediaList;
 
 import java.util.ArrayList;
 
@@ -245,20 +243,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         if (getActivity() != null) {
 
-            Call<MovieList> call = null;
+            Call<MediaList> call = null;
 
             Log.e(TAG,"getApiList() with ent type = " + mEntType + " Sort type = " + mSortOrder);
-            call = MovieDbAPI.getMovieApiService().getMovieList(getUriPath(), getSortType());
+            call = MovieDbAPI.getMovieApiService().getMediaList(getUriPath(), getSortType());
 
 
             if(call != null) {
-                call.enqueue(new retrofit2.Callback<MovieList>() {
+                call.enqueue(new retrofit2.Callback<MediaList>() {
                     @Override
-                    public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                    public void onResponse(Call<MediaList> call, Response<MediaList> response) {
 
                         if (response.isSuccessful()) {
 
-                            setAdapter((ArrayList) response.body().getMovies());
+                            setAdapter((ArrayList) response.body().getMediaResults());
                         } else {
                             Log.e(TAG, "!!! Response was not sucessful!!!");
                             //parse the response to find the error. Display a message
@@ -269,7 +267,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     }
 
                     @Override
-                    public void onFailure(Call<MovieList> call, Throwable t) {
+                    public void onFailure(Call<MediaList> call, Throwable t) {
                         Log.e(TAG, "onFailure() " + t.getMessage());
                         if(getActivity() != null)
                             Toast.makeText(getContext(), getContext().getString(R.string.toast_network_error), Toast.LENGTH_LONG);

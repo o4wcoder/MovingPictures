@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 //@Generated("org.jsonschema2pojo")
-public class MovieList {
+public class MediaList {
 
     @SerializedName("page")
     @Expose
@@ -44,7 +44,7 @@ public class MovieList {
      * @return
      * The results
      */
-    public List<MediaBasic> getMovies() {
+    public List<MediaBasic> getMediaResults() {
         return results;
     }
 
@@ -53,7 +53,7 @@ public class MovieList {
      * @param results
      * The results
      */
-    public void setMovies(List<MediaBasic> results) {
+    public void setMediaResults(List<MediaBasic> results) {
         this.results = results;
     }
 

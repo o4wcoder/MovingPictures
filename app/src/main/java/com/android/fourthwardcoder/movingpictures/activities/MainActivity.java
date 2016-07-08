@@ -1,5 +1,8 @@
 package com.android.fourthwardcoder.movingpictures.activities;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,12 +16,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.adapters.DiscoverListPagerAdapter;
@@ -230,6 +235,15 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        //Get the SearchView and set teh searchable configuration
+        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView)menu.findItem(R.id.action_search_db).getActionView();
+        //Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                new ComponentName(this, SearchableActivity.class)));
+       // searchView.setIconifiedByDefault(false);
+
         return true;
     }
 
@@ -508,4 +522,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 //        }
 //
 //    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Toast.makeText(this, "Searching by: "+ query, Toast.LENGTH_SHORT).show();
+
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String uri = intent.getDataString();
+            Toast.makeText(this, "Suggestion: "+ uri, Toast.LENGTH_SHORT).show();
+        }
+    }
 }
