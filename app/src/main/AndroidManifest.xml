@@ -99,7 +99,7 @@
             android:name=".data.MediaSuggestionProvider"
             android:authorities="com.android.fourthwardcoder.movingpictures.mediasuggestion"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
         <activity
             android:name=".activities.TvDetailActivity"

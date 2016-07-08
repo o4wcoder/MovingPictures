@@ -203,6 +203,9 @@ public class MovieDbAPI implements Constants {
     /*************************************************************************/
 
 
+    public static String getSmallFullPosterPath(String imageFile) {
+        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_185_SIZE + imageFile;
+    }
     public static String getFullPosterPath(String imageFile) {
 
         return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_342_SIZE + imageFile;
