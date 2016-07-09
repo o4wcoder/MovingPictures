@@ -3,12 +3,10 @@ package com.android.fourthwardcoder.movingpictures.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.PersonDetailFragment;
-import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
 import java.util.Stack;
@@ -41,7 +39,7 @@ public class PersonDetailActivity extends AppCompatActivity implements Constants
         //Add parent that called MovieOld Activity to stack
         parents.push(getClass());
 
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_single_fragment);
 //        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -2,12 +2,10 @@ package com.android.fourthwardcoder.movingpictures.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.android.fourthwardcoder.movingpictures.R;
 import com.android.fourthwardcoder.movingpictures.fragments.TvDetailFragment;
-import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 
 /**
@@ -31,7 +29,7 @@ public class TvDetailActivity extends AppCompatActivity implements Constants {
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_single_fragment);
 
         //Start postpone element transition
         supportPostponeEnterTransition();

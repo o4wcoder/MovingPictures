@@ -32,7 +32,7 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_single_fragment);
         //Change status bar color
        // Util.setStatusBarColor(this);
       //  final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -56,6 +56,9 @@ public class MediaBasic implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+    @SerializedName("first_air_date")
+    @Expose
+    private String firstAirDate;
     @SerializedName("profile_path")
     @Expose
     private String profilePath;
@@ -351,6 +354,36 @@ public class MediaBasic implements Parcelable {
         this.mediaType = mediaType;
     }
 
+    public String getFirstAirDate() {
+        return firstAirDate;
+    }
+
+    public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
+    }
+
+    public String getReleaseYear() {
+
+        String releaseYear = "";
+        String[] dateArray = releaseDate.split("-");
+
+        if(dateArray != null)
+            releaseYear = dateArray[0];
+
+        return releaseYear;
+    }
+
+    public String getFirstAirYear() {
+
+        String releaseYear = "";
+        String[] dateArray = firstAirDate.split("-");
+
+        if(dateArray != null)
+            releaseYear = dateArray[0];
+
+        return releaseYear;
+    }
+
     protected MediaBasic(Parcel in) {
         posterPath = in.readString();
         byte adultVal = in.readByte();
@@ -373,6 +406,7 @@ public class MediaBasic implements Parcelable {
         byte videoVal = in.readByte();
         video = videoVal == 0x02 ? null : videoVal != 0x00;
         voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+        firstAirDate = in.readString();
         profilePath = in.readString();
         name = in.readString();
         mediaType = in.readString();
@@ -432,6 +466,7 @@ public class MediaBasic implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeDouble(voteAverage);
         }
+        dest.writeString(firstAirDate);
         dest.writeString(profilePath);
         dest.writeString(name);
         dest.writeString(mediaType);

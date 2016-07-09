@@ -446,5 +446,17 @@ public class Util implements Constants {
         }
     }
 
+    public static @EntertainmentType int convertStringMediaTypeToEnt(String mediaType) {
+
+        if(mediaType.equals(MEDIA_TYPE_MOVIE))
+            return ENT_TYPE_MOVIE;
+        else if(mediaType.equals(MEDIA_TYPE_TV))
+            return ENT_TYPE_TV;
+        else
+            return ENT_TYPE_PERSON;
+
+
+    }
+
 
 }

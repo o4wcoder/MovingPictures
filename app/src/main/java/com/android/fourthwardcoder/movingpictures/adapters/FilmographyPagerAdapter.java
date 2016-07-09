@@ -40,10 +40,10 @@ public class FilmographyPagerAdapter extends FragmentStatePagerAdapter implement
 
         switch (position) {
             case 0:
-                ShowAllListFragment tab1 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_MOVIE);
+                ShowAllListFragment tab1 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_MOVIE,null);
                 return tab1;
             case 1:
-                ShowAllListFragment tab2 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_TV);
+                ShowAllListFragment tab2 = ShowAllListFragment.newInstance(mPersonId,position, LIST_TYPE_TV,null);
                 return tab2;
             default:
                 return null;

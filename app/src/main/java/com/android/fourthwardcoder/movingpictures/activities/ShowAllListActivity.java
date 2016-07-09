@@ -32,7 +32,7 @@ public class ShowAllListActivity extends ActionBarActivity implements Constants{
         int entType = getIntent().getIntExtra(EXTRA_ENT_TYPE,0);
         int listType = getIntent().getIntExtra(EXTRA_LIST_TYPE,0);
         String title = getIntent().getStringExtra(EXTRA_TITLE);
-        com.android.fourthwardcoder.movingpictures.fragments.ShowAllListFragment fragment = com.android.fourthwardcoder.movingpictures.fragments.ShowAllListFragment.newInstance(id,entType,listType);
+        ShowAllListFragment fragment = ShowAllListFragment.newInstance(id,entType,listType,null);
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.detail_container, fragment)

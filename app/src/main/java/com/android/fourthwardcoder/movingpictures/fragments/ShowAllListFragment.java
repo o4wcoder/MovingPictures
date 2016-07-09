@@ -11,13 +11,17 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.R;
-import com.android.fourthwardcoder.movingpictures.adapters.CreditListAdapter;
+import com.android.fourthwardcoder.movingpictures.adapters.ShowAllListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.APIError;
 import com.android.fourthwardcoder.movingpictures.helpers.ErrorUtils;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.models.Credits;
+import com.android.fourthwardcoder.movingpictures.models.MediaBasic;
+import com.android.fourthwardcoder.movingpictures.models.MediaList;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -42,21 +46,31 @@ public class ShowAllListFragment extends Fragment implements Constants {
     /********************************************************************/
    // ListView mListView;
     //CreditListAdapterOld mAdapter;
-    CreditListAdapter mAdapter;
+    ShowAllListAdapter mAdapter;
             RecyclerView mRecyclerView;
     int mEntType;
     int mListType;
     int mId;
+    String mQuery;
     Credits mCredits;
+    ArrayList<MediaBasic> mQueryResults;
 
-    public static ShowAllListFragment newInstance(int id,int entType, int listType) {
+    //Local Arguments
+    private static final String ARG_ID = "id";
+    private static final String ARG_ENT_TYPE = "ent_type";
+    private static final String ARG_LIST_TYPE = "list_type";
+    private static final String ARG_QUERY = "query";
+
+    public static ShowAllListFragment newInstance(int id,int entType, int listType, String query) {
 
         //Store data in bungle for the fragment
         Bundle args = new Bundle();
-        args.putInt(EXTRA_ID, id);
+        args.putInt(ARG_ID, id);
         //Store entertainment type; movie or tv
-        args.putInt(EXTRA_ENT_TYPE, entType);
-        args.putInt(EXTRA_LIST_TYPE, listType);
+        args.putInt(ARG_ENT_TYPE, entType);
+        args.putInt(ARG_LIST_TYPE, listType);
+        //Argument for Search results
+        args.putString(ARG_QUERY,query);
 
         //Create Fragment and store arguments to it.
         ShowAllListFragment fragment = new ShowAllListFragment();
@@ -71,15 +85,17 @@ public class ShowAllListFragment extends Fragment implements Constants {
 
         //Check if we've rotated
         if (savedInstance != null) {
-            mId = savedInstance.getInt(EXTRA_ID);
-            mEntType = savedInstance.getInt(EXTRA_ENT_TYPE);
-            mListType = savedInstance.getInt(EXTRA_LIST_TYPE);
+            mId = savedInstance.getInt(ARG_ID);
+            mEntType = savedInstance.getInt(ARG_ENT_TYPE);
+            mListType = savedInstance.getInt(ARG_LIST_TYPE);
+            mQuery = savedInstance.getString(ARG_QUERY);
 
         } else {
             Bundle bundle = getArguments();
-            mId = bundle.getInt(EXTRA_ID);
-            mEntType = bundle.getInt(EXTRA_ENT_TYPE);
-            mListType = bundle.getInt(EXTRA_LIST_TYPE);
+            mId = bundle.getInt(ARG_ID);
+            mEntType = bundle.getInt(ARG_ENT_TYPE);
+            mListType = bundle.getInt(ARG_LIST_TYPE);
+            mQuery = bundle.getString(ARG_QUERY);
 
         }
     }
@@ -96,44 +112,6 @@ public class ShowAllListFragment extends Fragment implements Constants {
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                CreditOld credit = (CreditOld) mAdapter.getItem(position);
-//                Intent i;
-//                if (mEntType == ENT_TYPE_MOVIE) {
-//                    i = new Intent(getActivity(), MovieDetailActivity.class);
-//                    i.putExtra(EXTRA_MOVIE_ID, credit.getId());
-//                } else {
-//                    i = new Intent(getActivity(), TvDetailActivity.class);
-//                    i.putExtra(EXTRA_TV_ID, credit.getId());
-//                }
-//
-//                ImageView imageView = (ImageView)view.findViewById(R.id.posterImageView);
-//                //Start shared element transition for the movie poster
-//                ActivityOptionsCompat activityOptions =
-//                        ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-//                                new Pair<View, String>(imageView, getString(R.string.trans_movie_poster)));
-//
-//                startActivity(i,activityOptions.toBundle());
-//                //startActivity(i);
-//
-//            }
-//        });
-
-//        if (mListView != null) {
-//
-//            if(Util.isNetworkAvailable(getActivity())) {
-//                new FetchFilmographyTask().execute(mId, mEntType);
-//            }
-//            else {
-//                Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-//                        getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-//                connectToast.show();
-//            }
-//        }
-
         if (mEntType == ENT_TYPE_PERSON) {
             if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_MOVIE_CREW) {
                 getCredits(MovieDbAPI.PATH_MOVIE);
@@ -142,7 +120,8 @@ public class ShowAllListFragment extends Fragment implements Constants {
             }
         } else if (mEntType == ENT_TYPE_MOVIE || mEntType == ENT_TYPE_TV) {
             getPersonsFilmography();
-        }
+        } else if(mEntType == ENT_TYPE_SEARCH)
+           getSearchResult();
 
         return view;
 
@@ -151,9 +130,9 @@ public class ShowAllListFragment extends Fragment implements Constants {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putInt(EXTRA_ENT_TYPE, mEntType);
-        savedInstanceState.putInt(EXTRA_LIST_TYPE,mListType);
-        savedInstanceState.putInt(EXTRA_ID, mId);
+        savedInstanceState.putInt(ARG_ENT_TYPE, mEntType);
+        savedInstanceState.putInt(ARG_LIST_TYPE,mListType);
+        savedInstanceState.putInt(ARG_ID, mId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -175,6 +154,30 @@ public class ShowAllListFragment extends Fragment implements Constants {
         setApiCall(call);
     }
 
+    private void getSearchResult() {
+
+        Call<MediaList> call = MovieDbAPI.getMovieApiService().getSearchResultList(mQuery);
+
+        call.enqueue(new retrofit2.Callback<MediaList>() {
+
+            @Override
+            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+
+                if(response.isSuccessful()) {
+
+                    mQueryResults = (ArrayList)response.body().getMediaResults();
+
+                    Log.e(TAG,"onRespnse with queryResult size = " + mQueryResults.size());
+                    setSearchAdapater();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MediaList> call, Throwable t) {
+
+            }
+        });
+    }
     private void setApiCall(Call<Credits> call) {
         call.enqueue(new retrofit2.Callback<Credits>() {
 
@@ -206,15 +209,33 @@ public class ShowAllListFragment extends Fragment implements Constants {
 
         if(mCredits != null) {
 
-            mAdapter = new CreditListAdapter(getContext(), mCredits, mEntType,mListType, new CreditListAdapter.CreditListAdapterOnClickHandler() {
+            mAdapter = new ShowAllListAdapter(getContext(), mCredits, mEntType,mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
                 @Override
-                public void onCreditClick(int id, CreditListAdapter.CreditListAdapterViewHolder vh) {
+                public void onClick(int id, int position, ShowAllListAdapter.CreditListAdapterViewHolder vh) {
 
                     Log.e(TAG,"onCreditClick() id = " + id + " ent type = " + mEntType);
                     Util.startDetailActivity(getContext(),id,mEntType,vh.thumbImageView);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
+    private void setSearchAdapater() {
+
+        if(mQueryResults != null) {
+
+            mAdapter = new ShowAllListAdapter(getContext(), mQueryResults, mEntType,mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
+                @Override
+                public void onClick(int id, int position, ShowAllListAdapter.CreditListAdapterViewHolder vh) {
+
+                    Log.e(TAG,"onCreditClick() id = " + id + " ent type = " + mEntType);
+                    MediaBasic media = mQueryResults.get(position);
+                    Util.startDetailActivity(getContext(),id,Util.convertStringMediaTypeToEnt(media.getMediaType()),vh.thumbImageView);
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+
         }
     }
 

@@ -91,7 +91,6 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
                 new String[] {
                         BaseColumns._ID,
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
-                        SearchManager.SUGGEST_COLUMN_ICON_1,
                         SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID,
                         SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA
                 });
@@ -118,16 +117,17 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
                             text = mResultList.get(i).getName();
 
 
-                        String iconPath = MovieDbAPI.getSmallFullPosterPath(mResultList.get(i).getPosterPath());
-                        Log.e(TAG,iconPath);
-//                        Drawable icon = getDrawableFromUrl(iconPath);
-//                        if(icon == null)
-//                            Log.e(TAG,"icon downloaded is null!!!!");
-//                        else
-//                        Log.e(TAG,"Icon is not null, drawable = "  + icon.toString());
-                        int mediaId = mResultList.get(i).getId();
-                        Uri icon = Uri.parse("android.resource://com.android.fourthwardcoder.movingpictures/"+ R.drawable.ic_theaters);
-                        cursor.addRow(new Object[]{i, text,icon,mediaId,mediaType});
+//                        String iconPath = MovieDbAPI.getSmallFullPosterPath(mResultList.get(i).getPosterPath());
+//                        Log.e(TAG,iconPath);
+////                        Drawable icon = getDrawableFromUrl(iconPath);
+////                        if(icon == null)
+////                            Log.e(TAG,"icon downloaded is null!!!!");
+////                        else
+////                        Log.e(TAG,"Icon is not null, drawable = "  + icon.toString());
+              //          Uri icon = Uri.parse("android.resource://com.android.fourthwardcoder.movingpictures/"+ R.drawable.ic_theaters);
+
+                       int mediaId = mResultList.get(i).getId();
+                        cursor.addRow(new Object[]{i, text,mediaId,mediaType});
                     }
 
 

@@ -238,11 +238,50 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
 
         //Get the SearchView and set teh searchable configuration
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView)menu.findItem(R.id.action_search_db).getActionView();
+        final MenuItem searchMenu = (MenuItem)menu.findItem(R.id.action_search_db);
+        final SearchView searchView = (SearchView)searchMenu.getActionView();
         //Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(
                 new ComponentName(this, SearchableActivity.class)));
        // searchView.setIconifiedByDefault(false);
+      //  searchView.setIconified(true);
+       // searchView.onActionViewCollapsed();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                //Closet searchView after search button clicked
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+
+                Log.e(TAG,"onSuggestionListenter");
+               // searchView.setIconified(true);
+                searchMenu.collapseActionView();
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                Log.e(TAG,"onSuggestionClick");
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+        });
+
 
         return true;
     }
