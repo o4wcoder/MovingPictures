@@ -113,5 +113,7 @@
     <!-- Search -->
     <string name="search_hint">Search Moving Pictures</string>
     <string name="search_results">Search Results</string>
+    <string name="search_subtext_movie">Movie</string>
+    <string name="search_subtext_tv_series">TV Series</string>
 
 </resources>

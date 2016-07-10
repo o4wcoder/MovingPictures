@@ -78,6 +78,30 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
         return new BitmapDrawable(bitmap);
     }
 
+    private void addCursorRow(int position, MatrixCursor cursor, MediaBasic media) {
+
+        String text = "";
+        String subText = "";
+        String mediaType = media.getMediaType();
+        if (mediaType.equals(MEDIA_TYPE_MOVIE)) {
+            text = media.getTitle();
+            subText = getContext().getString(R.string.search_subtext_movie) +
+                    " (" + media.getReleaseYear() + ")";
+        }
+        else if(mediaType.equals(MEDIA_TYPE_TV)) {
+            text = media.getName();
+            subText = getContext().getString(R.string.search_subtext_tv_series) +
+                    " (" + media.getFirstAirYear() + ")";
+        } else {
+            text = media.getName();
+        }
+
+
+        int mediaId = media.getId();
+        cursor.addRow(new Object[]{position, text,subText,mediaId,mediaType});
+
+    }
+
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -91,6 +115,7 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
                 new String[] {
                         BaseColumns._ID,
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
+                        SearchManager.SUGGEST_COLUMN_TEXT_2,
                         SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID,
                         SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA
                 });
@@ -102,68 +127,41 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
 
                 try {
                     MediaList queryResults = call.execute().body();
-                    Log.e(TAG, "response sucessful");
 
                     final int queryLimit = Integer.parseInt(uri.getQueryParameter(SearchManager.SUGGEST_PARAMETER_LIMIT));
                     mResultList = (ArrayList) queryResults.getMediaResults();
-                    Log.e(TAG, "Number of media results = " + mResultList.size());
+
+                    //Add all query results into a row of the cursor
                     for (int i = 0; i < queryLimit && i < mResultList.size(); i++) {
 
-                        String text = "";
-                        String mediaType = mResultList.get(i).getMediaType();
-                        if (mediaType.equals(MEDIA_TYPE_MOVIE))
-                            text = mResultList.get(i).getTitle();
-                        else
-                            text = mResultList.get(i).getName();
+                        addCursorRow(i,cursor,mResultList.get(i));
 
-
-//                        String iconPath = MovieDbAPI.getSmallFullPosterPath(mResultList.get(i).getPosterPath());
-//                        Log.e(TAG,iconPath);
-////                        Drawable icon = getDrawableFromUrl(iconPath);
-////                        if(icon == null)
-////                            Log.e(TAG,"icon downloaded is null!!!!");
-////                        else
-////                        Log.e(TAG,"Icon is not null, drawable = "  + icon.toString());
-              //          Uri icon = Uri.parse("android.resource://com.android.fourthwardcoder.movingpictures/"+ R.drawable.ic_theaters);
-
-                       int mediaId = mResultList.get(i).getId();
-                        cursor.addRow(new Object[]{i, text,mediaId,mediaType});
                     }
-
-
                 } catch (IOException e) {
                     Log.e(TAG, "Got retrofit io exception " + e.getMessage());
                 }
-                Log.e(TAG,"Return with cursor size = " + cursor.getCount());
+
                 return cursor;
             }
         } else if(sUriMatcher.match(uri) == SINGLE_SUGGESTION) {
 
-            Log.e(TAG,"Got single suggestion!! with uri = " + uri);
             int mediaId = Integer.parseInt(uri.getLastPathSegment());
 
             MediaBasic media = null;
+            //Search for media id return in uri.
             for(int i = 0; i < mResultList.size(); i ++) {
 
+                //if found media id, create cursor and return
                 if(mResultList.get(i).getId() == mediaId) {
                     media = mResultList.get(i);
 
-                    String text = "";
-                    String mediaType = media.getMediaType();
-                    if (mediaType.equals(MEDIA_TYPE_MOVIE))
-                        text = media.getTitle();
-                    else
-                        text = media.getName();
-
-                    cursor.addRow(new Object[]{i, text, mediaId, mediaType});
-
+                    addCursorRow(i,cursor,media);
                     return cursor;
                 }
             }
 
         }
 
-        Log.e(TAG,"Return null from query");
         return null;
     }
 
