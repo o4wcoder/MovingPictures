@@ -413,9 +413,15 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 if (!(mPerson.getBirthday().equals(""))) {
                     String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
 
-                    Spanned bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
-                            strBirthDay + " " + getString(R.string.age,getAge(mPerson.getBirthday())));
 
+                    Spanned bornDate;
+                            if(mPerson.getDeathday().equals("")) {
+                               bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
+                                        strBirthDay + " " + getString(R.string.age, getAge(mPerson.getBirthday())));
+                            } else {
+                                bornDate = Html.fromHtml("<b>" + getString(R.string.born) + "</b>" + " " +
+                                        strBirthDay);
+                            }
 
                     mBornDateTextView.setText(bornDate);
                 }
@@ -425,17 +431,24 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
             if(mPerson.getDeathday() != null) {
                 if (!(mPerson.getDeathday()).equals("")) {
+
+                    String strDeathDay = Util.reverseDateString(mPerson.getDeathday());
                     Spanned deathDate = Html.fromHtml("<b>" + getString(R.string.death) + "</b>" + " " +
-                            Util.reverseDateString(mPerson.getDeathday()));
+                            strDeathDay + " " + getString(R.string.age, getDeathAge(mPerson.getBirthday(),mPerson.getDeathday())));
                     mDeathDateTextView.setText(deathDate);
                 } else {
                     mDeathDateTextView.setVisibility(View.GONE);
                 }
             }
 
-            Spanned biography = Html.fromHtml("<b>" + getString(R.string.biography) + "</b>" + " " +
-                    mPerson.getBiography());
-            mBiographyContentTextView.setText(biography);
+            if(mPerson.getBiography() != null) {
+                Spanned biography = Html.fromHtml("<b>" + getString(R.string.biography) + "</b>" + " " +
+                        mPerson.getBiography());
+                mBiographyContentTextView.setText(biography);
+            } else {
+                mBiographyContentTextView.setVisibility(View.GONE);
+            }
+
 
             if(mPerson.getHomepage() != null){
                 if (!(mPerson.getHomepage()).equals("")) {
@@ -536,6 +549,34 @@ public class PersonDetailFragment extends Fragment implements Constants {
             age--;
         } else if (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)
                 && today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+            age--;
+        }
+
+        return age;
+
+    }
+
+    private int getDeathAge(String strBirthDate,String strDeathDate) {
+
+        Log.e(TAG,"Got string birthdate = " + strBirthDate);
+
+        String[] dobArray = strBirthDate.split("-");
+        String[] deathArray = strDeathDate.split("-");
+
+        //Get data of birth calendar
+        Calendar dob = Calendar.getInstance();
+        dob.set(Integer.parseInt(dobArray[0]),Integer.parseInt(dobArray[1]),Integer.parseInt(dobArray[2]));
+
+        int deathYear = Integer.parseInt(deathArray[0]);
+        int deathMonth = Integer.parseInt(deathArray[1]);
+
+        //Get today's calendar
+        Calendar today = Calendar.getInstance();
+        int age = deathYear - dob.get(Calendar.YEAR);
+        if (deathMonth < dob.get(Calendar.MONTH)) {
+            age--;
+        } else if (deathMonth == dob.get(Calendar.MONTH)
+                && deathMonth < dob.get(Calendar.DAY_OF_MONTH)) {
             age--;
         }
 

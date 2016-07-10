@@ -24,14 +24,18 @@ public class ShowAllListActivity extends ActionBarActivity implements Constants{
         setContentView(R.layout.activity_movie_cast);
 
         //Set Toolbar
-//        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         int id = getIntent().getIntExtra(EXTRA_ID,0);
         int entType = getIntent().getIntExtra(EXTRA_ENT_TYPE,0);
         int listType = getIntent().getIntExtra(EXTRA_LIST_TYPE,0);
         String title = getIntent().getStringExtra(EXTRA_TITLE);
+
+        setTitle(title);
         ShowAllListFragment fragment = ShowAllListFragment.newInstance(id,entType,listType,null);
 
         getSupportFragmentManager().beginTransaction()

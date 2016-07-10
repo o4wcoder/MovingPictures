@@ -5,20 +5,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.util.Log;
 
-import com.android.fourthwardcoder.movingpictures.interfaces.APIKeys;
+import com.android.fourthwardcoder.movingpictures.BuildConfig;
 import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.android.fourthwardcoder.movingpictures.interfaces.MovieService;
 
 import com.android.fourthwardcoder.movingpictures.models.Video;
-
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -45,8 +37,8 @@ public class MovieDbAPI implements Constants {
 
     public static final String NUM_QUERY_PAGES = "3";
 
-    //API Key for the Movies DB API. Replace "APIKeys.MOVIE_DB_API_KEY" with your own API Key
-    public static final String API_KEY_MOVIE_DB = APIKeys.MOVIE_DB_API_KEY;
+    //API Key for the Movies DB API.
+    public static final String API_KEY_MOVIE_DB = BuildConfig.MOVIE_DB_API_KEY;
     //Base URLs
     public static final String MOVIE_DB_URL = "http://api.themoviedb.org/";
     public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES;
