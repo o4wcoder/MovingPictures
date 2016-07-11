@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.fourthwardcoder.movingpictures">
+    package="com.fourthwardmobile.android.movingpictures">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme.MovieDetails">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.MainActivity" />
+                android:value=".activities.MainActivity" />
             >
         </activity>
         <activity
@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.PersonDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
+                android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
             android:name=".activities.ReviewsActivity"
@@ -50,7 +50,7 @@
             android:parentActivityName=".activities.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
+                android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
             android:name=".activities.PersonFilmographyTabActivity"
@@ -58,7 +58,7 @@
             android:parentActivityName=".activities.PersonDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" />
+                android:value=".activities.PersonDetailActivity" />
         </activity>
         <activity
             android:name=".activities.PersonPhotosActivity"
@@ -68,7 +68,7 @@
             android:theme="@style/AppTheme.PersonPhotoDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity" />
+                android:value=".activities.PersonDetailActivity" />
         </activity>
         <activity
             android:name=".activities.PersonPhotoPagerActivity"
@@ -77,7 +77,7 @@
             android:theme="@style/AppTheme.PersonPhotoPager">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.PersonPhotosActivity" />
+                android:value=".activities.PersonPhotosActivity" />
         </activity>
         <activity
             android:name=".activities.ShowAllListActivity"
@@ -85,7 +85,7 @@
             android:parentActivityName=".activities.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity" />
+                android:value=".activities.MovieDetailActivity" />
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
@@ -93,11 +93,11 @@
 
         <provider
             android:name=".data.FavoritesProvider"
-            android:authorities="com.android.fourthwardcoder.movingpictures" />
+            android:authorities="com.android.fourthwardmobile.movingpictures" />
 
         <provider
             android:name=".data.MediaSuggestionProvider"
-            android:authorities="com.android.fourthwardcoder.movingpictures.mediasuggestion"
+            android:authorities="com.android.fourthwardmobile.movingpictures.mediasuggestion"
             android:enabled="true"
             android:exported="true" />
 
@@ -108,7 +108,7 @@
             android:theme="@style/AppTheme.TvShowDetail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.android.fourthwardcoder.movingpictures.activities.PersonFilmographyTabActivity" />
+                android:value=".activities.PersonFilmographyTabActivity" />
         </activity>
 
         <meta-data

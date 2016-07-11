@@ -14,7 +14,7 @@
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="com.android.fourthwardcoder.movingpictures.fragments.ReviewsFragment"
+    android:name="com.fourthwardmobile.android.movingpictures.fragments.ReviewsFragment"
     tools:layout="@layout/fragment_movie_reviews" android:layout_width="match_parent"
     android:layout_height="match_parent" />
 </LinearLayout>

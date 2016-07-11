@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.android.fourthwardcoder.movingpictures.helpers.GridRecyclerView
+    <com.fourthwardmobile.android.movingpictures.helpers.GridRecyclerView
         android:id="@+id/grid_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +15,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </com.android.fourthwardcoder.movingpictures.helpers.GridRecyclerView>
+    </com.fourthwardmobile.android.movingpictures.helpers.GridRecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
