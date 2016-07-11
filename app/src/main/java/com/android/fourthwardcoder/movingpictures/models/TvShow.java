@@ -1,6 +1,8 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
 import android.content.ContentValues;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import com.android.fourthwardcoder.movingpictures.interfaces.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TvShow implements Constants{
+public class TvShow implements Constants, Parcelable {
 
     @SerializedName("backdrop_path")
     @Expose
@@ -627,4 +629,200 @@ public class TvShow implements Constants{
         return movieValues;
     }
 
+
+    protected TvShow(Parcel in) {
+        backdropPath = in.readString();
+        if (in.readByte() == 0x01) {
+            createdBy = new ArrayList<CreatedBy>();
+            in.readList(createdBy, CreatedBy.class.getClassLoader());
+        } else {
+            createdBy = null;
+        }
+        if (in.readByte() == 0x01) {
+            episodeRunTime = new ArrayList<Integer>();
+            in.readList(episodeRunTime, Integer.class.getClassLoader());
+        } else {
+            episodeRunTime = null;
+        }
+        firstAirDate = in.readString();
+        if (in.readByte() == 0x01) {
+            genres = new ArrayList<Genre>();
+            in.readList(genres, Genre.class.getClassLoader());
+        } else {
+            genres = null;
+        }
+        homepage = in.readString();
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        byte inProductionVal = in.readByte();
+        inProduction = inProductionVal == 0x02 ? null : inProductionVal != 0x00;
+        if (in.readByte() == 0x01) {
+            languages = new ArrayList<String>();
+            in.readList(languages, String.class.getClassLoader());
+        } else {
+            languages = null;
+        }
+        lastAirDate = in.readString();
+        name = in.readString();
+        if (in.readByte() == 0x01) {
+            networks = new ArrayList<Network>();
+            in.readList(networks, Network.class.getClassLoader());
+        } else {
+            networks = null;
+        }
+        numberOfEpisodes = in.readByte() == 0x00 ? null : in.readInt();
+        numberOfSeasons = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            originCountry = new ArrayList<String>();
+            in.readList(originCountry, String.class.getClassLoader());
+        } else {
+            originCountry = null;
+        }
+        originalLanguage = in.readString();
+        originalName = in.readString();
+        overview = in.readString();
+        popularity = in.readByte() == 0x00 ? null : in.readDouble();
+        posterPath = in.readString();
+        if (in.readByte() == 0x01) {
+            productionCompanies = new ArrayList<ProductionCompany>();
+            in.readList(productionCompanies, ProductionCompany.class.getClassLoader());
+        } else {
+            productionCompanies = null;
+        }
+        if (in.readByte() == 0x01) {
+            seasons = new ArrayList<Season>();
+            in.readList(seasons, Season.class.getClassLoader());
+        } else {
+            seasons = null;
+        }
+        status = in.readString();
+        type = in.readString();
+        voteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+        voteCount = in.readByte() == 0x00 ? null : in.readInt();
+        credits = (Credits) in.readValue(Credits.class.getClassLoader());
+        videos = (VideoList) in.readValue(VideoList.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(backdropPath);
+        if (createdBy == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(createdBy);
+        }
+        if (episodeRunTime == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(episodeRunTime);
+        }
+        dest.writeString(firstAirDate);
+        if (genres == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(genres);
+        }
+        dest.writeString(homepage);
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        if (inProduction == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (inProduction ? 0x01 : 0x00));
+        }
+        if (languages == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(languages);
+        }
+        dest.writeString(lastAirDate);
+        dest.writeString(name);
+        if (networks == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(networks);
+        }
+        if (numberOfEpisodes == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(numberOfEpisodes);
+        }
+        if (numberOfSeasons == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(numberOfSeasons);
+        }
+        if (originCountry == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(originCountry);
+        }
+        dest.writeString(originalLanguage);
+        dest.writeString(originalName);
+        dest.writeString(overview);
+        if (popularity == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(popularity);
+        }
+        dest.writeString(posterPath);
+        if (productionCompanies == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(productionCompanies);
+        }
+        if (seasons == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(seasons);
+        }
+        dest.writeString(status);
+        dest.writeString(type);
+        if (voteAverage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(voteAverage);
+        }
+        if (voteCount == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(voteCount);
+        }
+        dest.writeValue(credits);
+        dest.writeValue(videos);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<TvShow> CREATOR = new Parcelable.Creator<TvShow>() {
+        @Override
+        public TvShow createFromParcel(Parcel in) {
+            return new TvShow(in);
+        }
+
+        @Override
+        public TvShow[] newArray(int size) {
+            return new TvShow[size];
+        }
+    };
 }

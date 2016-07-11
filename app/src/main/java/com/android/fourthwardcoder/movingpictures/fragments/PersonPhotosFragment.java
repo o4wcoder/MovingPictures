@@ -145,9 +145,9 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
 
                 } else {
 
-                    APIError error = ErrorUtils.parseError(response);
-                    Log.e(TAG, "Error message = " + error.message());
-                    Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
+//                    APIError error = ErrorUtils.parseError(response);
+//                    Log.e(TAG, "Error message = " + error.message());
+//                    Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
                 }
             }
 

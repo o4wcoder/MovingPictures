@@ -1,6 +1,9 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -17,6 +20,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -25,6 +29,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -36,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
+import com.android.fourthwardcoder.movingpictures.activities.SearchableActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.data.FavoritesContract;
@@ -107,6 +113,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     FloatingActionButton mFavoritesFAB;
     RelativeLayout mDetailLayout;
 
+    Toolbar mToolbar;
 
     CardView mDetailCardView;
     CardView mReviewsCardView;
@@ -155,9 +162,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         if(savedInstanceState != null) {
 
-            Log.e(TAG,"onCreate()....... Get saved movie object after rotation");
             mMovie = savedInstanceState.getParcelable(EXTRA_MOVIE);
         }
         else {
@@ -167,8 +175,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
                 //Got MovieO ID, will need to fetch data
                 mMovieId = arguments.getInt(ARG_ID);
-                Log.e(TAG, "onCreateView(): got movie id = " + mMovieId);
-
                 mFetchData = true;
             }
         }
@@ -179,17 +185,20 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View view;
 
         //Set up back UP navigation arrow
         if(getActivity() instanceof MovieDetailActivity) {
 
+            //Set Options menu if we are not in two pane mode
+            setHasOptionsMenu(true);
+
             view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+                mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.e(TAG, "Back pressed");
@@ -199,6 +208,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     }
                 });
             }
+            //Set Toolbar so we can see menu options
+            ((MovieDetailActivity) getActivity()).setSupportActionBar(mToolbar);
+
         } else {
             view = inflater.inflate(R.layout.fragment_movie_detail_two_pane, container, false);
         }
@@ -375,6 +387,55 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         savedInstanceState.putParcelable(EXTRA_MOVIE, mMovie);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
+            // Inflate the menu; this adds items to the action bar if it is present.
+            inflater.inflate(R.menu.menu_search, menu);
+
+            //Get the SearchView and set teh searchable configuration
+            SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+            final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
+            final SearchView searchView = (SearchView) searchMenu.getActionView();
+
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                    new ComponentName(getActivity(), SearchableActivity.class)));
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+
+                    //Close searchView after search button clicked
+                    searchView.setQuery("", false);
+                    searchView.setIconified(true);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+
+            searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+                @Override
+                public boolean onSuggestionSelect(int position) {
+
+                    return false;
+                }
+
+                @Override
+                public boolean onSuggestionClick(int position) {
+                    Log.e(TAG, "onSuggestionClick");
+                    searchView.setQuery("", false);
+                    searchView.setIconified(true);
+                    return false;
+                }
+            });
+
     }
 
     private void getMovie(int id) {

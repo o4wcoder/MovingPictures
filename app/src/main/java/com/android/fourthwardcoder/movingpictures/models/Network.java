@@ -1,9 +1,12 @@
 package com.android.fourthwardcoder.movingpictures.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Network {
+public class Network implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -48,4 +51,38 @@ public class Network {
         this.name = name;
     }
 
+
+    protected Network(Parcel in) {
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        name = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        dest.writeString(name);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Network> CREATOR = new Parcelable.Creator<Network>() {
+        @Override
+        public Network createFromParcel(Parcel in) {
+            return new Network(in);
+        }
+
+        @Override
+        public Network[] newArray(int size) {
+            return new Network[size];
+        }
+    };
 }

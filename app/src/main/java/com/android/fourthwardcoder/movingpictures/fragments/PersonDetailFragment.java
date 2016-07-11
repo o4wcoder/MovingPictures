@@ -1,5 +1,8 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
@@ -21,6 +25,9 @@ import android.text.style.ClickableSpan;
 import android.transition.Transition;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -31,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fourthwardcoder.movingpictures.activities.PersonDetailActivity;
+import com.android.fourthwardcoder.movingpictures.activities.SearchableActivity;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
 import com.android.fourthwardcoder.movingpictures.helpers.MovieDbAPI;
 import com.android.fourthwardcoder.movingpictures.helpers.Util;
@@ -87,6 +95,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
     private NestedScrollView mNestedScrollView;
     FloatingActionButton mFavoritesFAB;
 
+    Toolbar mToolbar;
+
     //Known For Image and Text
     ImageView mKnownFor1ImageView;
     ImageView mKnownFor2ImageView;
@@ -136,11 +146,15 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
         if(getActivity() instanceof PersonDetailActivity) {
 
+            //Set Options menu if we are not in two pane mode
+            setHasOptionsMenu(true);
+
             view = inflater.inflate(R.layout.fragment_person_detail, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+                mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.e(TAG, "Back pressed");
@@ -150,6 +164,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
                     }
                 });
             }
+            //Set Toolbar so we can see menu options
+            ((PersonDetailActivity) getActivity()).setSupportActionBar(mToolbar);
         } else {
             view = inflater.inflate(R.layout.fragment_person_detail_two_pane, container, false);
         }
@@ -306,6 +322,56 @@ public class PersonDetailFragment extends Fragment implements Constants {
         savedInstanceState.putParcelableArrayList(EXTRA_MOVIE_LIST,mKnownForMovieList);
         super.onSaveInstanceState(savedInstanceState);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_search, menu);
+
+        //Get the SearchView and set teh searchable configuration
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
+        final SearchView searchView = (SearchView) searchMenu.getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                new ComponentName(getActivity(), SearchableActivity.class)));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                //Close searchView after search button clicked
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                Log.e(TAG, "onSuggestionClick");
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+        });
+
+    }
+
     private void getPerson(int id) {
 
         Call<Person> call = MovieDbAPI.getMovieApiService().getPerson(id);

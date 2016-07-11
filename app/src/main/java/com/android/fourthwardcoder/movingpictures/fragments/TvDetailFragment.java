@@ -1,5 +1,8 @@
 package com.android.fourthwardcoder.movingpictures.fragments;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -16,6 +19,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -41,6 +45,7 @@ import android.widget.Toast;
 import com.android.fourthwardcoder.movingpictures.R;
 //import com.android.fourthwardcoder.movingpictures.adapters.VideosListAdapter;
 import com.android.fourthwardcoder.movingpictures.activities.MovieDetailActivity;
+import com.android.fourthwardcoder.movingpictures.activities.SearchableActivity;
 import com.android.fourthwardcoder.movingpictures.activities.TvDetailActivity;
 import com.android.fourthwardcoder.movingpictures.adapters.VideoListAdapter;
 import com.android.fourthwardcoder.movingpictures.helpers.ImageTransitionListener;
@@ -80,7 +85,7 @@ public class TvDetailFragment extends Fragment implements Constants {
     /************************************************************/
     int mTvId;
     TvShow mTvShow;
-   // ListView mListView;
+    // ListView mListView;
     //VideosListAdapter mVideoListAdapter;
 
     ImageView mBackdropImageView;
@@ -88,7 +93,7 @@ public class TvDetailFragment extends Fragment implements Constants {
     TextView mTitleTextView;
     TextView mReleaseYearTextView;
     TextView mRuntimeTextView;
-   // TextView mCreatedByTextView;
+    // TextView mCreatedByTextView;
     TextView mCastTextView;
     TextView mRatingTextView;
     ExpandableTextView mOverviewTextView;
@@ -100,6 +105,8 @@ public class TvDetailFragment extends Fragment implements Constants {
     CardView mDetailCardView;
     RelativeLayout mDetailLayout;
     FloatingActionButton mFavoritesFAB;
+
+    Toolbar mToolbar;
 
     //Videos
     CardView mVideoLayout;
@@ -116,7 +123,10 @@ public class TvDetailFragment extends Fragment implements Constants {
     TextView mCast3TextView;
     TextView mCastShowAllTextView;
 
+    boolean mFetchData = false;
+
     private static final String ARG_ID = "id";
+    private static final String ARG_TV_SHOW = "tv_show";
 
     public TvDetailFragment() {
     }
@@ -124,7 +134,7 @@ public class TvDetailFragment extends Fragment implements Constants {
     public static TvDetailFragment newInstance(int id) {
 
         Bundle bundle = new Bundle();
-        bundle.putInt(ARG_ID,id);
+        bundle.putInt(ARG_ID, id);
         TvDetailFragment fragment = new TvDetailFragment();
         fragment.setArguments(bundle);
 
@@ -135,12 +145,15 @@ public class TvDetailFragment extends Fragment implements Constants {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
 
+            mTvShow = savedInstanceState.getParcelable(ARG_TV_SHOW);
         } else {
-         Bundle bundle = getArguments();
-            mTvId = bundle.getInt(ARG_ID);
-            Log.e(TAG,"onCreate() with id = " + mTvId);
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                mTvId = bundle.getInt(ARG_ID);
+                mFetchData = true;
+            }
         }
     }
 
@@ -149,13 +162,18 @@ public class TvDetailFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
 
         View view = null;
-        if(getActivity() instanceof TvDetailActivity) {
-             view = inflater.inflate(R.layout.fragment_tv_detail, container, false);
+        if (getActivity() instanceof TvDetailActivity) {
+
+            //Set Options menu if we are not in two pane mode
+            setHasOptionsMenu(true);
+
+            view = inflater.inflate(R.layout.fragment_tv_detail, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
             //Set up back UP navigation arrow
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-                toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+                mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
+                mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.e(TAG, "Back pressed");
@@ -165,6 +183,8 @@ public class TvDetailFragment extends Fragment implements Constants {
                     }
                 });
             }
+            //Set Toolbar so we can see menu options
+            ((TvDetailActivity) getActivity()).setSupportActionBar(mToolbar);
         } else {
             view = inflater.inflate(R.layout.fragment_tv_detail_two_pane, container, false);
         }
@@ -215,7 +235,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.yellow));
                         toastStr = getString(R.string.added) + " " + mTvShow.getName() + " "
                                 + getString(R.string.to_favorites);
-                        Util.addToFavoritesDb(getActivity(),mTvShow.getContentValues());
+                        Util.addToFavoritesDb(getActivity(), mTvShow.getContentValues());
 
                     } else {
                         Log.e(TAG, "remove from favorite");
@@ -223,7 +243,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                         mFavoritesFAB.setColorFilter(getResources().getColor(R.color.white));
                         toastStr = getString(R.string.removed) + " " + mTvShow.getName() + " "
                                 + getString(R.string.from_favorites);
-                        Util.removeFromFavoritesDb(getActivity(),mTvShow.getId());
+                        Util.removeFromFavoritesDb(getActivity(), mTvShow.getId());
                     }
                     Toast toast = Toast.makeText(getActivity().getApplicationContext(),
                             toastStr, Toast.LENGTH_SHORT);
@@ -232,7 +252,6 @@ public class TvDetailFragment extends Fragment implements Constants {
 
             }
         });
-
 
 
         //Set up Video Layout and RecyclerView for Horizontal Scrolling
@@ -247,7 +266,7 @@ public class TvDetailFragment extends Fragment implements Constants {
         mTitleTextView = (TextView) view.findViewById(R.id.titleTextView);
         mReleaseYearTextView = (TextView) view.findViewById(R.id.releaseYearTextView);
         mRuntimeTextView = (TextView) view.findViewById(R.id.runtimeTextView);
-       // mCreatedByTextView = (TextView) view.findViewById(R.id.createdByTextView);
+        // mCreatedByTextView = (TextView) view.findViewById(R.id.createdByTextView);
         mCastTextView = (TextView) view.findViewById(R.id.castTextView);
         mRatingTextView = (TextView) view.findViewById(R.id.ratingTextView);
         mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.detail_overview_exp_text_view);
@@ -260,11 +279,11 @@ public class TvDetailFragment extends Fragment implements Constants {
             public void onClick(View v) {
 
                 if (v.equals(mCast1ImageView)) {
-                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(0).getId(),ENT_TYPE_PERSON,mCast1ImageView);
+                    Util.startDetailActivity(getActivity(), mTvShow.getCredits().getCast().get(0).getId(), ENT_TYPE_PERSON, mCast1ImageView);
                 } else if (v.equals(mCast2ImageView)) {
-                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(1).getId(),ENT_TYPE_PERSON,mCast2ImageView);
+                    Util.startDetailActivity(getActivity(), mTvShow.getCredits().getCast().get(1).getId(), ENT_TYPE_PERSON, mCast2ImageView);
                 } else if (v.equals(mCast3ImageView)) {
-                    Util.startDetailActivity(getActivity(),mTvShow.getCredits().getCast().get(2).getId(),ENT_TYPE_PERSON,mCast3ImageView);
+                    Util.startDetailActivity(getActivity(), mTvShow.getCredits().getCast().get(2).getId(), ENT_TYPE_PERSON, mCast3ImageView);
                 }
             }
         };
@@ -290,40 +309,73 @@ public class TvDetailFragment extends Fragment implements Constants {
             @Override
             public void onClick(View v) {
 
-               Util.showListActivity(getActivity(), mTvShow.getId(),mTvShow.getName(),
-                       ENT_TYPE_PERSON,LIST_TYPE_TV_CAST);
+                Util.showListActivity(getActivity(), mTvShow.getId(), mTvShow.getName(),
+                        ENT_TYPE_PERSON, LIST_TYPE_TV_CAST);
             }
         });
-      //  if (mListView != null)
+
+        if (mFetchData)
             getTvShow();
+        else
+            setLayout();
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putParcelable(ARG_TV_SHOW, mTvShow);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 
-        //Dont' display the share menu option if there are no videos to share
-//        if(mTvShow.getVideos() != null) {
-//            if (mTvShow.getVideos().size() > 0) {
-//                inflater.inflate(R.menu.menu_share, menu);
-//
-//                //Retrieve teh share menu item
-//                MenuItem menuItem = menu.findItem(R.id.action_share);
-//
-//                //Get the provider and hold onto it to set/change the share intent.
-//                ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat
-//                        .getActionProvider(menuItem);
-//
-//                //Attach and intent to this ShareActionProvider
-//                if (shareActionProvider != null) {
-//                  //  shareActionProvider.setShareIntent(Util.createShareVideoIntent(getActivity(),mTvShow));
-//                } else {
-//                    Log.e(TAG, "Share Action Provider is null!");
-//                }
-//            }
-//        }
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_search, menu);
+
+        //Get the SearchView and set teh searchable configuration
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
+        final SearchView searchView = (SearchView) searchMenu.getActionView();
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                new ComponentName(getActivity(), SearchableActivity.class)));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                //Close searchView after search button clicked
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                Log.e(TAG, "onSuggestionClick");
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                return false;
+            }
+        });
+
     }
 
     /**
@@ -338,14 +390,14 @@ public class TvDetailFragment extends Fragment implements Constants {
         String[] yearStart = tvShow.getFirstAirDate().split("-");
         String startYear = yearStart[0];
 
-         String endYear= "?";
-        if(tvShow.getLastAirDate() != null) {
+        String endYear = "?";
+        if (tvShow.getLastAirDate() != null) {
             String[] yearEnd = tvShow.getLastAirDate().split("-");
             endYear = yearEnd[0];
         }
 
         //If TV show has not ended don't add a end date
-        if (tvShow.getStatus().equals(MovieDbAPI.STATUS_ENDED) || tvShow.getStatus().equals(MovieDbAPI.STATUS_CANCELED) )
+        if (tvShow.getStatus().equals(MovieDbAPI.STATUS_ENDED) || tvShow.getStatus().equals(MovieDbAPI.STATUS_CANCELED))
             return "(" + startYear + " - " + endYear + ")";
         else
             return "(" + startYear + " - ";
@@ -356,7 +408,6 @@ public class TvDetailFragment extends Fragment implements Constants {
         if ((getActivity() != null) && (mTvShow != null)) {
 
 
-
             //Set share menu if there are videos
             setHasOptionsMenu(true);
             //Set title of MovieOld on Action Bar
@@ -365,7 +416,7 @@ public class TvDetailFragment extends Fragment implements Constants {
             Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mTvShow.getBackdropPath())).into(mBackdropImageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Log.e(TAG,"Loaded backdrop");
+                    Log.e(TAG, "Loaded backdrop");
                     //Set up color scheme
                     setPaletteColors();
                     //Start Shared Image transition now that we have the backdrop
@@ -376,7 +427,7 @@ public class TvDetailFragment extends Fragment implements Constants {
                 @Override
                 public void onError() {
                     //Just get the default image since there was not backdrop image available
-                    Log.e(TAG,"Picasso onError()!!!");
+                    Log.e(TAG, "Picasso onError()!!!");
                     Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -454,24 +505,23 @@ public class TvDetailFragment extends Fragment implements Constants {
             ArrayList<Cast> castList = (ArrayList) mTvShow.getCredits().getCast();
 
             if (castList != null) {
-                Log.e(TAG,"setCast List. Cast list not null with size = " + castList.size());
+                Log.e(TAG, "setCast List. Cast list not null with size = " + castList.size());
                 if (castList.size() >= 3) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(2).getProfilePath(), mCast3ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                     mCast3TextView.setText(castList.get(2).getName());
                 } else if (castList.size() == 2) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(),castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                 } else if (castList.size() == 3) {
-                    Util.loadPosterThumbnail(getContext(),castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
                     mCast1TextView.setText(castList.get(0).getName());
-                }
-                else {
+                } else {
                     //Cast size is 0. Don't show cast card.
                     mCastCardView.setVisibility(View.GONE);
                 }
@@ -481,9 +531,10 @@ public class TvDetailFragment extends Fragment implements Constants {
             }
 
             //See if this is a favorite movie and set the state of the star button
-            Util.setFavoritesButton(mFavoritesFAB,getActivity(),mTvShow.getId());
+            Util.setFavoritesButton(mFavoritesFAB, getActivity(), mTvShow.getId());
         }
     }
+
     private void getTvShow() {
 
         Call<TvShow> call = MovieDbAPI.getMovieApiService().getTvShow(mTvId);
@@ -492,7 +543,7 @@ public class TvDetailFragment extends Fragment implements Constants {
             @Override
             public void onResponse(Call<TvShow> call, Response<TvShow> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     mTvShow = response.body();
                     setLayout();
                 }
@@ -510,21 +561,22 @@ public class TvDetailFragment extends Fragment implements Constants {
         String strList = "";
 
         //Set up display string for networks.
-        for(int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             strList += list.get(i).getName() + ", ";
         }
 
-        if(list.size() > 0)
-            strList = strList.substring(0,strList.length() - 2);
+        if (list.size() > 0)
+            strList = strList.substring(0, strList.length() - 2);
 
         return strList;
 
     }
+
     private void setPaletteColors() {
 
-        Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) mBackdropImageView.getDrawable()).getBitmap();
 
-        if(bitmap != null && getActivity() != null) {
+        if (bitmap != null && getActivity() != null) {
             Palette p = Palette.generate(bitmap, 12);
             //   mMutedColor = p.getDarkMutedColor(0xFF333333);
 
@@ -549,12 +601,13 @@ public class TvDetailFragment extends Fragment implements Constants {
 
         }
     }
+
     private void startPostponedEnterTransition() {
-        Log.e(TAG,"startPostponedEnterTransition() Inside");
+        Log.e(TAG, "startPostponedEnterTransition() Inside");
         mPosterImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
+                Log.e(TAG, "onPreDraw(): Start postponed enter transition!!!!");
                 mPosterImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
                 //Must call this inside a PreDrawListener or the Enter Transition will not work
@@ -564,65 +617,5 @@ public class TvDetailFragment extends Fragment implements Constants {
             }
         });
     }
-    /*********************************************************************/
-    /*                         Inner Classes                             */
-    /*********************************************************************/
-//    private class FetchTvTask extends AsyncTask<Integer, Void, TvShowOld> {
-//
-//        @Override
-//        protected TvShowOld doInBackground(Integer... params) {
-//
-//            int tvId = params[0];
-//            return MovieDbAPI.getTvShow(tvId);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(TvShowOld tvShow) {
-//
-//            if ((getActivity() != null) && (tvShow != null)) {
-//
-//
-//                mTvShow = tvShow;
-//                //Set share menu if there are videos
-//                setHasOptionsMenu(true);
-//                //Set title of MovieOld on Action Bar
-//                String historyDate = getDateHistory(tvShow);
-//                getActivity().setTitle(tvShow.getTitle() + " " + historyDate);
-//
-//                Picasso.with(getActivity()).load(tvShow.getBackdropPath()).into(mBackdropImageView);
-//                Picasso.with(getActivity()).load(tvShow.getPosterPath()).into(mPosterImageView);
-//
-//                mTitleTextView.setText(mTvShow.getTitle());
-//                mReleaseYearTextView.setText(historyDate);
-//                mRuntimeTextView.setText(mTvShow.getRuntime() + " min");
-//
-//                Spanned createdBy = Html.fromHtml("<b>" + getString(R.string.created_by) + "</b>" + " " +
-//                        tvShow.getCreatedByString());
-//                mCreatedByTextView.setText(createdBy);
-//
-//               // Util.setCastLinks(getActivity(), mTvShow, mCastTextView, ENT_TYPE_TV);
-//
-//                mRatingTextView.setText(String.valueOf(mTvShow.getRating()) + "/10");
-//
-//                Spanned synopsis = Html.fromHtml("<b>" + getString(R.string.synopsis) + "</b>" + " " +
-//                        mTvShow.getOverview());
-//                mOverviewTextView.setText(synopsis);
-//
-//                Spanned genre = Html.fromHtml("<b>" + getString(R.string.genre) + "</b>" + " " +
-//                        mTvShow.getGenreString());
-//                mGenreTextView.setText(genre);
-//
-//                Spanned releaseDate = Html.fromHtml("<b>" + getString(R.string.release_date) + "</b>" + " " +
-//                        Util.reverseDateString(mTvShow.getReleaseDate()));
-//                mReleaseDateTextView.setText(releaseDate);
-//
-//                Spanned networks = Html.fromHtml("<b>" + getString(R.string.networks) + "</b>" + " " +
-//                        mTvShow.getNetworksString());
-//                mNetworksTextView.setText(networks);
-//
-//                //mVideoListAdapter = new VideosListAdapter(getActivity(), tvShow.getVideos());
-//               // mListView.setAdapter(mVideoListAdapter);
-//            }
-//        }
-//    }
+
 }
