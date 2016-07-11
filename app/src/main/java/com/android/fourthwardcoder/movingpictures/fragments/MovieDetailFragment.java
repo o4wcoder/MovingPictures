@@ -162,8 +162,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         if(savedInstanceState != null) {
 
             mMovie = savedInstanceState.getParcelable(EXTRA_MOVIE);

@@ -407,9 +407,6 @@ public class TvDetailFragment extends Fragment implements Constants {
 
         if ((getActivity() != null) && (mTvShow != null)) {
 
-
-            //Set share menu if there are videos
-            setHasOptionsMenu(true);
             //Set title of MovieOld on Action Bar
             String historyDate = getDateHistory(mTvShow);
 
