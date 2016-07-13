@@ -1,6 +1,8 @@
 package com.fourthwardmobile.android.movingpictures.helpers;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +12,30 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fourthwardmobile.android.movingpictures.R;
+import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.activities.ShowAllListActivity;
 import com.fourthwardmobile.android.movingpictures.activities.MovieDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.PersonDetailActivity;
@@ -38,6 +51,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.zip.Inflater;
 
 import static android.view.WindowManager.*;
 
@@ -453,6 +467,101 @@ public class Util implements Constants {
 
 
     }
+
+//    public static void setSearchMenu(Menu menu, MenuInflater inflater, final FragmentActivity activity,
+//                                     final Toolbar toolbar, final int primaryColor, final int darkPrimaryColor) {
+//
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        inflater.inflate(R.menu.menu_search, menu);
+//
+//        //Get the SearchView and set teh searchable configuration
+//        SearchManager searchManager = (SearchManager) activity.getSystemService(Context.SEARCH_SERVICE);
+//        final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
+//        final SearchView searchView = (SearchView) searchMenu.getActionView();
+//
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+//                new ComponentName(activity, SearchableActivity.class)));
+//
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//
+
+//                //Close searchView after search button clicked
+//                searchView.setQuery("", false);
+//                searchView.setIconified(true);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+//
+//        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+//            @Override
+//            public boolean onSuggestionSelect(int position) {
+//
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onSuggestionClick(int position) {
+//                Log.e(TAG, "onSuggestionClick");
+//                searchView.setQuery("", false);
+//                searchView.setIconified(true);
+//                return false;
+//            }
+//        });
+//
+//        searchView.setOnSearchClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.e(TAG, "onClick");
+//                toolbar.setBackgroundColor(primaryColor);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    activity.getWindow().setStatusBarColor(darkPrimaryColor);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        Window window = activity.getWindow();
+//
+//                        // clear FLAG_TRANSLUCENT_STATUS flag:
+//                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//
+//                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+//                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//
+//                        window.setStatusBarColor(darkPrimaryColor);
+//                    }
+//                }
+//            }
+//        });
+//
+//        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+//            @Override
+//            public boolean onClose() {
+//                Log.e(TAG, "onClose()");
+//                toolbar.getBackground().setAlpha(0);
+//                activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//                return false;
+//            }
+//        });
+//
+//    }
+
+//    public void setStatusBarColor(int color) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = getActivity().getWindow();
+//
+//// clear FLAG_TRANSLUCENT_STATUS flag:
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//
+//// add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//
+//            window.setStatusBarColor(color);
+//        }
+//    }
 
 
 }

@@ -105,7 +105,7 @@ public class ShowAllListFragment extends Fragment implements Constants {
         View view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_show_all_list, container, false);
 
         //mListView = (ListView) view.findViewById(R.id.listView);
-        mRecyclerView = (RecyclerView)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.person_credit_list_recycler_view);
+        mRecyclerView = (RecyclerView)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.show_all_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -132,6 +132,7 @@ public class ShowAllListFragment extends Fragment implements Constants {
         savedInstanceState.putInt(ARG_ENT_TYPE, mEntType);
         savedInstanceState.putInt(ARG_LIST_TYPE,mListType);
         savedInstanceState.putInt(ARG_ID, mId);
+        savedInstanceState.putString(ARG_QUERY,mQuery);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -192,8 +193,8 @@ public class ShowAllListFragment extends Fragment implements Constants {
                 } else {
 
                     //parse the response to find the error. Display a message
-                    APIError error = ErrorUtils.parseError(response);
-                    Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
+//                    APIError error = ErrorUtils.parseError(response);
+//                    Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
                 }
             }
 

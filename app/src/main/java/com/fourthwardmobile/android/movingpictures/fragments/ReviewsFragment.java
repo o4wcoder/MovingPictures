@@ -3,14 +3,16 @@ package com.fourthwardmobile.android.movingpictures.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
+import com.fourthwardmobile.android.movingpictures.R;
+import com.fourthwardmobile.android.movingpictures.adapters.ReviewListAdapter;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.Review;
-import com.fourthwardmobile.android.movingpictures.adapters.ReviewsListAdapter;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,8 @@ public class ReviewsFragment extends Fragment implements Constants {
     /***********************************************************************/
     /*                          Local Data                                 */
     /***********************************************************************/
-    ListView mListView;
+   // ListView mListView;
+
     ArrayList<Review> mReviewList;
 
     public ReviewsFragment() {
@@ -42,18 +45,21 @@ public class ReviewsFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_movie_reviews, container, false);
+        View view = inflater.inflate(R.layout.fragment_show_all_list, container, false);
 
-        mListView = (ListView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.reviewsListView);
-        mListView.setEmptyView(view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.emptyReviewsLayout));
+        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.show_all_list_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
 
         Intent i = getActivity().getIntent();
 
         mReviewList = (ArrayList) i.getParcelableArrayListExtra(EXTRA_REVIEW_LIST);
-        if (mListView != null) {
+        if (recyclerView != null) {
 
-            ReviewsListAdapter adapter = new ReviewsListAdapter(getActivity(), mReviewList);
-            mListView.setAdapter(adapter);
+            ReviewListAdapter adapter = new ReviewListAdapter(getActivity(), mReviewList);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }

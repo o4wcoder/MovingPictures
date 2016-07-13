@@ -31,12 +31,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.activities.PersonDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.helpers.ImageTransitionListener;
@@ -104,7 +107,10 @@ public class PersonDetailFragment extends Fragment implements Constants {
     TextView mKnownFor2TextView;
     TextView mKnownFor3TextView;
     CardView mKnownForCardView;
-    
+
+    int mPrimaryColor;
+    int mDarkPrimaryColor;
+
     ArrayList<MediaBasic> mKnownForMovieList;
 
     private static final String ARG_ID = "id";
@@ -325,13 +331,12 @@ public class PersonDetailFragment extends Fragment implements Constants {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(com.fourthwardmobile.android.movingpictures.R.menu.menu_search, menu);
+        inflater.inflate(R.menu.menu_search, menu);
 
         //Get the SearchView and set teh searchable configuration
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final MenuItem searchMenu = (MenuItem) menu.findItem(com.fourthwardmobile.android.movingpictures.R.id.action_search_db);
+        final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
         final SearchView searchView = (SearchView) searchMenu.getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(
@@ -365,6 +370,38 @@ public class PersonDetailFragment extends Fragment implements Constants {
                 Log.e(TAG, "onSuggestionClick");
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"onClick");
+                mToolbar.setBackgroundColor(mPrimaryColor);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getActivity().getWindow();
+
+                        // clear FLAG_TRANSLUCENT_STATUS flag:
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                        window.setStatusBarColor(mDarkPrimaryColor);
+                    }
+                }
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Log.e(TAG,"onClose()");
+                mToolbar.getBackground().setAlpha(0);
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 return false;
             }
         });
@@ -456,6 +493,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
                         int primaryColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appPrimaryColor);
                         int primaryDarkColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appDarkPrimaryColor);
                         int accentColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appAccentColor);
+                        mPrimaryColor = p.getMutedColor(primaryColor);
+                        mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
                         mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
                         mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
 

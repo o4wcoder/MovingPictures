@@ -10,9 +10,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -43,6 +48,7 @@ import com.fourthwardmobile.android.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardmobile.movingpictures.adapters.VideosListAdapter;
 import com.fourthwardmobile.android.movingpictures.helpers.ImageTransitionListener;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
+import com.fourthwardmobile.android.movingpictures.helpers.SearchBar;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.Cast;
@@ -133,6 +139,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
     TextView mCrewShowAllTextView;
 
     boolean mFetchData = false;
+
+    int mPrimaryColor;
+    int mDarkPrimaryColor;
 
     private static final String ARG_ID = "id";
     /*****************************************************************/
@@ -385,6 +394,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 
+     //new SearchBar(menu,inflater,getActivity(),mToolbar,mPrimaryColor,mDarkPrimaryColor);
             // Inflate the menu; this adds items to the action bar if it is present.
             inflater.inflate(R.menu.menu_search, menu);
 
@@ -427,6 +437,38 @@ public class MovieDetailFragment extends Fragment implements Constants {
                     return false;
                 }
             });
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"onClick");
+                mToolbar.setBackgroundColor(mPrimaryColor);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getActivity().getWindow();
+
+                        // clear FLAG_TRANSLUCENT_STATUS flag:
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                        window.setStatusBarColor(mDarkPrimaryColor);
+                    }
+                }
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Log.e(TAG,"onClose()");
+                mToolbar.getBackground().setAlpha(0);
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                return false;
+            }
+        });
 
     }
 
@@ -671,6 +713,9 @@ public class MovieDetailFragment extends Fragment implements Constants {
             int primaryColor = getResources().getColor(R.color.appPrimaryColor);
             int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
             int accentColor = getResources().getColor(R.color.appAccentColor);
+
+            mPrimaryColor = p.getMutedColor(primaryColor);
+            mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
             mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
             mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
 

@@ -30,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -118,6 +120,9 @@ public class TvDetailFragment extends Fragment implements Constants {
     TextView mCastShowAllTextView;
 
     boolean mFetchData = false;
+
+    int mPrimaryColor;
+    int mDarkPrimaryColor;
 
     private static final String ARG_ID = "id";
     private static final String ARG_TV_SHOW = "tv_show";
@@ -327,7 +332,6 @@ public class TvDetailFragment extends Fragment implements Constants {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_search, menu);
 
         //Get the SearchView and set teh searchable configuration
@@ -366,6 +370,38 @@ public class TvDetailFragment extends Fragment implements Constants {
                 Log.e(TAG, "onSuggestionClick");
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"onClick");
+                mToolbar.setBackgroundColor(mPrimaryColor);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getActivity().getWindow();
+
+                        // clear FLAG_TRANSLUCENT_STATUS flag:
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                        window.setStatusBarColor(mDarkPrimaryColor);
+                    }
+                }
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Log.e(TAG,"onClose()");
+                mToolbar.getBackground().setAlpha(0);
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 return false;
             }
         });
@@ -582,6 +618,9 @@ public class TvDetailFragment extends Fragment implements Constants {
             int primaryColor = getResources().getColor(R.color.appPrimaryColor);
             int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
             int accentColor = getResources().getColor(R.color.appAccentColor);
+
+            mPrimaryColor = p.getMutedColor(primaryColor);
+            mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
             mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
             mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
 
