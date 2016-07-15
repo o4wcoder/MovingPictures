@@ -32,6 +32,12 @@
                 android:transitionName="@string/trans_poster"
                 app:layout_collapseMode="parallax" />
 
+            <View
+                android:fitsSystemWindows="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/top_image_gradient"/>
+
             <TextView
                 android:id="@+id/detail_person_name_text_view"
                 android:layout_width="wrap_content"
