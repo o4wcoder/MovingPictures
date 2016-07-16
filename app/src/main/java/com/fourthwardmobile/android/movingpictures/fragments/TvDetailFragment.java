@@ -338,6 +338,7 @@ public class TvDetailFragment extends Fragment implements Constants {
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
         final SearchView searchView = (SearchView) searchMenu.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(
                 new ComponentName(getActivity(), SearchableActivity.class)));
@@ -401,7 +402,9 @@ public class TvDetailFragment extends Fragment implements Constants {
             public boolean onClose() {
                 Log.e(TAG,"onClose()");
                 mToolbar.getBackground().setAlpha(0);
-                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
                 return false;
             }
         });

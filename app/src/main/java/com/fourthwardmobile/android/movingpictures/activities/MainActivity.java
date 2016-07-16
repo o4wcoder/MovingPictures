@@ -238,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
         final MenuItem searchMenu = (MenuItem)menu.findItem(com.fourthwardmobile.android.movingpictures.R.id.action_search_db);
         final SearchView searchView = (SearchView)searchMenu.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(
                 new ComponentName(this, SearchableActivity.class)));
