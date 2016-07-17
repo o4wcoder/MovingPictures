@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.adapters.DiscoverListPagerAdapter;
 import com.fourthwardmobile.android.movingpictures.fragments.MainFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment;
@@ -275,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
             }
         });
 
-
+        getMenuInflater().inflate(R.menu.menu_about,menu);
         return true;
     }
 

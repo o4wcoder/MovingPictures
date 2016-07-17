@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 
@@ -58,6 +60,14 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        //Inflate menu for main activity toolbar
+        getMenuInflater().inflate(R.menu.menu_about, menu);
+        return true;
+
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

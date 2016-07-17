@@ -516,19 +516,26 @@ public class PersonDetailFragment extends Fragment implements Constants {
             mNameTextView.setText(mPerson.getName());
 
             //Format birthday into form Jan 1, 2016
-            if(mPerson.getBirthday() != null) {
+            if (mPerson.getBirthday() != null) {
                 if (!(mPerson.getBirthday().equals(""))) {
                     String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
 
-
                     Spanned bornDate;
-                            if(mPerson.getDeathday().equals("")) {
-                               bornDate = Html.fromHtml("<b>" + getString(com.fourthwardmobile.android.movingpictures.R.string.born) + "</b>" + " " +
-                                        strBirthDay + " " + getString(com.fourthwardmobile.android.movingpictures.R.string.age, getAge(mPerson.getBirthday())));
-                            } else {
-                                bornDate = Html.fromHtml("<b>" + getString(com.fourthwardmobile.android.movingpictures.R.string.born) + "</b>" + " " +
-                                        strBirthDay);
-                            }
+                    if (mPerson.getDeathday().equals("")) {
+
+                        int age = getAge(mPerson.getBirthday());
+                        //Only show age if we were able to calculate it.
+                        if (age > 0) {
+                            bornDate = Html.fromHtml("<b>" + getString(com.fourthwardmobile.android.movingpictures.R.string.born) + "</b>" + " " +
+                                    strBirthDay + " " + getString(com.fourthwardmobile.android.movingpictures.R.string.age, age));
+                        } else {
+                            bornDate = Html.fromHtml("<b>" + getString(com.fourthwardmobile.android.movingpictures.R.string.born) + "</b>" + " " +
+                                    strBirthDay);
+                        }
+                    } else {
+                        bornDate = Html.fromHtml("<b>" + getString(com.fourthwardmobile.android.movingpictures.R.string.born) + "</b>" + " " +
+                                strBirthDay);
+                    }
 
                     mBornDateTextView.setText(bornDate);
                 }
@@ -645,22 +652,26 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
         String[] dobArray = strBirthDate.split("-");
 
-        //Get data of birth calendar
-        Calendar dob = Calendar.getInstance();
-        dob.set(Integer.parseInt(dobArray[0]),Integer.parseInt(dobArray[1]),Integer.parseInt(dobArray[2]));
+        if(dobArray.length == 3) {
+            //Get data of birth calendar
+            Calendar dob = Calendar.getInstance();
+            dob.set(Integer.parseInt(dobArray[0]), Integer.parseInt(dobArray[1]), Integer.parseInt(dobArray[2]));
 
-        //Get today's calendar
-        Calendar today = Calendar.getInstance();
-        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-        if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) {
-            age--;
-        } else if (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)
-                && today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
-            age--;
+            //Get today's calendar
+            Calendar today = Calendar.getInstance();
+            int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+            if (today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) {
+                age--;
+            } else if (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH)
+                    && today.get(Calendar.DAY_OF_MONTH) < dob.get(Calendar.DAY_OF_MONTH)) {
+                age--;
+            }
+
+            return age;
         }
-
-        return age;
-
+        else {
+            return 0;
+        }
     }
 
     private int getDeathAge(String strBirthDate,String strDeathDate) {

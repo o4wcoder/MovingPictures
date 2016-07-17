@@ -180,6 +180,8 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         }
 
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -190,9 +192,6 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         //Set up back UP navigation arrow
         if(getActivity() instanceof MovieDetailActivity) {
-
-            //Set Options menu if we are not in two pane mode
-            setHasOptionsMenu(true);
 
             view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
             mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
@@ -396,7 +395,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
      //new SearchBar(menu,inflater,getActivity(),mToolbar,mPrimaryColor,mDarkPrimaryColor);
             // Inflate the menu; this adds items to the action bar if it is present.
+
+        if(getActivity() instanceof MovieDetailActivity) {
             inflater.inflate(R.menu.menu_search, menu);
+
 
             //Get the SearchView and set teh searchable configuration
             SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -439,40 +441,68 @@ public class MovieDetailFragment extends Fragment implements Constants {
                 }
             });
 
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG,"onClick");
-                mToolbar.setBackgroundColor(mPrimaryColor);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
+            searchView.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG, "onClick");
+                    mToolbar.setBackgroundColor(mPrimaryColor);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getActivity().getWindow();
+                        getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Window window = getActivity().getWindow();
 
-                        // clear FLAG_TRANSLUCENT_STATUS flag:
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                            // clear FLAG_TRANSLUCENT_STATUS flag:
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-                        window.setStatusBarColor(mDarkPrimaryColor);
+                            window.setStatusBarColor(mDarkPrimaryColor);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                Log.e(TAG,"onClose()");
-                mToolbar.getBackground().setAlpha(0);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    Log.e(TAG, "onClose()");
+                    mToolbar.getBackground().setAlpha(0);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
+            //Finally inflate the share menu
+            inflater.inflate(R.menu.menu_share,menu);
+
+        } else {
+
+            //In two pane mode. Just show share menu on detail's toolbar
+            if(getView() != null) {
+                Toolbar toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
+                if (toolbar != null) {
+                    Log.e(TAG, "!!!!!!!!!!!!!! Set share menu to toolbar");
+                    toolbar.inflateMenu(R.menu.menu_share);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.e(TAG,"onOptionsItemSelected()");
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Menu share click");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void getMovie(int id) {
@@ -517,19 +547,12 @@ public class MovieDetailFragment extends Fragment implements Constants {
      */
     private void setLayout() {
 
-        Log.e(TAG,"setLayout() Inside");
         if (getActivity() != null && mMovie != null && mVideosRecylerView != null) {
-            //  if (mMovie != null) {
-            //  Log.e(TAG,"movie ")
-            //Got the data, can create share menu if there are videos
-            //   setHasOptionsMenu(true);
-            //Set title of MovieOld on Action Bar
-            //  getActivity().setTitle(mMovie.getTitle());
-            Log.e(TAG, "setLayout() call Picasso to pull backgdrop");
+
             Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Log.e(TAG, "Loaded backdrop");
+
                     //Set up color scheme
                     setPaletteColors();
                     //Start Shared Image transition now that we have the backdrop

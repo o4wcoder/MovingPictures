@@ -99,6 +99,7 @@
     <string name="action_share">Share</string>
     <string name="action_settings">Settings</string>
     <string name="action_sort">SORT</string>
+    <string name="action_about">About</string>
 
     <!-- Accesability -->
     <string name="acc_movie_details_favorite_button">Favorites</string>
