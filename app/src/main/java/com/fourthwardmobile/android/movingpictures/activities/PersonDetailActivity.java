@@ -2,10 +2,13 @@ package com.fourthwardmobile.android.movingpictures.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fourthwardmobile.android.movingpictures.R;
+import com.fourthwardmobile.android.movingpictures.fragments.AboutFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.PersonDetailFragment;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 
@@ -60,6 +63,15 @@ public class PersonDetailActivity extends AppCompatActivity implements Constants
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        //Inflate menu for main activity toolbar
+        getMenuInflater().inflate(R.menu.menu_about, menu);
+        return true;
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -76,6 +88,11 @@ public class PersonDetailActivity extends AppCompatActivity implements Constants
                 startActivity(parentActivityIntent);
                 //Kill this activity
                 finish();
+                return true;
+            case R.id.action_about:
+                FragmentManager fm = getSupportFragmentManager();
+                AboutFragment aboutFragment = new AboutFragment();
+                aboutFragment.show(fm,"About");
                 return true;
         }
 

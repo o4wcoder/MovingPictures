@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.adapters.DiscoverListPagerAdapter;
+import com.fourthwardmobile.android.movingpictures.fragments.AboutFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.MainFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.PersonDetailFragment;
@@ -287,7 +289,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         switch(item.getItemId()) {
 
             case R.id.action_about:
-
+                Log.e(TAG,"about menu");
+                FragmentManager fm = getSupportFragmentManager();
+                AboutFragment aboutFragment = new AboutFragment();
+                aboutFragment.show(fm,"About");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

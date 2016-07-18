@@ -2,12 +2,14 @@ package com.fourthwardmobile.android.movingpictures.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fourthwardmobile.android.movingpictures.R;
+import com.fourthwardmobile.android.movingpictures.fragments.AboutFragment;
 import com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 
@@ -84,6 +86,11 @@ public class MovieDetailActivity extends AppCompatActivity implements Constants 
                 startActivity(parentActivityIntent);
                 //Kill this activity
                 finish();
+                return true;
+            case R.id.action_about:
+                FragmentManager fm = getSupportFragmentManager();
+                AboutFragment aboutFragment = new AboutFragment();
+                aboutFragment.show(fm,"About");
                 return true;
         }
 
