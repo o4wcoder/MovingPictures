@@ -42,6 +42,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.activities.MainActivity;
 import com.fourthwardmobile.android.movingpictures.activities.MovieDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.adapters.VideoListAdapter;
@@ -76,7 +77,7 @@ import retrofit2.Response;
  * <p>
  * Fragment to show the details of a particular movie
  */
-public class MovieDetailFragment extends Fragment implements Constants {
+public class MovieDetailFragment extends Fragment implements Constants, Toolbar.OnMenuItemClickListener {
 
     /*****************************************************************/
     /*                        Constants                              */
@@ -143,6 +144,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
     int mPrimaryColor;
     int mDarkPrimaryColor;
 
+
     private static final String ARG_ID = "id";
     /*****************************************************************/
     /*                       Constructor                             */
@@ -180,7 +182,7 @@ public class MovieDetailFragment extends Fragment implements Constants {
             }
         }
 
-        setHasOptionsMenu(true);
+
 
     }
 
@@ -188,13 +190,16 @@ public class MovieDetailFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view;
-
+       View view;
+        Log.e(TAG,"onCreateView()");
         //Set up back UP navigation arrow
         if(getActivity() instanceof MovieDetailActivity) {
 
             view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
             mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+            //Set Options normal options menu for not tablet/two pane mode
+            setHasOptionsMenu(true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                 mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white, null));
@@ -213,6 +218,10 @@ public class MovieDetailFragment extends Fragment implements Constants {
 
         } else {
             view = inflater.inflate(R.layout.fragment_movie_detail_two_pane, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+            mToolbar.inflateMenu(R.menu.menu_share);
+            mToolbar.setOnMenuItemClickListener(this);
         }
 
         //Create animations when shared element transition is finished
@@ -392,11 +401,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-
+     Log.e(TAG,"onCreateOptoinsMenu()");
      //new SearchBar(menu,inflater,getActivity(),mToolbar,mPrimaryColor,mDarkPrimaryColor);
             // Inflate the menu; this adds items to the action bar if it is present.
 
-        if(getActivity() instanceof MovieDetailActivity) {
+
             inflater.inflate(R.menu.menu_search, menu);
 
 
@@ -478,31 +487,38 @@ public class MovieDetailFragment extends Fragment implements Constants {
             //Finally inflate the share menu
             inflater.inflate(R.menu.menu_share,menu);
 
-        } else {
-
-            //In two pane mode. Just show share menu on detail's toolbar
-            if(getView() != null) {
-                Toolbar toolbar = (Toolbar) getView().findViewById(R.id.toolbar);
-                if (toolbar != null) {
-                    Log.e(TAG, "!!!!!!!!!!!!!! Set share menu to toolbar");
-                    toolbar.inflateMenu(R.menu.menu_share);
-                }
-            }
-        }
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        Log.e(TAG,"onOptionsItemSelected()");
+        Log.e(TAG,"onOptionsItemSelected() Fragment");
         switch (item.getItemId()) {
             case R.id.action_share:
                 Log.e(TAG,"Menu share click");
+                Util.shareMedia(getActivity(),ENT_TYPE_MOVIE, mMovie.getId(),"Check out this movie","Eat me movie link!");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Used when calling menu items from Fragment when in two pane/tablet mode. Otherwise
+     * it goes through the normal onOptionsItemSelected method
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Log.e(TAG,"onMenuItemClick()");
+
+        switch(item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Share click in fragment");
+                return true;
+        }
+        return false;
     }
 
     private void getMovie(int id) {
@@ -753,11 +769,11 @@ public class MovieDetailFragment extends Fragment implements Constants {
         }
     }
     private void startPostponedEnterTransition() {
-        Log.e(TAG,"startPostponedEnterTransition() Inside");
+        //Log.e(TAG,"startPostponedEnterTransition() Inside");
         mPosterImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
+              //  Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
                 mPosterImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
                 //Must call this inside a PreDrawListener or the Enter Transition will not work

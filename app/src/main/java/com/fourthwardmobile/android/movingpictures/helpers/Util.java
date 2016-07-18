@@ -468,6 +468,24 @@ public class Util implements Constants {
 
     }
 
+    public static void shareMedia(Context context, @EntertainmentType int entType, int id, String subject, String body) {
+
+        String path = MovieDbAPI.MOVIE_DB_HTTP_URL;
+        if(entType == ENT_TYPE_MOVIE)
+            path += MovieDbAPI.PATH_MOVIE + "/";
+        else if(entType == ENT_TYPE_TV)
+            path += MovieDbAPI.PATH_TV + "/";
+        else if(entType == ENT_TYPE_PERSON)
+            path += MovieDbAPI.PATH_PERSON + "/";
+
+            path +=  String.valueOf(id);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, path);
+            context.startActivity(Intent.createChooser(shareIntent, "Share link via"));
+
+    }
 //    public static void setSearchMenu(Menu menu, MenuInflater inflater, final FragmentActivity activity,
 //                                     final Toolbar toolbar, final int primaryColor, final int darkPrimaryColor) {
 //

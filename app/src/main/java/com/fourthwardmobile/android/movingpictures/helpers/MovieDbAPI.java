@@ -41,6 +41,7 @@ public class MovieDbAPI implements Constants {
     public static final String API_KEY_MOVIE_DB = BuildConfig.MOVIE_DB_API_KEY;
     //Base URLs
     public static final String MOVIE_DB_URL = "http://api.themoviedb.org/";
+    public static final String MOVIE_DB_HTTP_URL = "https://www.themoviedb.org/";
     public static final String BASE_MOVIE_DB_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES;
     //Full URLs for the movie DB
     public static final String BASE_DISCOVER_URL = "http://api.themoviedb.org/" + NUM_QUERY_PAGES + "/discover/movie";
