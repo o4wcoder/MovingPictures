@@ -69,7 +69,7 @@ import retrofit2.Response;
  * <p/>
  * Fragment to hold the details of a person's info
  */
-public class PersonDetailFragment extends Fragment implements Constants {
+public class PersonDetailFragment extends Fragment implements Constants,  Toolbar.OnMenuItemClickListener {
 
     /*********************************************************************/
     /*                          Constants                                */
@@ -173,6 +173,10 @@ public class PersonDetailFragment extends Fragment implements Constants {
             ((PersonDetailActivity) getActivity()).setSupportActionBar(mToolbar);
         } else {
             view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_person_detail_two_pane, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+            mToolbar.inflateMenu(R.menu.menu_share);
+            mToolbar.setOnMenuItemClickListener(this);
         }
 
         //Get CollapsingToolbarLayout
@@ -409,6 +413,42 @@ public class PersonDetailFragment extends Fragment implements Constants {
             }
         });
 
+        //Finally inflate the share menu
+        inflater.inflate(R.menu.menu_share,menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.e(TAG,"onOptionsItemSelected() Fragment");
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Menu share click");
+                sharePerson();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Used when calling menu items from Fragment when in two pane/tablet mode. Otherwise
+     * it goes through the normal onOptionsItemSelected method
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Log.e(TAG,"onMenuItemClick()");
+
+        switch(item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Share click in fragment");
+                sharePerson();
+                return true;
+        }
+        return false;
     }
 
     private void getPerson(int id) {
@@ -702,5 +742,8 @@ public class PersonDetailFragment extends Fragment implements Constants {
 
     }
 
+    private void sharePerson() {
 
+        Util.shareMedia(getActivity(),ENT_TYPE_PERSON, mPerson.getId(),getString(R.string.share_person_subject,mPerson.getName()));
+    }
 }

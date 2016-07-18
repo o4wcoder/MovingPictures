@@ -76,10 +76,7 @@
     <string name="show_all_filmography">SHOW ALL FILMOGRAPHY</string>
     <string name="age">(age <xliff:g id="age">%s</xliff:g>)</string>
 
-    <string name="share_movie_subject">from Movie</string>
-    <string name="share_tvshow_subject">from TV Show</string>
-    <string name="share_storage_directory" translatable="false">movingpictures</string>
-    <string name="share_title">Share Photo</string>
+
 
     <!-- Text attributes -->
     <string name="primary_text_alpha_dark">.87</string>
@@ -116,5 +113,13 @@
     <string name="search_results">Search Results</string>
     <string name="search_subtext_movie">Movie</string>
     <string name="search_subtext_tv_series">TV Series</string>
+
+    <!-- Share -->
+    <string name="share_link">Share link via</string>
+    <string name="share_movie_subject">Check out Movie <xliff:g id="movie">%s</xliff:g></string>
+    <string name="share_tv_subject">Check out TV Show <xliff:g id="tv">%s</xliff:g></string>
+    <string name="share_person_subject">Check out <xliff:g id="person">%s</xliff:g></string>
+    <string name="share_storage_directory" translatable="false">movingpictures</string>
+    <string name="share_title">Share Photo</string>
 
 </resources>

@@ -402,10 +402,8 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
      Log.e(TAG,"onCreateOptoinsMenu()");
-     //new SearchBar(menu,inflater,getActivity(),mToolbar,mPrimaryColor,mDarkPrimaryColor);
+
             // Inflate the menu; this adds items to the action bar if it is present.
-
-
             inflater.inflate(R.menu.menu_search, menu);
 
 
@@ -496,7 +494,7 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
         switch (item.getItemId()) {
             case R.id.action_share:
                 Log.e(TAG,"Menu share click");
-                Util.shareMedia(getActivity(),ENT_TYPE_MOVIE, mMovie.getId(),"Check out this movie","Eat me movie link!");
+                shareMovie();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -516,6 +514,7 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
         switch(item.getItemId()) {
             case R.id.action_share:
                 Log.e(TAG,"Share click in fragment");
+                shareMovie();
                 return true;
         }
         return false;
@@ -782,6 +781,11 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
                 return true;
             }
         });
+    }
+
+    private void shareMovie() {
+
+        Util.shareMedia(getActivity(),ENT_TYPE_MOVIE, mMovie.getId(),getString(R.string.share_movie_subject,mMovie.getTitle()));
     }
 
 

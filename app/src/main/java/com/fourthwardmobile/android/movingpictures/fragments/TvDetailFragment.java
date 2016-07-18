@@ -69,7 +69,7 @@ import retrofit2.Response;
  * <p/>
  * Fragment to show the details of a TV show.
  */
-public class TvDetailFragment extends Fragment implements Constants {
+public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnMenuItemClickListener {
 
     /************************************************************/
     /*                      Constants                           */
@@ -186,6 +186,10 @@ public class TvDetailFragment extends Fragment implements Constants {
             ((TvDetailActivity) getActivity()).setSupportActionBar(mToolbar);
         } else {
             view = inflater.inflate(R.layout.fragment_tv_detail_two_pane, container, false);
+            mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+            mToolbar.inflateMenu(R.menu.menu_share);
+            mToolbar.setOnMenuItemClickListener(this);
         }
 
         //Create animations when shared element transition is finished
@@ -331,7 +335,6 @@ public class TvDetailFragment extends Fragment implements Constants {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-
         inflater.inflate(R.menu.menu_search, menu);
 
         //Get the SearchView and set teh searchable configuration
@@ -409,6 +412,42 @@ public class TvDetailFragment extends Fragment implements Constants {
             }
         });
 
+        //Finally inflate the share menu
+        inflater.inflate(R.menu.menu_share,menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.e(TAG,"onOptionsItemSelected() Fragment");
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Menu share click");
+                shareTvShow();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Used when calling menu items from Fragment when in two pane/tablet mode. Otherwise
+     * it goes through the normal onOptionsItemSelected method
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Log.e(TAG,"onMenuItemClick()");
+
+        switch(item.getItemId()) {
+            case R.id.action_share:
+                Log.e(TAG,"Share click in fragment");
+                shareTvShow();
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -650,5 +689,11 @@ public class TvDetailFragment extends Fragment implements Constants {
             }
         });
     }
+
+    private void shareTvShow() {
+
+        Util.shareMedia(getActivity(),ENT_TYPE_TV, mTvShow.getId(),getString(R.string.share_tv_subject,mTvShow.getName()));
+    }
+
 
 }

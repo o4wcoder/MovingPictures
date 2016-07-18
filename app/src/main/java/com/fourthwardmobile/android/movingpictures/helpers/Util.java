@@ -468,7 +468,7 @@ public class Util implements Constants {
 
     }
 
-    public static void shareMedia(Context context, @EntertainmentType int entType, int id, String subject, String body) {
+    public static void shareMedia(Context context, @EntertainmentType int entType, int id, String subject) {
 
         String path = MovieDbAPI.MOVIE_DB_HTTP_URL;
         if(entType == ENT_TYPE_MOVIE)
@@ -483,7 +483,7 @@ public class Util implements Constants {
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
             shareIntent.putExtra(Intent.EXTRA_TEXT, path);
-            context.startActivity(Intent.createChooser(shareIntent, "Share link via"));
+            context.startActivity(Intent.createChooser(shareIntent, context.getResources().getString(R.string.share_link)));
 
     }
 //    public static void setSearchMenu(Menu menu, MenuInflater inflater, final FragmentActivity activity,
