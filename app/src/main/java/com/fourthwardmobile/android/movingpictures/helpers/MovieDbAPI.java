@@ -54,6 +54,7 @@ public class MovieDbAPI implements Constants {
     public static final String IMAGE_185_SIZE = "w185/";
     public static final String IMAGE_342_SIZE = "w342/";
     public static final String IMAGE_500_SIZE = "w500/";
+    public static final String IMAGE_1000_SIZE = "w1000";
 
     //US Certificatiaon (Movie Rating)
     public static final String CERT_US = "US";
@@ -205,8 +206,8 @@ public class MovieDbAPI implements Constants {
     }
 
     public static String getFullBackdropPath(String imageFile) {
-        Log.e(TAG,MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile);
-        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile;
+      //  Log.e(TAG,MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile);
+        return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_1000_SIZE + imageFile;
     }
 
     /*********************************************************************************************/
