@@ -144,16 +144,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        //Done processing the movie query, kill Progress Dialog on main UI
-//        if (mProgressDialog != null) {
-//            if (mProgressDialog.isShowing())
-//                mProgressDialog.dismiss();
-//        }
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 

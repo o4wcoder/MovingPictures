@@ -497,7 +497,7 @@ public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnM
                 public void onError() {
                     //Just get the default image since there was not backdrop image available
                     Log.e(TAG, "Picasso onError()!!!");
-                    Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
+                    Picasso.with(getActivity()).load(R.drawable.movie_backdrop_thumbnail).into(mBackdropImageView, new Callback() {
                         @Override
                         public void onSuccess() {
                             //set up color scheme
@@ -576,19 +576,19 @@ public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnM
             if (castList != null) {
                 Log.e(TAG, "setCast List. Cast list not null with size = " + castList.size());
                 if (castList.size() >= 3) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                     mCast3TextView.setText(castList.get(2).getName());
                 } else if (castList.size() == 2) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                 } else if (castList.size() == 3) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                 } else {
                     //Cast size is 0. Don't show cast card.

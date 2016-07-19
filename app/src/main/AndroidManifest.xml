@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".activities.PersonDetailActivity"
-            android:label="@string/title_activity_actor_detail"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.MovieDetailActivity"
             android:theme="@style/AppTheme.PersonDetail">

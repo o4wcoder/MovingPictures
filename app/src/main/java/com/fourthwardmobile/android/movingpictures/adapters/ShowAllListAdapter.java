@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
@@ -16,6 +17,7 @@ import com.fourthwardmobile.android.movingpictures.models.Cast;
 import com.fourthwardmobile.android.movingpictures.models.Credits;
 import com.fourthwardmobile.android.movingpictures.models.Crew;
 import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -76,16 +78,22 @@ public class ShowAllListAdapter extends RecyclerView.Adapter<ShowAllListAdapter.
             MediaBasic media = mQueryResults.get(position);
 
             if(media.getMediaType().equals(MEDIA_TYPE_MOVIE)) {
-                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getPosterPath())).into(holder.thumbImageView);
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getPosterPath()))
+                        .placeholder(R.drawable.movie_poster_thumbnail)
+                        .into(holder.thumbImageView);
                 holder.titleTextView.setText(media.getTitle());
                 holder.characterTextView.setText(media.getReleaseYear());
 
             } else if(media.getMediaType().equals(MEDIA_TYPE_TV)) {
-                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getPosterPath())).into(holder.thumbImageView);
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getPosterPath()))
+                        .placeholder(R.drawable.movie_poster_thumbnail)
+                        .into(holder.thumbImageView);
                 holder.titleTextView.setText(media.getName());
                 holder.characterTextView.setText(media.getFirstAirYear());
             } else if(media.getMediaType().equals(MEDIA_TYPE_PERSON)) {
-                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getProfilePath())).into(holder.thumbImageView);
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(media.getProfilePath()))
+                        .placeholder(R.drawable.person_thumbnail)
+                        .into(holder.thumbImageView);
                 holder.titleTextView.setText(media.getName());
             }
         }
@@ -94,7 +102,9 @@ public class ShowAllListAdapter extends RecyclerView.Adapter<ShowAllListAdapter.
             Cast cast = mCredits.getCast().get(position);
 
             if (mEntType == ENT_TYPE_MOVIE) {
-                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath())).into(holder.thumbImageView);
+                Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getPosterPath()))
+                        .placeholder(R.drawable.movie_poster_thumbnail)
+                        .into(holder.thumbImageView);
                 holder.titleTextView.setText(cast.getTitle() + " " + Util.formatYearFromDate(cast.getReleaseDate()));
                 holder.characterTextView.setText(cast.getCharacter());
             } else if (mEntType == ENT_TYPE_TV) {
@@ -103,15 +113,20 @@ public class ShowAllListAdapter extends RecyclerView.Adapter<ShowAllListAdapter.
                 holder.characterTextView.setText(cast.getCharacter());
 
             } else if (mEntType == ENT_TYPE_PERSON) {
+
                 if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_TV_CAST) {
-                    Log.e(TAG, "------------- Load CAST -------------");
-                    Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath())).into(holder.thumbImageView);
+
+                    Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath(cast.getProfilePath()))
+                            .placeholder(R.drawable.person_thumbnail)
+                            .into(holder.thumbImageView);
                     holder.titleTextView.setText(cast.getName());
                     holder.characterTextView.setText(cast.getCharacter());
                 } else if (mListType == LIST_TYPE_MOVIE_CREW || mListType == LIST_TYPE_TV_CREW) {
-                    Log.e(TAG, "------------- Load CREW -------------");
+
                     Crew crew = mCredits.getCrew().get(position);
-                    Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath((String) crew.getProfilePath())).into(holder.thumbImageView);
+                    Picasso.with(mContext).load(MovieDbAPI.getFullPosterPath((String) crew.getProfilePath()))
+                            .placeholder(R.drawable.person_thumbnail)
+                            .into(holder.thumbImageView);
                     holder.titleTextView.setText(crew.getName());
                     holder.characterTextView.setText(crew.getJob());
                 }

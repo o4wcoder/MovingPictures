@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.adapters.ReviewListAdapter;
@@ -37,6 +38,7 @@ public class ReviewsFragment extends Fragment implements Constants {
    // ListView mListView;
 
     ArrayList<Review> mReviewList;
+    LinearLayout mProgressLayout;
 
     public ReviewsFragment() {
     }
@@ -56,6 +58,13 @@ public class ReviewsFragment extends Fragment implements Constants {
         Intent i = getActivity().getIntent();
 
         mReviewList = (ArrayList) i.getParcelableArrayListExtra(EXTRA_REVIEW_LIST);
+
+        mProgressLayout = (LinearLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
+
+        //Remove progress indicator. Not needed here as we are passed all the reviews and don't
+        //need to fetch them
+        mProgressLayout.setVisibility(View.GONE);
+
         if (recyclerView != null) {
 
             ReviewListAdapter adapter = new ReviewListAdapter(getActivity(), mReviewList);

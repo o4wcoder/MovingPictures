@@ -10,8 +10,7 @@
         android:layout_height="match_parent"
         android:layout_margin="2dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/movie_thumbnail"/>
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/thumb_text_view"

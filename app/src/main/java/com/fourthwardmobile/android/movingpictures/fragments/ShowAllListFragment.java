@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.fourthwardmobile.android.movingpictures.adapters.ShowAllListAdapter;
@@ -53,6 +54,8 @@ public class ShowAllListFragment extends Fragment implements Constants {
     String mQuery;
     Credits mCredits;
     ArrayList<MediaBasic> mQueryResults;
+
+    LinearLayout mProgressLayout;
 
     //Local Arguments
     private static final String ARG_ID = "id";
@@ -111,6 +114,7 @@ public class ShowAllListFragment extends Fragment implements Constants {
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
+        mProgressLayout = (LinearLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
         if (mEntType == ENT_TYPE_PERSON) {
             if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_MOVIE_CREW) {
                 getCredits(MovieDbAPI.PATH_MOVIE);
@@ -207,6 +211,9 @@ public class ShowAllListFragment extends Fragment implements Constants {
     }
     private void setAdapter() {
 
+        //Remove progress indicator
+        mProgressLayout.setVisibility(View.GONE);
+
         if(mCredits != null) {
 
             mAdapter = new ShowAllListAdapter(getContext(), mCredits, mEntType,mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
@@ -222,6 +229,9 @@ public class ShowAllListFragment extends Fragment implements Constants {
     }
 
     private void setSearchAdapater() {
+
+        //Remove progress indicator
+        mProgressLayout.setVisibility(View.GONE);
 
         if(mQueryResults != null) {
 

@@ -10,12 +10,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,14 +39,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fourthwardmobile.android.movingpictures.activities.MainActivity;
 import com.fourthwardmobile.android.movingpictures.activities.MovieDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.adapters.VideoListAdapter;
 //import com.android.fourthwardmobile.movingpictures.adapters.VideosListAdapter;
 import com.fourthwardmobile.android.movingpictures.helpers.ImageTransitionListener;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
-import com.fourthwardmobile.android.movingpictures.helpers.SearchBar;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.Cast;
@@ -564,7 +559,9 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
 
         if (getActivity() != null && mMovie != null && mVideosRecylerView != null) {
 
-            Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath())).into(mBackdropImageView, new Callback() {
+            Picasso.with(getActivity()).load(MovieDbAPI.getFullBackdropPath(mMovie.getBackdropPath()))
+                    .error(R.drawable.movie_backdrop_thumbnail)
+                    .into(mBackdropImageView, new Callback() {
                 @Override
                 public void onSuccess() {
 
@@ -577,23 +574,14 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
 
                 @Override
                 public void onError() {
-                    //Just get the default image since there was not backdrop image available
-                    Log.e(TAG, "Picasso onError()!!!");
-                    Picasso.with(getActivity()).load(R.drawable.movie_thumbnail).into(mBackdropImageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //set up color scheme
-                            setPaletteColors();
-                            //Still want to start shared transition even it the backdrop image was not loaded.
-                            startPostponedEnterTransition();
-                        }
 
-                        @Override
-                        public void onError() {
-                            //If we failed here, it's bad. Just do the shared transition as to not freeze up the UI
-                            startPostponedEnterTransition();
-                        }
-                    });
+                    //If we can't get a backdrop, then still setup the pallet and start the
+                    //postponed transition so the UI does not freeze.
+
+                    //Set up color scheme
+                    setPaletteColors();
+                    //Start Shared Image transition now that we have the backdrop
+                    startPostponedEnterTransition();
 
                 }
             });
@@ -667,21 +655,21 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
             ArrayList<Cast> castList = (ArrayList) mMovie.getCredits().getCast();
 
             if (castList != null) {
-                Log.e(TAG, "setCast List. Cast list not null with size = " + castList.size());
+
                 if (castList.size() >= 3) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(2).getProfilePath(), mCast3ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                     mCast3TextView.setText(castList.get(2).getName());
                 } else if (castList.size() == 2) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
-                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
+                    Util.loadPosterThumbnail(getContext(), castList.get(1).getProfilePath(), mCast2ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                     mCast2TextView.setText(castList.get(1).getName());
                 } else if (castList.size() == 3) {
-                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView);
+                    Util.loadPosterThumbnail(getContext(), castList.get(0).getProfilePath(), mCast1ImageView,ENT_TYPE_PERSON);
                     mCast1TextView.setText(castList.get(0).getName());
                 } else {
                     //Cast size is 0. Don't show cast card.

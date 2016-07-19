@@ -15,4 +15,6 @@
         android:clickable="true">
     </android.support.v7.widget.RecyclerView>
 
+    <include layout="@layout/progress_layout"></include>
+
 </FrameLayout>

@@ -346,20 +346,20 @@ public class Util implements Constants {
 
 
 
-    public static void loadPosterThumbnail(Context context, String uri, final ImageView imageView) {
+    public static void loadPosterThumbnail(Context context, String uri, final ImageView imageView, @EntertainmentType int entType) {
 
-        Picasso.with(context).load(MovieDbAPI.getFullPosterPath(uri)).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG,"getCastThumbnail() onSuccess()");
-            }
+        int thumbnail = R.drawable.movie_poster_thumbnail;
 
-            @Override
-            public void onError() {
-                Log.e(TAG,"getCastThumbnail() onError()");
-                imageView.setImageResource(com.fourthwardmobile.android.movingpictures.R.drawable.person_no_pic_thumnail);
-            }
-        });
+        if(entType == ENT_TYPE_MOVIE)
+            thumbnail = R.drawable.movie_poster_thumbnail;
+        else if(entType == ENT_TYPE_TV)
+            thumbnail = R.drawable.movie_poster_thumbnail;
+        else if(entType == ENT_TYPE_PERSON)
+            thumbnail = R.drawable.person_thumbnail;
+
+        Picasso.with(context).load(MovieDbAPI.getFullPosterPath(uri))
+                .placeholder(thumbnail)
+                .into(imageView);
     }
 
     public static String formatYearFromDate(String releaseDate) {

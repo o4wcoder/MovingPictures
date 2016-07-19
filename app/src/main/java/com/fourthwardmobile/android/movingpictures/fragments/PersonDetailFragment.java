@@ -154,6 +154,9 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
             //Set Options menu if we are not in two pane mode
             setHasOptionsMenu(true);
 
+            //Don't show a title if we don't have an image to display for the person
+            getActivity().setTitle("");
+
             view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_person_detail, container, false);
             mToolbar = (Toolbar) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.toolbar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -516,38 +519,19 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
         if ((getActivity() != null) && (mPerson != null)) {
 
-            Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mPerson.getProfilePath())).into(mProfileImageView, new Callback() {
+            Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mPerson.getProfilePath()))
+                    .placeholder(R.drawable.person_thumbnail)
+                    .into(mProfileImageView, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Bitmap bitmap = ((BitmapDrawable)mProfileImageView.getDrawable()).getBitmap();
 
-                    if(bitmap != null && getActivity() != null) {
-                        Palette p = Palette.generate(bitmap, 12);
-                        //   mMutedColor = p.getDarkMutedColor(0xFF333333);
-
-                        //Set title and colors for collapsing toolbar
-                        mCollapsingToolbarLayout.setTitle(mPerson.getName());
-                        mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-
-                        //Set content descriptioni for toolbar/title
-                        mCollapsingToolbarLayout.setContentDescription(mPerson.getName());
-
-                        //Set pallet colors when toolbar is collapsed
-                        int primaryColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appPrimaryColor);
-                        int primaryDarkColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appDarkPrimaryColor);
-                        int accentColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appAccentColor);
-                        mPrimaryColor = p.getMutedColor(primaryColor);
-                        mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
-                        mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
-                        mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
-
-                        startPostponedEnterTransition();
-
-                    }
+                    setPalletColors();
+                    startPostponedEnterTransition();
                 }
 
                 @Override
                 public void onError() {
+                       setPalletColors();
                        startPostponedEnterTransition();
 
                 }
@@ -561,7 +545,7 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
                     String strBirthDay = Util.reverseDateString(mPerson.getBirthday());
 
                     Spanned bornDate;
-                    if (mPerson.getDeathday().equals("")) {
+                    if (mPerson.getDeathday() == null || mPerson.getDeathday().equals("")) {
 
                         int age = getAge(mPerson.getBirthday());
                         //Only show age if we were able to calculate it.
@@ -640,6 +624,34 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
     }
 
+    private void setPalletColors() {
+
+        Bitmap bitmap = ((BitmapDrawable)mProfileImageView.getDrawable()).getBitmap();
+
+        if(bitmap != null && getActivity() != null) {
+            Palette p = Palette.generate(bitmap, 12);
+            //   mMutedColor = p.getDarkMutedColor(0xFF333333);
+
+            //Set title and colors for collapsing toolbar
+            mCollapsingToolbarLayout.setTitle(mPerson.getName());
+            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
+            //Set content descriptioni for toolbar/title
+            mCollapsingToolbarLayout.setContentDescription(mPerson.getName());
+
+            //Set pallet colors when toolbar is collapsed
+            int primaryColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appPrimaryColor);
+            int primaryDarkColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appDarkPrimaryColor);
+            int accentColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appAccentColor);
+            mPrimaryColor = p.getMutedColor(primaryColor);
+            mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
+            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
+            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+
+
+
+        }
+    }
     private void startPostponedEnterTransition() {
         Log.e(TAG,"startPostponedEnterTransition() Inside");
         mProfileImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -660,19 +672,19 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
         if (mKnownForMovieList != null) {
             Log.e(TAG,"set Known For List. Movie list not null with size = " + mKnownForMovieList.size());
             if (mKnownForMovieList.size() >= 3) {
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(2).getPosterPath(), mKnownFor3ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView,ENT_TYPE_MOVIE);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView,ENT_TYPE_MOVIE);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(2).getPosterPath(), mKnownFor3ImageView,ENT_TYPE_MOVIE);
                 mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
                 mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
                 mKnownFor3TextView.setText(mKnownForMovieList.get(2).getTitle());
             } else if (mKnownForMovieList.size() == 2) {
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView,ENT_TYPE_MOVIE);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(1).getPosterPath(), mKnownFor2ImageView,ENT_TYPE_MOVIE);
                 mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
                 mKnownFor2TextView.setText(mKnownForMovieList.get(1).getTitle());
             } else if (mKnownForMovieList.size() == 3) {
-                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView);
+                Util.loadPosterThumbnail(getContext(),mKnownForMovieList.get(0).getPosterPath(), mKnownFor1ImageView,ENT_TYPE_MOVIE);
                 mKnownFor1TextView.setText(mKnownForMovieList.get(0).getTitle());
             }
             else {

@@ -205,7 +205,7 @@ public class MovieDbAPI implements Constants {
     }
 
     public static String getFullBackdropPath(String imageFile) {
-
+        Log.e(TAG,MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile);
         return MovieDbAPI.BASE_MOVIE_IMAGE_URL + MovieDbAPI.IMAGE_500_SIZE + imageFile;
     }
 
