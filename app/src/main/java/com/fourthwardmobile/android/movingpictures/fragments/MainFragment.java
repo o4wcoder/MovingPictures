@@ -211,17 +211,25 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         if (cursor.getCount() == 0) {
 
             String displayText = "";
-            if (mSortOrder == SORT_MOVIES)
+            int displayImage = 0;
+            if (mSortOrder == SORT_MOVIES) {
                 displayText = getString(R.string.empty_movies);
-            else if (mSortOrder == SORT_TV)
+                displayImage = R.drawable.ic_theaters_white;
+            }else if (mSortOrder == SORT_TV) {
                 displayText = getString(R.string.empty_tv);
-            else if (mSortOrder == SORT_PERSON)
+                displayImage = R.drawable.ic_tv_white;
+            }
+            else if (mSortOrder == SORT_PERSON) {
                 displayText = getString(R.string.empty_person);
-
+                displayImage = R.drawable.ic_people_white;
+            }
             mEmtpyView.setVisibility(View.VISIBLE);
 
             TextView emptyTextView = (TextView)getView().findViewById(R.id.empty_textview);
             emptyTextView.setText(displayText);
+
+            ImageView emptyImageView = (ImageView)getView().findViewById(R.id.emtpy_imageview);
+            emptyImageView.setImageResource(displayImage);
 
         } else
             mEmtpyView.setVisibility(View.GONE);
