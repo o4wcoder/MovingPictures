@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourthwardmobile.android.movingpictures.adapters.EntListAdapter;
@@ -25,6 +26,8 @@ import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
 import com.fourthwardmobile.android.movingpictures.models.MediaList;
+
+import com.fourthwardmobile.android.movingpictures.R;
 
 import java.util.ArrayList;
 
@@ -74,6 +77,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     int mEntType;
     int mSortOrder;
     LinearLayout mProgressLayout;
+    LinearLayout mEmtpyView;
 
     public static MainFragment newInstance(@EntertainmentType int entType, int sortOrder) {
         Bundle args = new Bundle();
@@ -110,15 +114,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_grid_recycler_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_grid_recycler_view, container, false);
 
         //Set Up RecyclerView in Grid Layout
-        mRecyclerView = (RecyclerView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.grid_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.grid_recycler_view);
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(com.fourthwardmobile.android.movingpictures.R.integer.list_columns
         )));
 
-        mProgressLayout = (LinearLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
+        mProgressLayout = (LinearLayout)view.findViewById(R.id.progress_layout);
+
+        //Get Empty View
+        mEmtpyView = (LinearLayout)view.findViewById(R.id.emtpy_view);
         //Make sure we have a gridview
         if (mRecyclerView != null) {
 
@@ -201,8 +208,26 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         Log.e(TAG, "inside onLoadFinished with cursor size = " + cursor.getCount());
 
-        //For Favorites, we will use the sort order as the ent type as it contains
+        if (cursor.getCount() == 0) {
+
+            String displayText = "";
+            if (mSortOrder == SORT_MOVIES)
+                displayText = getString(R.string.empty_movies);
+            else if (mSortOrder == SORT_TV)
+                displayText = getString(R.string.empty_tv);
+            else if (mSortOrder == SORT_PERSON)
+                displayText = getString(R.string.empty_person);
+
+            mEmtpyView.setVisibility(View.VISIBLE);
+
+            TextView emptyTextView = (TextView)getView().findViewById(R.id.empty_textview);
+            emptyTextView.setText(displayText);
+
+        } else
+            mEmtpyView.setVisibility(View.GONE);
+
         setAdapter(convertCursorToList(cursor));
+
     }
 
     @Override
@@ -283,7 +308,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             //GridView
             if (mediaList != null) {
 
-                if (mediaList.size() > 0) {
+               // if (mediaList.size() > 0) {
                     //Store global copy
                     mList = mediaList;
 
@@ -321,13 +346,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         //we need to know if we are set to favorites or not.
                         ((Callback) getActivity()).onLoadFinished(mEntType, mSortOrder, mList.get(0).getId());
                     }
-                } else {
-                    //If we get here, then the movieList was empty and something went wrong.
-                    //Most likely a network connection problem
-//                    Toast connectToast = Toast.makeText(getActivity().getApplicationContext(),
-//                            getString(R.string.toast_network_error), Toast.LENGTH_LONG);
-//                    connectToast.show();
-                }
+               // }
             } else {
                 Log.e(TAG,"setAdapter() List was empty. Nothing to set in adapter");
             }
