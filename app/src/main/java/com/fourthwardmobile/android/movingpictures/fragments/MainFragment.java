@@ -3,6 +3,7 @@ package com.fourthwardmobile.android.movingpictures.fragments;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -77,7 +78,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     int mEntType;
     int mSortOrder;
     LinearLayout mProgressLayout;
-    LinearLayout mEmtpyView;
+    LinearLayout mEmptyView;
+    TextView mEmptyTextView;
+    ImageView mEmptyImageView;
 
     public static MainFragment newInstance(@EntertainmentType int entType, int sortOrder) {
         Bundle args = new Bundle();
@@ -125,7 +128,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mProgressLayout = (LinearLayout)view.findViewById(R.id.progress_layout);
 
         //Get Empty View
-        mEmtpyView = (LinearLayout)view.findViewById(R.id.emtpy_view);
+        mEmptyView = (LinearLayout)view.findViewById(R.id.emtpy_view);
+        mEmptyTextView = (TextView)view.findViewById(R.id.empty_textview);
+        mEmptyImageView = (ImageView)view.findViewById(R.id.emtpy_imageview);
+
         //Make sure we have a gridview
         if (mRecyclerView != null) {
 
@@ -208,31 +214,31 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         Log.e(TAG, "inside onLoadFinished with cursor size = " + cursor.getCount());
 
-        if (cursor.getCount() == 0) {
-
-            String displayText = "";
-            int displayImage = 0;
-            if (mSortOrder == SORT_MOVIES) {
-                displayText = getString(R.string.empty_movies);
-                displayImage = R.drawable.ic_theaters_white;
-            }else if (mSortOrder == SORT_TV) {
-                displayText = getString(R.string.empty_tv);
-                displayImage = R.drawable.ic_tv_white;
-            }
-            else if (mSortOrder == SORT_PERSON) {
-                displayText = getString(R.string.empty_person);
-                displayImage = R.drawable.ic_people_white;
-            }
-            mEmtpyView.setVisibility(View.VISIBLE);
-
-            TextView emptyTextView = (TextView)getView().findViewById(R.id.empty_textview);
-            emptyTextView.setText(displayText);
-
-            ImageView emptyImageView = (ImageView)getView().findViewById(R.id.emtpy_imageview);
-            emptyImageView.setImageResource(displayImage);
-
-        } else
-            mEmtpyView.setVisibility(View.GONE);
+//        if (cursor.getCount() == 0) {
+//
+//            String displayText = "";
+//            int displayImage = 0;
+//            if (mSortOrder == SORT_MOVIES) {
+//                displayText = getString(R.string.empty_movies);
+//                displayImage = R.drawable.ic_theaters_purple;
+//            }else if (mSortOrder == SORT_TV) {
+//                displayText = getString(R.string.empty_tv);
+//                displayImage = R.drawable.ic_tv_purple;
+//            }
+//            else if (mSortOrder == SORT_PERSON) {
+//                displayText = getString(R.string.empty_person);
+//                displayImage = R.drawable.ic_people_purple;
+//            }
+//            mEmtpyView.setVisibility(View.VISIBLE);
+//
+//            TextView emptyTextView = (TextView)getView().findViewById(R.id.empty_textview);
+//            emptyTextView.setText(displayText);
+//
+//            ImageView emptyImageView = (ImageView)getView().findViewById(R.id.emtpy_imageview);
+//            emptyImageView.setImageResource(displayImage);
+//
+//        } else
+//            mEmtpyView.setVisibility(View.GONE);
 
         setAdapter(convertCursorToList(cursor));
 
@@ -320,6 +326,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     //Store global copy
                     mList = mediaList;
 
+                    //Set empty view if there is nothing in the list
+                    setEmptyView(mList.size());
 
                     //If this is favorites, switch the ent type to either movies, tv, or person
                     //depending on the favorites sort type.
@@ -362,6 +370,30 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
+    private void setEmptyView(int listSize) {
+
+        if (listSize == 0) {
+
+            String displayText = "";
+            int displayImage = 0;
+            if (mSortOrder == SORT_MOVIES) {
+                displayText = getString(R.string.empty_movies);
+                displayImage = R.drawable.ic_theaters_purple;
+            }else if (mSortOrder == SORT_TV) {
+                displayText = getString(R.string.empty_tv);
+                displayImage = R.drawable.ic_tv_purple;
+            }
+            else if (mSortOrder == SORT_PERSON) {
+                displayText = getString(R.string.empty_person);
+                displayImage = R.drawable.ic_people_purple;
+            }
+            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(displayText);
+            mEmptyImageView.setImageResource(displayImage);
+
+        } else
+            mEmptyView.setVisibility(View.GONE);
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
