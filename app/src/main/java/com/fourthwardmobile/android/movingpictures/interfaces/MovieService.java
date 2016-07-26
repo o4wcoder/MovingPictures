@@ -52,7 +52,7 @@ public interface MovieService {
     @GET("3/person/{id}/{credit_type}")
     Call<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
 
-    @GET("3/tv/{id}?append_to_response=credits,videos")
+    @GET("3/tv/{id}?append_to_response=credits,videos,content_ratings")
     Call<TvShow> getTvShow(@Path("id") int id);
 
     @GET("3/search/multi")

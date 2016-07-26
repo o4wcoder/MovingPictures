@@ -98,7 +98,9 @@ public class TvShow implements Constants, Parcelable {
     @SerializedName("videos")
     @Expose
     private VideoList videos;
-
+    @SerializedName("content_ratings")
+    @Expose
+    private ContentRatings contentRatings;
     /**
      *
      * @return
@@ -603,6 +605,24 @@ public class TvShow implements Constants, Parcelable {
         this.videos = videos;
     }
 
+    /**
+     *
+     * @return
+     * The contentRatings
+     */
+    public ContentRatings getContentRatings() {
+        return contentRatings;
+    }
+
+    /**
+     *
+     * @param contentRatings
+     * The content_ratings
+     */
+    public void setContentRatings(ContentRatings contentRatings) {
+        this.contentRatings = contentRatings;
+    }
+
     public String getGenreListString() {
 
 
@@ -700,6 +720,7 @@ public class TvShow implements Constants, Parcelable {
         voteCount = in.readByte() == 0x00 ? null : in.readInt();
         credits = (Credits) in.readValue(Credits.class.getClassLoader());
         videos = (VideoList) in.readValue(VideoList.class.getClassLoader());
+        contentRatings = (ContentRatings) in.readValue(ContentRatings.class.getClassLoader());
     }
 
     @Override
@@ -811,6 +832,7 @@ public class TvShow implements Constants, Parcelable {
         }
         dest.writeValue(credits);
         dest.writeValue(videos);
+        dest.writeValue(contentRatings);
     }
 
     @SuppressWarnings("unused")

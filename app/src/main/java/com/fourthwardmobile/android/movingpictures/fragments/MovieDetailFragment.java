@@ -706,7 +706,6 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
 
 
             //Pull out the Movie US Certification/Rating
-
             for (ReleaseDateList list : mMovie.getReleaseDates().getResults()) {
 
                 if (list.getIso31661().equals(MovieDbAPI.CERT_US)) {

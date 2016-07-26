@@ -50,6 +50,7 @@ import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.Cast;
 import com.fourthwardmobile.android.movingpictures.models.Network;
+import com.fourthwardmobile.android.movingpictures.models.TvRating;
 import com.fourthwardmobile.android.movingpictures.models.TvShow;
 import com.fourthwardmobile.android.movingpictures.models.Video;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -92,6 +93,7 @@ public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnM
     // TextView mCreatedByTextView;
     TextView mCastTextView;
     TextView mRatingTextView;
+    TextView mCertificationTextView;
     ExpandableTextView mOverviewTextView;
     TextView mGenreTextView;
     TextView mNetworksTextView;
@@ -272,6 +274,7 @@ public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnM
         // mCreatedByTextView = (TextView) view.findViewById(R.id.createdByTextView);
         mCastTextView = (TextView) view.findViewById(R.id.castTextView);
         mRatingTextView = (TextView) view.findViewById(R.id.ratingTextView);
+        mCertificationTextView = (TextView) view.findViewById(R.id.certificationTextView);
         mOverviewTextView = (ExpandableTextView) view.findViewById(R.id.detail_overview_exp_text_view);
         mGenreTextView = (TextView) view.findViewById(R.id.genreTextView);
         mNetworksTextView = (TextView) view.findViewById(R.id.networksTextView);
@@ -601,6 +604,22 @@ public class TvDetailFragment extends Fragment implements Constants, Toolbar.OnM
 
             //See if this is a favorite movie and set the state of the star button
             Util.setFavoritesButton(mFavoritesFAB, getActivity(), mTvShow.getId());
+
+            mCertificationTextView.setText("NR");
+            if (mTvShow.getContentRatings() != null) {
+
+                for (TvRating tvRating : mTvShow.getContentRatings().getResults()) {
+
+                    if (tvRating.getIso31661().equals(MovieDbAPI.CERT_US)) {
+
+                        if (!(tvRating.equals("")))
+                            mCertificationTextView.setText(tvRating.getRating());
+
+                    }
+                }
+            } else {
+                mCertificationTextView.setText("NR");
+            }
         }
     }
 
