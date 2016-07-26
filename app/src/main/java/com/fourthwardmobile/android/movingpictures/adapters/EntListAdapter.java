@@ -1,7 +1,9 @@
 package com.fourthwardmobile.android.movingpictures.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +75,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
     /***********************************************************************************************/
     public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-
+        public CardView movieCardView;
         public ImageView movieThumbImageView;
         public TextView personNameTextView;
       //  public View imageGradient;
@@ -81,8 +83,10 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
         public MovieListAdapterViewHolder(View view) {
             super(view);
 
+            movieCardView = (CardView)view.findViewById(R.id.ent_cardview);
+            view.setOnClickListener(this);
             movieThumbImageView = (ImageView)view.findViewById(R.id.movie_thumbnail_image_view);
-            movieThumbImageView.setOnClickListener(this);
+           // movieThumbImageView.setOnClickListener(this);
 
             personNameTextView = (TextView)view.findViewById(R.id.ent_list_person_name_textview);
           //  imageGradient = (View)view.findViewById(R.id.ent_list_image_gradient);
@@ -90,6 +94,7 @@ public class EntListAdapter extends RecyclerView.Adapter<EntListAdapter.MovieLis
         }
         @Override
         public void onClick(View v) {
+            Log.e(TAG,"onClick()");
             mClickHandler.onClick(mMovieList.get((getAdapterPosition())),this);
         }
     }

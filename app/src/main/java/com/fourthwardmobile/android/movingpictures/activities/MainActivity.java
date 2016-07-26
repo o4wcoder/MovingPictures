@@ -17,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -324,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
     }
 
     @Override
-    public void onItemSelected(@EntertainmentType int entType,int id, ImageView imageView) {
+    public void onItemSelected(@EntertainmentType int entType,int id, View imageView) {
 
         if (mTwoPane) {
             //In two-pane mode, show the detail view in this activity by

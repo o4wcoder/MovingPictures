@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment"
-    android:background="@color/grey">
+    tools:context="com.fourthwardmobile.android.movingpictures.fragments.MovieDetailFragment">
     <include layout="@layout/collapsing_appbar"></include>
 
     <android.support.v4.widget.NestedScrollView

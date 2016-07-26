@@ -35,6 +35,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,7 +100,12 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
     Toolbar mToolbar;
 
+    CardView mPhotosCardView;
+
     //Known For Image and Text
+    FrameLayout mKnownFor1FrameView;
+    FrameLayout mKnownFor2FrameView;
+    FrameLayout mKnownFor3FrameView;
     ImageView mKnownFor1ImageView;
     ImageView mKnownFor2ImageView;
     ImageView mKnownFor3ImageView;
@@ -288,12 +294,12 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
             public void onClick(View v) {
 
                 if(mKnownForMovieList != null) {
-                    if (v.equals(mKnownFor1ImageView)) {
-                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(0).getId(), ENT_TYPE_MOVIE, mKnownFor1ImageView);
-                    } else if (v.equals(mKnownFor2ImageView)) {
-                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(1).getId(), ENT_TYPE_MOVIE, mKnownFor2ImageView);
-                    } else if (v.equals(mKnownFor3ImageView)) {
-                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(2).getId(), ENT_TYPE_MOVIE, mKnownFor3ImageView);
+                    if (v.equals(mKnownFor1FrameView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(0).getId(), ENT_TYPE_MOVIE, mKnownFor1FrameView);
+                    } else if (v.equals(mKnownFor2FrameView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(1).getId(), ENT_TYPE_MOVIE, mKnownFor2FrameView);
+                    } else if (v.equals(mKnownFor3FrameView)) {
+                        Util.startDetailActivity(getActivity(), mKnownForMovieList.get(2).getId(), ENT_TYPE_MOVIE, mKnownFor3FrameView);
                     }
                 }
             }
@@ -302,17 +308,20 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
         mKnownForCardView = (CardView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.knownForLayout);
         View cast1View = view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.person_movie_layout1);
         mKnownFor1ImageView = (ImageView) cast1View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_image_view);
-        mKnownFor1ImageView.setOnClickListener(knownForClickListener);
+        mKnownFor1FrameView = (FrameLayout)cast1View.findViewById(R.id.thumb_frame);
+        mKnownFor1FrameView.setOnClickListener(knownForClickListener);
         mKnownFor1TextView = (TextView) cast1View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_text_view);
 
         View cast2View = view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.person_movie_layout2);
         mKnownFor2ImageView = (ImageView) cast2View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_image_view);
-        mKnownFor2ImageView.setOnClickListener(knownForClickListener);
+        mKnownFor2FrameView = (FrameLayout)cast2View.findViewById(R.id.thumb_frame);
+        mKnownFor2FrameView.setOnClickListener(knownForClickListener);
         mKnownFor2TextView = (TextView) cast2View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_text_view);
 
         View cast3View = view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.person_movie_layout3);
         mKnownFor3ImageView = (ImageView) cast3View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_image_view);
-        mKnownFor3ImageView.setOnClickListener(knownForClickListener);
+        mKnownFor3FrameView = (FrameLayout)cast3View.findViewById(R.id.thumb_frame);
+        mKnownFor3FrameView.setOnClickListener(knownForClickListener);
         mKnownFor3TextView = (TextView) cast3View.findViewById(com.fourthwardmobile.android.movingpictures.R.id.thumb_text_view);
 
         if(mFetchData) {

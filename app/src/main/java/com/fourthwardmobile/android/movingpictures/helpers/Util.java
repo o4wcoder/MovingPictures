@@ -126,7 +126,7 @@ public class Util implements Constants {
 //        }
 //    }
 
-    public static void startDetailActivity(Context context, int id, @EntertainmentType int type,ImageView imageView) {
+    public static void startDetailActivity(Context context, int id, @EntertainmentType int type,View imageView) {
 
         Intent intent = null;
 

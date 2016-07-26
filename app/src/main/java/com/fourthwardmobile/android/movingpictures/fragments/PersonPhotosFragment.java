@@ -98,6 +98,8 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
         mRecyclerView = (RecyclerView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.grid_recycler_view);
         //Set Layout Manager for RecyclerView
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        //Need to not make this focusable as it will set the entire recyclerview with an overlay of the ripple highlight color
+        mRecyclerView.setFocusable(false);
 
         mProgressLayout = (LinearLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
 

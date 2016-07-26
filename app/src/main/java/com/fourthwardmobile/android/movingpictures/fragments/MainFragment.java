@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -347,7 +348,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                             //Start intent to bring up Details Activity
 
                             Log.e(TAG, "onClick() got image, callback to activity to start detail activity");
-                            ((Callback) getActivity()).onItemSelected(localEntType, movie.getId(), vh.movieThumbImageView);
+                            ((Callback) getActivity()).onItemSelected(localEntType, movie.getId(), vh.movieCardView);
                         }
                     });
 
@@ -456,7 +457,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(@Constants.EntertainmentType int entType, int idd, ImageView imageView);
+        void onItemSelected(@Constants.EntertainmentType int entType, int idd, View imageView);
 
         void onLoadFinished(@Constants.EntertainmentType int entType, int sortOrder, int id);
     }

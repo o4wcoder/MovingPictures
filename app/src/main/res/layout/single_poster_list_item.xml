@@ -2,24 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    android:id="@+id/thumb_view">
 
+
+    <FrameLayout
+        android:id="@+id/thumb_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground">
     <ImageView
         android:id="@+id/thumb_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="2dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/thumb_text_view"
         style="@style/Base.TextAppearance.AppCompat.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/thumb_image_view"
-        android:layout_alignRight="@id/thumb_image_view"
-        android:layout_below="@+id/thumb_image_view"
+        android:layout_alignLeft="@id/thumb_frame"
+        android:layout_alignRight="@id/thumb_frame"
+        android:layout_below="@+id/thumb_frame"
         android:alpha="@string/secondary_text_alpha_dark"
         android:padding="2dp"
         android:gravity="center"

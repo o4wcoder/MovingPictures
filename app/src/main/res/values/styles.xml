@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/appPrimaryColor</item>
         <item name="colorPrimaryDark">@color/appDarkPrimaryColor</item>
         <item name="colorAccent">@color/appAccentColor</item>
+        <item name="android:colorBackground">@color/grey</item>
+        <item name="android:windowBackground">@color/grey</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

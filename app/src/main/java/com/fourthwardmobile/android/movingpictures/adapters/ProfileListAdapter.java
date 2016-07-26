@@ -58,7 +58,7 @@ public class ProfileListAdapter extends RecyclerView.Adapter<ProfileListAdapter.
             super(view);
 
             imageView = (ImageView)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.movie_imageView);
-            imageView.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
         @Override
         public void onClick(View v) {

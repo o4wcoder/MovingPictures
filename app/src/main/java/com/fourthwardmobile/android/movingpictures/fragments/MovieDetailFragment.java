@@ -34,6 +34,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -121,9 +122,14 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
 
     //Cast
     CardView mCastCardView;
+    FrameLayout mCast1FrameView;
+    FrameLayout mCast2FrameView;
+    FrameLayout mCast3FrameView;
+
     ImageView mCast1ImageView;
     ImageView mCast2ImageView;
     ImageView mCast3ImageView;
+
     TextView mCast1TextView;
     TextView mCast2TextView;
     TextView mCast3TextView;
@@ -320,12 +326,13 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
             @Override
             public void onClick(View v) {
 
-                if (v.equals(mCast1ImageView)) {
-                      Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(0).getId(),ENT_TYPE_PERSON,mCast1ImageView);
-                } else if (v.equals(mCast2ImageView)) {
-                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(1).getId(),ENT_TYPE_PERSON,mCast2ImageView);
-                } else if (v.equals(mCast3ImageView)) {
-                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(2).getId(),ENT_TYPE_PERSON,mCast3ImageView);
+                Log.e(TAG,"Got onClick from cast listenter");
+                if (v.equals(mCast1FrameView)) {
+                      Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(0).getId(),ENT_TYPE_PERSON,mCast1FrameView);
+                } else if (v.equals(mCast2FrameView)) {
+                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(1).getId(),ENT_TYPE_PERSON,mCast2FrameView);
+                } else if (v.equals(mCast3FrameView)) {
+                    Util.startDetailActivity(getActivity(),mMovie.getCredits().getCast().get(2).getId(),ENT_TYPE_PERSON,mCast3FrameView);
                 }
             }
         };
@@ -334,17 +341,20 @@ public class MovieDetailFragment extends Fragment implements Constants, Toolbar.
         mCastCardView = (CardView) view.findViewById(R.id.cast_list_layout);
         View cast1View = view.findViewById(R.id.detail_cast_layout1);
         mCast1ImageView = (ImageView) cast1View.findViewById(R.id.thumb_image_view);
-        mCast1ImageView.setOnClickListener(castClickListener);
+        mCast1FrameView = (FrameLayout)cast1View.findViewById(R.id.thumb_frame);
+        mCast1FrameView.setOnClickListener(castClickListener);
         mCast1TextView = (TextView) cast1View.findViewById(R.id.thumb_text_view);
 
         View cast2View = view.findViewById(R.id.detail_cast_layout2);
         mCast2ImageView = (ImageView) cast2View.findViewById(R.id.thumb_image_view);
-        mCast2ImageView.setOnClickListener(castClickListener);
+        mCast2FrameView = (FrameLayout)cast2View.findViewById(R.id.thumb_frame);
+        mCast2FrameView.setOnClickListener(castClickListener);
         mCast2TextView = (TextView) cast2View.findViewById(R.id.thumb_text_view);
 
         View cast3View = view.findViewById(R.id.detail_cast_layout3);
         mCast3ImageView = (ImageView) cast3View.findViewById(R.id.thumb_image_view);
-        mCast3ImageView.setOnClickListener(castClickListener);
+        mCast3FrameView = (FrameLayout)cast3View.findViewById(R.id.thumb_frame);
+        mCast3FrameView.setOnClickListener(castClickListener);
         mCast3TextView = (TextView) cast3View.findViewById(R.id.thumb_text_view);
         mCastShowAllTextView = (TextView) view.findViewById(R.id.detail_cast_show_all_textview);
         mCastShowAllTextView.setOnClickListener(new View.OnClickListener() {
