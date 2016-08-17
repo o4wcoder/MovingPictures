@@ -37,6 +37,7 @@ import com.fourthwardmobile.android.movingpictures.fragments.TvDetailFragment;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.crashlytics.android.Crashlytics;
+import com.fourthwardmobile.android.movingpictures.login.LoginActivity;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -315,6 +316,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Call
         } else if (id == com.fourthwardmobile.android.movingpictures.R.id.nav_favorites) {
             mEntType = ENT_TYPE_FAVORITE;
             mSortOrder = SORT_MOVIES;
+        } else if(id == R.id.nav_login) {
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            return true;
         }
 
         setPagerForSelection();

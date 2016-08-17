@@ -26,6 +26,7 @@
     <string name="nav_tv_shows">TV Shows</string>
     <string name="nav_people">People</string>
     <string name="nav_favorites">Favorites</string>
+    <string name="nav_login">Login</string>
 
     <string name="app_name">Moving Pictures</string>
     <string name="app_designer">Fourth Ward Mobile</string>
@@ -127,5 +128,17 @@
     <string name="empty_movies">No Saved Movies</string>
     <string name="empty_tv">No Saved TV Shows</string>
     <string name="empty_person">No Saved People</string>
+
+    <!-- Login and Create Account Screen  -->
+    <string name="text_dont_have_account">Don\'t have an account?</string>
+    <string name="text_already_have_account">Already have an account?</string>
+    <string name="button_create_account">Sign Up</string>
+    <string name="button_sign_in">Sign In</string>
+    <string name="button_signin_with_google">SIGN IN WITH GOOGLE</string>
+    <string name="button_signin_with_password">SIGN IN</string>
+    <string name="hint_enter_email">Enter your email</string>
+    <string name="hint_enter_username">Enter your name</string>
+    <string name="hint_enter_password">Enter password</string>
+    <string name="image_view_logo_image">Logo Image</string>
 
 </resources>
