@@ -128,4 +128,7 @@
     <string name="empty_tv">No Saved TV Shows</string>
     <string name="empty_person">No Saved People</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

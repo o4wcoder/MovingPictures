@@ -70,7 +70,7 @@ import retrofit2.Response;
  * <p/>
  * Fragment to hold the details of a person's info
  */
-public class PersonDetailFragment extends Fragment implements Constants,  Toolbar.OnMenuItemClickListener {
+public class PersonDetailFragment extends BaseDetailFragment implements Constants,  Toolbar.OnMenuItemClickListener {
 
     /*********************************************************************/
     /*                          Constants                                */
@@ -81,7 +81,6 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
     /*********************************************************************/
     /*                          Local Data                               */
     /*********************************************************************/
-    ImageView mProfileImageView;
     TextView mNameTextView;
     TextView mBornDateTextView;
     TextView mBornPlaceTextView;
@@ -93,14 +92,6 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
     Person mPerson;
     int mPersonId;
     boolean mFetchData = false;
-
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private NestedScrollView mNestedScrollView;
-    FloatingActionButton mFavoritesFAB;
-
-    Toolbar mToolbar;
-
-    CardView mPhotosCardView;
 
     //Known For Image and Text
     FrameLayout mKnownFor1FrameView;
@@ -114,8 +105,6 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
     TextView mKnownFor3TextView;
     CardView mKnownForCardView;
 
-    int mPrimaryColor;
-    int mDarkPrimaryColor;
 
     ArrayList<MediaBasic> mKnownForMovieList;
 
@@ -147,6 +136,9 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
             mPersonId = bundle.getInt(ARG_ID);
             mFetchData = true;
         }
+
+        //This is a Person type
+        mEntType = ENT_TYPE_PERSON;
     }
 
     @Override
@@ -190,11 +182,9 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
         //Get CollapsingToolbarLayout
         mCollapsingToolbarLayout = (CollapsingToolbarLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.collapsing_toolbar);
-        //Get NestedScrollView;
-        mNestedScrollView = (NestedScrollView)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.scrollview);
 
         //Person Profile Image
-        mProfileImageView = (ImageView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.profileImageView);
+        mBackdropImageView = (ImageView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.profileImageView);
         //Person Name
         mNameTextView = (TextView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.detail_person_name_text_view);
         //Person Birth Date
@@ -345,95 +335,9 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_search, menu);
-
-        //Get the SearchView and set teh searchable configuration
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final MenuItem searchMenu = (MenuItem) menu.findItem(R.id.action_search_db);
-        final SearchView searchView = (SearchView) searchMenu.getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(
-                new ComponentName(getActivity(), SearchableActivity.class)));
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                //Close searchView after search button clicked
-                searchView.setQuery("", false);
-                searchView.setIconified(true);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionSelect(int position) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int position) {
-                Log.e(TAG, "onSuggestionClick");
-                searchView.setQuery("", false);
-                searchView.setIconified(true);
-                return false;
-            }
-        });
-
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG,"onClick");
-                mToolbar.setBackgroundColor(mPrimaryColor);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().setStatusBarColor(mDarkPrimaryColor);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getActivity().getWindow();
-
-                        // clear FLAG_TRANSLUCENT_STATUS flag:
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-                        window.setStatusBarColor(mDarkPrimaryColor);
-                    }
-                }
-            }
-        });
-
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                Log.e(TAG,"onClose()");
-                mToolbar.getBackground().setAlpha(0);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                }
-                return false;
-            }
-        });
-
-        //Finally inflate the share menu
-        inflater.inflate(R.menu.menu_share,menu);
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        Log.e(TAG,"onOptionsItemSelected() Fragment");
+        // Log.e(TAG,"onOptionsItemSelected() Fragment");
         switch (item.getItemId()) {
             case R.id.action_share:
                 Log.e(TAG,"Menu share click");
@@ -443,7 +347,6 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
                 return super.onOptionsItemSelected(item);
         }
     }
-
     /**
      * Used when calling menu items from Fragment when in two pane/tablet mode. Otherwise
      * it goes through the normal onOptionsItemSelected method
@@ -530,18 +433,18 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
             Picasso.with(getActivity()).load(MovieDbAPI.getFullPosterPath(mPerson.getProfilePath()))
                     .placeholder(R.drawable.person_thumbnail)
-                    .into(mProfileImageView, new Callback() {
+                    .into(mBackdropImageView, new Callback() {
                 @Override
                 public void onSuccess() {
 
-                    setPalletColors();
-                    startPostponedEnterTransition();
+                    setPaletteColors(mPerson.getName());
+                    startPostponedEnterTransition(mBackdropImageView);
                 }
 
                 @Override
                 public void onError() {
-                       setPalletColors();
-                       startPostponedEnterTransition();
+                       setPaletteColors(mPerson.getName());
+                       startPostponedEnterTransition(mBackdropImageView);
 
                 }
             });
@@ -633,49 +536,6 @@ public class PersonDetailFragment extends Fragment implements Constants,  Toolba
 
     }
 
-    private void setPalletColors() {
-
-        Bitmap bitmap = ((BitmapDrawable)mProfileImageView.getDrawable()).getBitmap();
-
-        if(bitmap != null && getActivity() != null) {
-            Palette p = Palette.generate(bitmap, 12);
-            //   mMutedColor = p.getDarkMutedColor(0xFF333333);
-
-            //Set title and colors for collapsing toolbar
-            mCollapsingToolbarLayout.setTitle(mPerson.getName());
-            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-
-            //Set content descriptioni for toolbar/title
-            mCollapsingToolbarLayout.setContentDescription(mPerson.getName());
-
-            //Set pallet colors when toolbar is collapsed
-            int primaryColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appPrimaryColor);
-            int primaryDarkColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appDarkPrimaryColor);
-            int accentColor = getResources().getColor(com.fourthwardmobile.android.movingpictures.R.color.appAccentColor);
-            mPrimaryColor = p.getMutedColor(primaryColor);
-            mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
-            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
-            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
-
-
-
-        }
-    }
-    private void startPostponedEnterTransition() {
-        Log.e(TAG,"startPostponedEnterTransition() Inside");
-        mProfileImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                Log.e(TAG,"onPreDraw(): Start postponed enter transition!!!!");
-                mProfileImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-
-                //Must call this inside a PreDrawListener or the Enter Transition will not work
-                //Need to make sure imageview is ready before starting transition.
-                getActivity().supportStartPostponedEnterTransition();
-                return true;
-            }
-        });
-    }
     private void setKnownForLayout() {
 
         if (mKnownForMovieList != null) {
