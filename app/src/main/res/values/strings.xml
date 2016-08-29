@@ -142,5 +142,6 @@
     <string name="hint_enter_username">Enter your name</string>
     <string name="hint_enter_password">Enter password</string>
     <string name="image_view_logo_image">Logo Image</string>
+    <string name="title_activity_create_account">Create Account</string>
 
 </resources>
