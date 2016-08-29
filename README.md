@@ -16,13 +16,15 @@ Movie Database API provided by <a href="https://www.themoviedb.org">The Movie DB
 
 
 # Status
-Version 1.0. Not currently available on Google Play. Expect the first version to be available in July 2016.
+Version 1.0.12. Available on Google Play.
+<a href="https://play.google.com/store/apps/details?id=com.fourthwardmobile.android.movingpictures"> Download Moving Pictures</a>
 
 # Versions
-* Free Version. No Ads
+Version 1.0.12 Available Now
 
 # Google Services APIs
-* None
+* Firebase
+* Google Login
 
 # Contributing<br>
 * No contributions to this project
