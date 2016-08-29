@@ -289,9 +289,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                         } else {
                             Log.e(TAG, "!!! Response was not sucessful!!!");
                             //parse the response to find the error. Display a message
-                            APIError error = ErrorUtils.parseError(response);
-                            Log.e(TAG, "Error message = " + error.message());
-                            Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
+//                            APIError error = ErrorUtils.parseError(response);
+//                            Log.e(TAG, "Error message = " + error.message());
+//                            Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
                         }
                     }
 
