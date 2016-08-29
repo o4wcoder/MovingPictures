@@ -458,7 +458,7 @@ public class MovieDetailFragment extends BaseDetailFragment implements Constants
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 Log.e(TAG, "onFailure() " + t.getMessage());
-                Toast.makeText(getContext(),getContext().getString(R.string.toast_network_error),Toast.LENGTH_LONG);
+                Toast.makeText(getContext(),getContext().getString(R.string.toast_network_error),Toast.LENGTH_LONG).show();
 
             }
         });

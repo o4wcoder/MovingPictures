@@ -13,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import rx.Observable;
 
 /**
  * Created by Chris Hare on 6/9/2016.
@@ -23,8 +24,8 @@ public interface MovieService {
   //  Call<MediaList> getMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType,
     //                             @Query(MovieDbAPI.PARAM_SORT) String sortOrder);
 
-    @GET("/3/{ent_type}/{sort_type}")
-    Call<MediaList> getMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType);
+   // @GET("/3/{ent_type}/{sort_type}")
+   // Call<MediaList> getMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType);
 
     @GET("/3/discover/movie")
     Call<MediaList> getNowPlayingMovies(@Query("primary_release_date.gte") String startDate,
@@ -61,7 +62,9 @@ public interface MovieService {
     @GET("3/person/{id}/images")
     Call<PersonPhotoList> getPersonsPhotos(@Path("id") int id);
 
-
+    //RxJava Calls
+    @GET("/3/{ent_type}/{sort_type}")
+    Observable<MediaList> getRxMediaList(@Path("ent_type") String entType, @Path("sort_type") String sortType);
 
 
 }

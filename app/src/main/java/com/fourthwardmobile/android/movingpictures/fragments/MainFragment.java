@@ -15,11 +15,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.adapters.EntListAdapter;
 import com.fourthwardmobile.android.movingpictures.data.FavoritesContract;
 import com.fourthwardmobile.android.movingpictures.helpers.APIError;
@@ -30,11 +32,20 @@ import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
 import com.fourthwardmobile.android.movingpictures.models.MediaList;
 
 import com.fourthwardmobile.android.movingpictures.R;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 import retrofit2.Response;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Class MainFragment
@@ -82,6 +93,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     LinearLayout mEmptyView;
     TextView mEmptyTextView;
     ImageView mEmptyImageView;
+
+    private NetworkService mNetworkService;
+    private Subscription mMediaListSubscription;
 
     public static MainFragment newInstance(@EntertainmentType int entType, int sortOrder) {
         Bundle args = new Bundle();
@@ -145,7 +159,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     //Get Favorites
                     getLoaderManager().initLoader(MOVIE_FAVORITES_LOADER, null, this);
                 } else {
-                    getApiList();
+                    mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
+                    getRxApiList();
                 }
             else {
                 //Hit this when we retained our instance of the fragment on a rotation.
@@ -176,6 +191,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 //        }
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(mMediaListSubscription != null && !mMediaListSubscription.isUnsubscribed()) {
+            mMediaListSubscription.unsubscribe();
+        }
+    }
 
     private int convertFavoriteSortToMediaType() {
 
@@ -267,44 +291,81 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-    private void getApiList() {
+//    private void getApiList() {
+//
+//
+//        if (getActivity() != null) {
+//
+//            Call<MediaList> call = null;
+//
+//            Log.e(TAG,"getApiList() with ent type = " + mEntType + " Sort type = " + mSortOrder);
+//            call = MovieDbAPI.getMovieApiService().getMediaList(getUriPath(), getSortType());
+//
+//
+//            if(call != null) {
+//                call.enqueue(new retrofit2.Callback<MediaList>() {
+//                    @Override
+//                    public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+//
+//                        if (response.isSuccessful()) {
+//
+//                            setAdapter((ArrayList) response.body().getMediaResults());
+//                        } else {
+//                            Log.e(TAG, "!!! Response was not sucessful!!!");
+//                            //parse the response to find the error. Display a message
+////                            APIError error = ErrorUtils.parseError(response);
+////                            Log.e(TAG, "Error message = " + error.message());
+////                            Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<MediaList> call, Throwable t) {
+//                        Log.e(TAG, "onFailure() " + t.getMessage());
+//                        if(getActivity() != null)
+//                            Toast.makeText(getContext(), getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error), Toast.LENGTH_LONG);
+//
+//                    }
+//                });
+//            }
+//        }
+//    }
 
+    private void getRxApiList() {
 
-        if (getActivity() != null) {
+        Observable<MediaList> mediaListObservable = mNetworkService.getMovieApiService().getRxMediaList(getUriPath(), getSortType());
 
-            Call<MediaList> call = null;
-
-            Log.e(TAG,"getApiList() with ent type = " + mEntType + " Sort type = " + mSortOrder);
-            call = MovieDbAPI.getMovieApiService().getMediaList(getUriPath(), getSortType());
-
-
-            if(call != null) {
-                call.enqueue(new retrofit2.Callback<MediaList>() {
+        mMediaListSubscription = mediaListObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MediaList>() {
                     @Override
-                    public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+                    public void onCompleted() {
 
-                        if (response.isSuccessful()) {
-
-                            setAdapter((ArrayList) response.body().getMediaResults());
-                        } else {
-                            Log.e(TAG, "!!! Response was not sucessful!!!");
-                            //parse the response to find the error. Display a message
-//                            APIError error = ErrorUtils.parseError(response);
-//                            Log.e(TAG, "Error message = " + error.message());
-//                            Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
-                        }
                     }
 
                     @Override
-                    public void onFailure(Call<MediaList> call, Throwable t) {
-                        Log.e(TAG, "onFailure() " + t.getMessage());
-                        if(getActivity() != null)
-                            Toast.makeText(getContext(), getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error), Toast.LENGTH_LONG);
+                    public void onError(Throwable e) {
+
+                        Log.e(TAG,"onError() getRxApiList");
+                      if(getActivity() != null) {
+                          //Remove progress indicator
+                          mProgressLayout.setVisibility(View.GONE);
+                          Toast.makeText(getContext(), getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error), Toast.LENGTH_LONG).show();
+                      }
+                    }
+
+                    @Override
+                    public void onNext(MediaList mediaList) {
+
+                        Log.e(TAG,"onNext()");
+                        setAdapter((ArrayList)mediaList.getMediaResults());
 
                     }
                 });
-            }
-        }
+
+
+
+
     }
 
     /**

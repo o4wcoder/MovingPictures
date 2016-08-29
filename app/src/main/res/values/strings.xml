@@ -43,6 +43,7 @@
     <string name="revenue">REVENUE:</string>
     <string name="created_by">CREATED BY:</string>
     <string name="networks">NETWORKS:</string>
+    <string name="toast_bad_data">The Server is not returning correct data. Please try again.</string>
     <string name="toast_network_error">Could not fetch movie data. Please check network connection.</string>
     <string name="progress_downloading_movies">Downloading Movies...</string>
     <string name="progress_downloading_details">Downloading Details...</string>
