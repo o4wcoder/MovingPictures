@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.fourthwardmobile.android.movingpictures.adapters.ShowAllListAdapter;
-import com.fourthwardmobile.android.movingpictures.helpers.APIError;
-import com.fourthwardmobile.android.movingpictures.helpers.ErrorUtils;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;

@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.R;
 //import com.android.fourthwardmobile.movingpictures.adapters.VideosListAdapter;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
@@ -54,6 +55,7 @@ import com.fourthwardmobile.android.movingpictures.models.Network;
 import com.fourthwardmobile.android.movingpictures.models.TvRating;
 import com.fourthwardmobile.android.movingpictures.models.TvShow;
 import com.fourthwardmobile.android.movingpictures.models.Video;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -63,6 +65,11 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Class TvDetailFragment
@@ -123,6 +130,9 @@ public class TvDetailFragment extends BaseDetailFragment implements Constants, T
     private static final String ARG_ID = "id";
     private static final String ARG_TV_SHOW = "tv_show";
 
+    private NetworkService mNetworkService;
+    private Subscription mTvShowSubscription;
+
     public TvDetailFragment() {
     }
 
@@ -139,6 +149,9 @@ public class TvDetailFragment extends BaseDetailFragment implements Constants, T
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get reference to applications network service interface
+        mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
 
         if (savedInstanceState != null) {
 
@@ -369,6 +382,16 @@ public class TvDetailFragment extends BaseDetailFragment implements Constants, T
         return false;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //Clean up Rx Subscription
+        if(mTvShowSubscription != null && !mTvShowSubscription.isUnsubscribed()) {
+            mTvShowSubscription.unsubscribe();
+        }
+    }
+
     /**
      * Set a history string of a tv show from release till end data. Format will
      * be like (2000 - 2009)
@@ -541,23 +564,28 @@ public class TvDetailFragment extends BaseDetailFragment implements Constants, T
 
     private void getTvShow() {
 
-        Call<TvShow> call = MovieDbAPI.getMovieApiService().getTvShow(mTvId);
+        Observable<TvShow> tvShowObservable = mNetworkService.getMovieApiService().getTvShow(mTvId);
 
-        call.enqueue(new retrofit2.Callback<TvShow>() {
-            @Override
-            public void onResponse(Call<TvShow> call, Response<TvShow> response) {
+        mTvShowSubscription = tvShowObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<TvShow>() {
+                    @Override
+                    public void onCompleted() {}
 
-                if (response.isSuccessful()) {
-                    mTvShow = response.body();
-                    setLayout();
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        //Want to make sure activity is valid before showing any toasts
+                        if(getActivity() != null) {
+                            mNetworkService.processNetworkError(getContext(), e);
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call call, Throwable t) {
-
-            }
-        });
+                    @Override
+                    public void onNext(TvShow tvShow) {
+                        mTvShow = tvShow;
+                        setLayout();
+                    }
+                });
     }
 
     private String getNetworkList(List<Network> list) {

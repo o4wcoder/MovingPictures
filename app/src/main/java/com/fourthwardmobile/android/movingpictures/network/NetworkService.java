@@ -1,7 +1,10 @@
 package com.fourthwardmobile.android.movingpictures.network;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.interfaces.MovieService;
 
@@ -14,6 +17,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
@@ -70,5 +74,19 @@ public class NetworkService {
     public MovieService getMovieApiService() {
         return mMovieApiService;
 
+    }
+
+    public void processNetworkError(Context context, Throwable error) {
+
+        if(error instanceof IOException) {
+            Log.e(TAG,"onError() with network error");
+            Toast.makeText(context, context.getString(R.string.toast_network_error), Toast.LENGTH_LONG).show();
+        } else if (error instanceof HttpException) {
+            Log.e(TAG,"onError() with http exception");
+            Toast.makeText(context, context.getString(R.string.toast_bad_data), Toast.LENGTH_LONG).show();
+        } else {
+            Log.e(TAG,"onError() with unknown exception");
+            Toast.makeText(context, context.getString(R.string.toast_unknown_error), Toast.LENGTH_LONG).show();
+        }
     }
 }
