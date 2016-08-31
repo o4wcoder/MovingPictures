@@ -74,7 +74,23 @@ public interface Constants {
     String MEDIA_TYPE_TV = "tv";
     String MEDIA_TYPE_PERSON = "person";
 
+ /**
+  * Firebase Constants
+  */
+    String FIREBASE_LOCATION_USERS = "users";
 
+    String FIREBASE_URL = "https://moving-pictures-aed6a.firebaseio.com/";
+    String FIREBASE_URL_USERS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USERS;
+
+    String KEY_GOOGLE_EMAIL = "GOOGLE_EMAIL";
+    String KEY_ENCODED_EMAIL = "USER_EMAIL";
+    String KEY_PROVIDER = "PROVIDER";
+
+    //Login type
+    String GOOGLE_PROVIDER = "google";
+
+    //Firebase object properties
+    String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
 
 
 

@@ -11,27 +11,32 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.adapters.ShowAllListAdapter;
-import com.fourthwardmobile.android.movingpictures.helpers.APIError;
-import com.fourthwardmobile.android.movingpictures.helpers.ErrorUtils;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.helpers.Util;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.Credits;
 import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
 import com.fourthwardmobile.android.movingpictures.models.MediaList;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
  * Class ShowAllListActivity
  * Author: Chris Hare
  * Created: 8/15/15
- * <p/>
+ * <p>
  * Display's a listview of Movies/TV of a person
  */
 public class ShowAllListFragment extends Fragment implements Constants {
@@ -44,10 +49,10 @@ public class ShowAllListFragment extends Fragment implements Constants {
     /********************************************************************/
     /*                         Local Data                               */
     /********************************************************************/
-   // ListView mListView;
+    // ListView mListView;
     //CreditListAdapterOld mAdapter;
     ShowAllListAdapter mAdapter;
-            RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
     int mEntType;
     int mListType;
     int mId;
@@ -57,13 +62,16 @@ public class ShowAllListFragment extends Fragment implements Constants {
 
     LinearLayout mProgressLayout;
 
+    private NetworkService mNetworkService;
+    private Subscription mCreditsSubscription;
+
     //Local Arguments
     private static final String ARG_ID = "id";
     private static final String ARG_ENT_TYPE = "ent_type";
     private static final String ARG_LIST_TYPE = "list_type";
     private static final String ARG_QUERY = "query";
 
-    public static ShowAllListFragment newInstance(int id,int entType, int listType, String query) {
+    public static ShowAllListFragment newInstance(int id, int entType, int listType, String query) {
 
         //Store data in bungle for the fragment
         Bundle args = new Bundle();
@@ -72,7 +80,7 @@ public class ShowAllListFragment extends Fragment implements Constants {
         args.putInt(ARG_ENT_TYPE, entType);
         args.putInt(ARG_LIST_TYPE, listType);
         //Argument for Search results
-        args.putString(ARG_QUERY,query);
+        args.putString(ARG_QUERY, query);
 
         //Create Fragment and store arguments to it.
         ShowAllListFragment fragment = new ShowAllListFragment();
@@ -84,6 +92,9 @@ public class ShowAllListFragment extends Fragment implements Constants {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        //Get reference to applications network service interface
+        mNetworkService = ((MovingPicturesApplication) getActivity().getApplication()).getNetworkService();
 
         //Check if we've rotated
         if (savedInstance != null) {
@@ -108,70 +119,84 @@ public class ShowAllListFragment extends Fragment implements Constants {
         View view = inflater.inflate(com.fourthwardmobile.android.movingpictures.R.layout.fragment_show_all_list, container, false);
 
         //mListView = (ListView) view.findViewById(R.id.listView);
-        mRecyclerView = (RecyclerView)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.show_all_list_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.show_all_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-        mProgressLayout = (LinearLayout)view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
+        mProgressLayout = (LinearLayout) view.findViewById(com.fourthwardmobile.android.movingpictures.R.id.progress_layout);
         if (mEntType == ENT_TYPE_PERSON) {
             if (mListType == LIST_TYPE_MOVIE_CAST || mListType == LIST_TYPE_MOVIE_CREW) {
                 getCredits(MovieDbAPI.PATH_MOVIE);
-            } else if(mListType == LIST_TYPE_TV_CAST || mListType == LIST_TYPE_TV_CREW ) {
+            } else if (mListType == LIST_TYPE_TV_CAST || mListType == LIST_TYPE_TV_CREW) {
                 getCredits(MovieDbAPI.PATH_TV);
             }
         } else if (mEntType == ENT_TYPE_MOVIE || mEntType == ENT_TYPE_TV) {
             getPersonsFilmography();
-        } else if(mEntType == ENT_TYPE_SEARCH)
-           getSearchResult();
+        } else if (mEntType == ENT_TYPE_SEARCH)
+            getSearchResult();
 
         return view;
 
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //Clean up Rx Subscription
+        if (mCreditsSubscription != null && !mCreditsSubscription.isUnsubscribed()) {
+            mCreditsSubscription.unsubscribe();
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(ARG_ENT_TYPE, mEntType);
-        savedInstanceState.putInt(ARG_LIST_TYPE,mListType);
+        savedInstanceState.putInt(ARG_LIST_TYPE, mListType);
         savedInstanceState.putInt(ARG_ID, mId);
-        savedInstanceState.putString(ARG_QUERY,mQuery);
+        savedInstanceState.putString(ARG_QUERY, mQuery);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     private void getCredits(String entPath) {
-        Log.e(TAG,"getCredits() Now fill create network call");
+        Log.e(TAG, "getCredits() Now fill create network call");
 
-        Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(entPath,mId);
+        // Call<Credits> call = MovieDbAPI.getMovieApiService().getCredits(entPath,mId);
 
-        setApiCall(call);
+        Observable<Credits> creditsObservable = mNetworkService.getMovieApiService().getCredits(entPath, mId);
+
+        setApiCall(creditsObservable);
     }
 
     private void getPersonsFilmography() {
 
         //See if we want to fetch Movie or TV credits
-        Log.e(TAG,"getPersonsFilmography() with ent type = " + mEntType);
+        Log.e(TAG, "getPersonsFilmography() with ent type = " + mEntType);
         String creditPath = (mEntType == ENT_TYPE_TV) ? MovieDbAPI.PATH_TV_CREDIT : MovieDbAPI.PATH_MOVIE_CREDIT;
-        Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mId,creditPath);
+        //Call<Credits> call = MovieDbAPI.getMovieApiService().getPersonsFilmography(mId,creditPath);
 
-        setApiCall(call);
+        Observable<Credits> creditsObservable = mNetworkService.getMovieApiService().getPersonsFilmography(mId, creditPath);
+
+        setApiCall(creditsObservable);
     }
 
     private void getSearchResult() {
 
-        Call<MediaList> call = MovieDbAPI.getMovieApiService().getSearchResultList(mQuery);
+        Call<MediaList> call = mNetworkService.getMovieApiService().getSearchResultList(mQuery);
 
         call.enqueue(new retrofit2.Callback<MediaList>() {
 
             @Override
             public void onResponse(Call<MediaList> call, Response<MediaList> response) {
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
 
-                    mQueryResults = (ArrayList)response.body().getMediaResults();
+                    mQueryResults = (ArrayList) response.body().getMediaResults();
 
-                    Log.e(TAG,"onRespnse with queryResult size = " + mQueryResults.size());
+                    Log.e(TAG, "onRespnse with queryResult size = " + mQueryResults.size());
                     setSearchAdapater();
                 }
             }
@@ -182,46 +207,48 @@ public class ShowAllListFragment extends Fragment implements Constants {
             }
         });
     }
-    private void setApiCall(Call<Credits> call) {
-        call.enqueue(new retrofit2.Callback<Credits>() {
 
-            @Override
-            public void onResponse(Call<Credits> call, Response<Credits> response) {
+    private void setApiCall(Observable<Credits> creditsObservable) {
 
-                if(response.isSuccessful()) {
+        mCreditsSubscription = creditsObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Credits>() {
+                    @Override
+                    public void onCompleted() {
 
-                    mCredits = response.body();
+                    }
 
-                    setAdapter();
+                    @Override
+                    public void onError(Throwable e) {
+                        //Want to make sure activity is valid before showing any toasts
+                        if (getActivity() != null) {
+                            //Remove progress indicator
+                            mProgressLayout.setVisibility(View.GONE);
+                            mNetworkService.processNetworkError(getContext(), e);
+                        }
+                    }
 
-                } else {
-
-                    //parse the response to find the error. Display a message
-//                    APIError error = ErrorUtils.parseError(response);
-//                    Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Credits> call, Throwable t) {
-                Log.e(TAG, "onFailure() " + t.getMessage());
-                Toast.makeText(getContext(),getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error),Toast.LENGTH_LONG);
-            }
-        });
+                    @Override
+                    public void onNext(Credits credits) {
+                        mCredits = credits;
+                        setAdapter();
+                    }
+                });
     }
+
     private void setAdapter() {
 
         //Remove progress indicator
         mProgressLayout.setVisibility(View.GONE);
 
-        if(mCredits != null) {
+        if (mCredits != null) {
 
-            mAdapter = new ShowAllListAdapter(getContext(), mCredits, mEntType,mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
+            mAdapter = new ShowAllListAdapter(getContext(), mCredits, mEntType, mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
                 @Override
                 public void onClick(int id, int position, ShowAllListAdapter.CreditListAdapterViewHolder vh) {
 
-                    Log.e(TAG,"onCreditClick() id = " + id + " ent type = " + mEntType);
-                    Util.startDetailActivity(getContext(),id,mEntType,vh.thumbImageView);
+                    Log.e(TAG, "onCreditClick() id = " + id + " ent type = " + mEntType);
+                    Util.startDetailActivity(getContext(), id, mEntType, vh.thumbImageView);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
@@ -233,15 +260,15 @@ public class ShowAllListFragment extends Fragment implements Constants {
         //Remove progress indicator
         mProgressLayout.setVisibility(View.GONE);
 
-        if(mQueryResults != null) {
+        if (mQueryResults != null) {
 
-            mAdapter = new ShowAllListAdapter(getContext(), mQueryResults, mEntType,mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
+            mAdapter = new ShowAllListAdapter(getContext(), mQueryResults, mEntType, mListType, new ShowAllListAdapter.ShowAllListAdapterOnClickHandler() {
                 @Override
                 public void onClick(int id, int position, ShowAllListAdapter.CreditListAdapterViewHolder vh) {
 
-                    Log.e(TAG,"onCreditClick() id = " + id + " ent type = " + mEntType);
+                    Log.e(TAG, "onCreditClick() id = " + id + " ent type = " + mEntType);
                     MediaBasic media = mQueryResults.get(position);
-                    Util.startDetailActivity(getContext(),id,Util.convertStringMediaTypeToEnt(media.getMediaType()),vh.thumbImageView);
+                    Util.startDetailActivity(getContext(), id, Util.convertStringMediaTypeToEnt(media.getMediaType()), vh.thumbImageView);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);

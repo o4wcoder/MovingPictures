@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.activities.MovieDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.adapters.VideoListAdapter;
@@ -54,6 +55,7 @@ import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.models.ReleaseDateList;
 import com.fourthwardmobile.android.movingpictures.models.Video;
 import com.fourthwardmobile.android.movingpictures.activities.ReviewsActivity;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -64,6 +66,11 @@ import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -133,7 +140,8 @@ public class MovieDetailFragment extends BaseDetailFragment implements Constants
 
     boolean mFetchData = false;
 
-
+    private NetworkService mNetworkService;
+    private Subscription mMovieSubscription;
 
 
     private static final String ARG_ID = "id";
@@ -157,6 +165,9 @@ public class MovieDetailFragment extends BaseDetailFragment implements Constants
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get reference to applications network service interface
+        mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
 
         if(savedInstanceState != null) {
 
@@ -377,10 +388,10 @@ public class MovieDetailFragment extends BaseDetailFragment implements Constants
         //If we just got the movie id, we need to go and fetch the data
         if (mFetchData) {
             if (mVideosRecylerView != null) {
-                getMovie(mMovieId);
+                getMovie();
             }
         } else {
-            //Got the entire Movie oject saved from instance state. Just set the layout.
+            //Got the entire Movie object saved from instance state. Just set the layout.
             Log.e(TAG,"Set layout without getting movie id!!");
             setLayout();
         }
@@ -428,42 +439,42 @@ public class MovieDetailFragment extends BaseDetailFragment implements Constants
         return false;
     }
 
-    private void getMovie(int id) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
-        Log.e(TAG, "getMovie() with movie id = " + id);
-        Call<Movie> call = MovieDbAPI.getMovieApiService().getMovie(id);
-
-        Log.e(TAG, "Call url = " + call.request().url());
-
-        call.enqueue(new retrofit2.Callback<Movie>() {
-            @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
-
-                if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse()");
-                    mMovie = response.body();
-                    //Now get movie credits
-                   // getCredits(mMovieId);
-                    setLayout();
-
-                } else {
-                    Log.e(TAG,"Get Movie list call was not successful");
-                    //parse the response to find the error. Display a message
-                  //  APIError error = ErrorUtils.parseError(response);
-                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
-                Log.e(TAG, "onFailure() " + t.getMessage());
-                Toast.makeText(getContext(),getContext().getString(R.string.toast_network_error),Toast.LENGTH_LONG);
-
-            }
-        });
+        //Clean up Rx Subscription
+        if(mMovieSubscription != null && !mMovieSubscription.isUnsubscribed()) {
+            mMovieSubscription.unsubscribe();
+        }
     }
 
+    private void getMovie() {
+
+        Observable<Movie> movieObservable = mNetworkService.getMovieApiService().getMovie(mMovieId);
+
+        mMovieSubscription = movieObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Movie>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Want to make sure activity is valid before showing any toasts
+                        if(getActivity() != null) {
+                            mNetworkService.processNetworkError(getContext(),e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Movie movie) {
+                          //Store global copy of movie
+                          mMovie = movie;
+                          setLayout();
+                    }
+                });
+    }
     
     /**
      * Set the layout of the Fragment

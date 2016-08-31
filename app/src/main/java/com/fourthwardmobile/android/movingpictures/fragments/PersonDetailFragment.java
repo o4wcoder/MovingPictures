@@ -40,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.R;
 import com.fourthwardmobile.android.movingpictures.activities.PersonDetailActivity;
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
@@ -52,6 +53,7 @@ import com.fourthwardmobile.android.movingpictures.models.MediaList;
 import com.fourthwardmobile.android.movingpictures.models.Person;
 import com.fourthwardmobile.android.movingpictures.activities.PersonFilmographyTabActivity;
 import com.fourthwardmobile.android.movingpictures.activities.PersonPhotosActivity;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -61,6 +63,12 @@ import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -110,6 +118,13 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
 
     private static final String ARG_ID = "id";
 
+    private NetworkService mNetworkService;
+    private Subscription mPersonSubscription;
+    private Subscription mPersonTopMoviesSubscription;
+    private CompositeSubscription mCompositeSubscription;
+
+
+
     public PersonDetailFragment() {
     }
 
@@ -126,7 +141,14 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e(TAG,"onCreate() Inside");
+
+        //Get reference to applications network service interface
+        mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
+
+        //Create Composition Subscription to store Rx Subscriptions that will be destoryed when the
+        //fragment is destroyed
+        mCompositeSubscription = new CompositeSubscription();
+
         if(savedInstanceState != null) {
             mPerson = savedInstanceState.getParcelable(EXTRA_PERSON);
             mKnownForMovieList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIE_LIST);
@@ -316,7 +338,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
 
         if(mFetchData) {
             Log.e(TAG,"Go fetch Person's data");
-            getPerson(mPersonId);
+            getPerson();
         } else {
             //Got the entire Person object saved from instance state. Just set the layout.
             Log.e(TAG,"Already have Person's data, just set layouts");
@@ -366,65 +388,105 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
         return false;
     }
 
-    private void getPerson(int id) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
-        Call<Person> call = MovieDbAPI.getMovieApiService().getPerson(id);
-
-        call.enqueue(new retrofit2.Callback<Person>() {
-
-            @Override
-            public void onResponse(Call<Person> call, Response<Person> response) {
-
-                if(response.isSuccessful()) {
-
-                    mPerson = response.body();
-                    setLayout();
-                } else {
-                    Log.e(TAG,"Get Movie list call was not sucessful");
-                    //parse the response to find the error. Display a message
-//                    APIError error = ErrorUtils.parseError(response);
-               //     Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Person> call, Throwable t) {
-                Log.e(TAG, "onFailure() " + t.getMessage());
-                Toast.makeText(getContext(),getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error),Toast.LENGTH_LONG);
-            }
-        });
+        //Clean up Rx Subscriptions
+        mCompositeSubscription.clear();
     }
+
+    private void getPerson() {
+
+        Observable<Person> personObservable = mNetworkService.getMovieApiService().getPerson(mPersonId);
+
+        mPersonSubscription = personObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Person>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Want to make sure activity is valid before showing any toasts
+                        if(getActivity() != null) {
+                            mNetworkService.processNetworkError(getContext(),e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Person person) {
+                        mPerson = person;
+                        setLayout();
+                    }
+                });
+
+        mCompositeSubscription.add(mPersonSubscription);
+
+    }
+//    private void getPersonsTopMovies() {
+//
+//        Call<MediaList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
+//
+//        call.enqueue(new retrofit2.Callback<MediaList>() {
+//
+//            @Override
+//            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+//
+//                if (response.isSuccessful()) {
+//                    Log.e(TAG, "onResponse()");
+//                    mKnownForMovieList = ((ArrayList)response.body().getMediaResults());
+//
+//                    setKnownForLayout();
+//
+//                } else {
+//
+//                    //parse the response to find the error. Display a message
+//                  //  APIError error = ErrorUtils.parseError(response);
+//                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MediaList> call, Throwable t) {
+//
+//            }
+//        });
+//    }
 
     private void getPersonsTopMovies() {
 
-        Call<MediaList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
+        Observable<MediaList> topMoviesObservable = mNetworkService.getMovieApiService().getPersonsTopMovies(mPersonId);
 
-        call.enqueue(new retrofit2.Callback<MediaList>() {
+        mPersonTopMoviesSubscription = topMoviesObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MediaList>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+                    }
 
-                if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse()");
-                    mKnownForMovieList = ((ArrayList)response.body().getMediaResults());
-                    
-                    setKnownForLayout();
-               
-                } else {
+                    @Override
+                    public void onError(Throwable e) {
 
-                    //parse the response to find the error. Display a message
-                  //  APIError error = ErrorUtils.parseError(response);
-                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
-                }
+                        if(getActivity() != null) {
+                            mNetworkService.processNetworkError(getContext(),e);
+                        }
+                    }
 
-            }
+                    @Override
+                    public void onNext(MediaList mediaList) {
+                        mKnownForMovieList = (ArrayList)mediaList.getMediaResults();
+                        setKnownForLayout();
+                    }
+                });
 
-            @Override
-            public void onFailure(Call<MediaList> call, Throwable t) {
+        mCompositeSubscription.add(mPersonTopMoviesSubscription);
 
-            }
-        });
     }
+
+
 
     private void setLayout() {
 

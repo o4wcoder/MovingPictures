@@ -486,6 +486,16 @@ public class Util implements Constants {
             context.startActivity(Intent.createChooser(shareIntent, context.getResources().getString(R.string.share_link)));
 
     }
+
+    public static String encodeEmail(String email) {
+
+        return email.replace(".",",");
+    }
+
+    public static String decodeEmail(String userEmail) {
+        return userEmail.replace(",", ".");
+    }
+
 //    public static void setSearchMenu(Menu menu, MenuInflater inflater, final FragmentActivity activity,
 //                                     final Toolbar toolbar, final int primaryColor, final int darkPrimaryColor) {
 //
