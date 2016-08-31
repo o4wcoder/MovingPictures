@@ -34,23 +34,21 @@ public interface MovieService {
     Observable<Person> getPerson(@Path("id") int id);
 
     @GET("3/{type}/{id}/credits")
-    Call<Credits> getCredits(@Path("type") String type, @Path("id") int id);
-
+    Observable<Credits> getCredits(@Path("type") String type, @Path("id") int id);
 
 
     @GET("3/discover/movie?sort_by=popularity.desc")
-    Call<MediaList> getPersonsTopMovies(@Query("with_cast") int id);
+    Observable<MediaList> getPersonsTopMovies(@Query("with_cast") int id);
 
     @GET("3/person/{id}/{credit_type}")
-    Call<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
-
+    Observable<Credits> getPersonsFilmography(@Path("id") int id,@Path("credit_type") String creditType);
 
 
     @GET("3/search/multi")
     Call<MediaList> getSearchResultList(@Query("query") String query);
 
     @GET("3/person/{id}/images")
-    Call<PersonPhotoList> getPersonsPhotos(@Path("id") int id);
+    Observable<PersonPhotoList> getPersonsPhotos(@Path("id") int id);
 
 
 

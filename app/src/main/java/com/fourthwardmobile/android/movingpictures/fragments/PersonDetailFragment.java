@@ -68,6 +68,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -119,6 +120,8 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
 
     private NetworkService mNetworkService;
     private Subscription mPersonSubscription;
+    private Subscription mPersonTopMoviesSubscription;
+    private CompositeSubscription mCompositeSubscription;
 
 
 
@@ -141,6 +144,10 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
 
         //Get reference to applications network service interface
         mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
+
+        //Create Composition Subscription to store Rx Subscriptions that will be destoryed when the
+        //fragment is destroyed
+        mCompositeSubscription = new CompositeSubscription();
 
         if(savedInstanceState != null) {
             mPerson = savedInstanceState.getParcelable(EXTRA_PERSON);
@@ -385,10 +392,8 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
     public void onDestroy() {
         super.onDestroy();
 
-        //Clean up Rx Subscription
-        if(mPersonSubscription != null && !mPersonSubscription.isUnsubscribed()) {
-            mPersonSubscription.unsubscribe();
-        }
+        //Clean up Rx Subscriptions
+        mCompositeSubscription.clear();
     }
 
     private void getPerson() {
@@ -416,37 +421,72 @@ public class PersonDetailFragment extends BaseDetailFragment implements Constant
                     }
                 });
 
+        mCompositeSubscription.add(mPersonSubscription);
+
     }
+//    private void getPersonsTopMovies() {
+//
+//        Call<MediaList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
+//
+//        call.enqueue(new retrofit2.Callback<MediaList>() {
+//
+//            @Override
+//            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+//
+//                if (response.isSuccessful()) {
+//                    Log.e(TAG, "onResponse()");
+//                    mKnownForMovieList = ((ArrayList)response.body().getMediaResults());
+//
+//                    setKnownForLayout();
+//
+//                } else {
+//
+//                    //parse the response to find the error. Display a message
+//                  //  APIError error = ErrorUtils.parseError(response);
+//                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MediaList> call, Throwable t) {
+//
+//            }
+//        });
+//    }
+
     private void getPersonsTopMovies() {
 
-        Call<MediaList> call = MovieDbAPI.getMovieApiService().getPersonsTopMovies(mPersonId);
+        Observable<MediaList> topMoviesObservable = mNetworkService.getMovieApiService().getPersonsTopMovies(mPersonId);
 
-        call.enqueue(new retrofit2.Callback<MediaList>() {
+        mPersonTopMoviesSubscription = topMoviesObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MediaList>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onResponse(Call<MediaList> call, Response<MediaList> response) {
+                    }
 
-                if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse()");
-                    mKnownForMovieList = ((ArrayList)response.body().getMediaResults());
-                    
-                    setKnownForLayout();
-               
-                } else {
+                    @Override
+                    public void onError(Throwable e) {
 
-                    //parse the response to find the error. Display a message
-                  //  APIError error = ErrorUtils.parseError(response);
-                   // Toast.makeText(getContext(),error.message(),Toast.LENGTH_LONG);
-                }
+                        if(getActivity() != null) {
+                            mNetworkService.processNetworkError(getContext(),e);
+                        }
+                    }
 
-            }
+                    @Override
+                    public void onNext(MediaList mediaList) {
+                        mKnownForMovieList = (ArrayList)mediaList.getMediaResults();
+                        setKnownForLayout();
+                    }
+                });
 
-            @Override
-            public void onFailure(Call<MediaList> call, Throwable t) {
+        mCompositeSubscription.add(mPersonTopMoviesSubscription);
 
-            }
-        });
     }
+
+
 
     private void setLayout() {
 

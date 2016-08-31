@@ -12,17 +12,24 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.adapters.ProfileListAdapter;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.activities.PersonPhotoPagerActivity;
 import com.fourthwardmobile.android.movingpictures.models.PersonPhotoList;
 import com.fourthwardmobile.android.movingpictures.models.Profile;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -56,6 +63,9 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
     LinearLayout mProgressLayout;
     boolean mFetchData = false;
 
+    private NetworkService mNetworkService;
+    private Subscription mPersonPhotoListSubscription;
+
     public static PersonPhotosFragment newInstance(int personId, String mPersonName) {
 
         Log.e(TAG,"newInstance()");
@@ -73,6 +83,10 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
 
         super.onCreate(savedInstanceState);
         Log.e(TAG,"onCreate()");
+
+        //Get reference to applications network service interface
+        mNetworkService = ((MovingPicturesApplication)getActivity().getApplication()).getNetworkService();
+
         if (savedInstanceState != null) {
 
             mPersonId = savedInstanceState.getInt(ARG_PERSON_ID);
@@ -119,6 +133,17 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //Clean up Rx Subscription
+        if(mPersonPhotoListSubscription != null && !mPersonPhotoListSubscription.isUnsubscribed()) {
+            mPersonPhotoListSubscription.unsubscribe();
+
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(ARG_PERSON_ID,mPersonId);
@@ -127,35 +152,37 @@ public class PersonPhotosFragment extends Fragment implements Constants, Profile
         super.onSaveInstanceState(savedInstanceState);
     }
 
+
     private void getPersonsPhotos() {
 
-        Log.e(TAG,"getPersonPhotos()");
-        Call<PersonPhotoList> call = MovieDbAPI.getMovieApiService().getPersonsPhotos(mPersonId);
+        Observable<PersonPhotoList> personPhotoListObservable = mNetworkService.getMovieApiService().getPersonsPhotos(mPersonId);
 
-        call.enqueue(new retrofit2.Callback<PersonPhotoList>() {
+        mPersonPhotoListSubscription = personPhotoListObservable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<PersonPhotoList>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onResponse(Call<PersonPhotoList> call, Response<PersonPhotoList> response) {
+                    }
 
-                if(response.isSuccessful()) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                    mProfileList = (ArrayList)response.body().getProfiles();
-                    setAdapter();
+                        //Want to make sure activity is valid before showing any toasts
+                        if(getActivity() != null) {
+                            //Remove progress indicator
+                            mProgressLayout.setVisibility(View.GONE);
+                            mNetworkService.processNetworkError(getContext(),e);
+                        }
+                    }
 
-                } else {
+                    @Override
+                    public void onNext(PersonPhotoList personPhotoList) {
+                          mProfileList = (ArrayList)personPhotoList.getProfiles();
+                          setAdapter();
+                    }
+                });
 
-//                    APIError error = ErrorUtils.parseError(response);
-//                    Log.e(TAG, "Error message = " + error.message());
-//                    Toast.makeText(getContext(), error.message(), Toast.LENGTH_LONG);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PersonPhotoList> call, Throwable t) {
-
-                Toast.makeText(getContext(), getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.toast_network_error), Toast.LENGTH_LONG);
-            }
-        });
     }
 
     private void setAdapter() {

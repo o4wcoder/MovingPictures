@@ -1,6 +1,7 @@
 package com.fourthwardmobile.android.movingpictures;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
@@ -10,11 +11,13 @@ import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 public class MovingPicturesApplication extends Application {
 
     private NetworkService mNetworkService;
+    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        this.mContext = getContext();
         mNetworkService = new NetworkService();
 
     }
@@ -22,5 +25,9 @@ public class MovingPicturesApplication extends Application {
     public NetworkService getNetworkService() {
 
         return mNetworkService;
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }

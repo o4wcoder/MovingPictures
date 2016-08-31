@@ -1,5 +1,6 @@
 package com.fourthwardmobile.android.movingpictures.data;
 
+import android.app.Application;
 import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -15,10 +16,12 @@ import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
 import com.fourthwardmobile.android.movingpictures.models.MediaList;
+import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,7 +123,10 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
         if(sUriMatcher.match(uri) == ALL_SUGGESTION) {
             if (!(query.equals(SearchManager.SUGGEST_URI_PATH_QUERY))) {
 
-                call = MovieDbAPI.getMovieApiService().getSearchResultList(query);
+                Application app = (Application)MovingPicturesApplication.getContext();
+                NetworkService networkService = ((MovingPicturesApplication)getContext().getApplicationContext()).getNetworkService();
+                //call = MovieDbAPI.getMovieApiService().getSearchResultList(query);
+                call = networkService.getMovieApiService().getSearchResultList(query);
 
                 try {
                     MediaList queryResults = call.execute().body();
