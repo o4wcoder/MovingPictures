@@ -16,6 +16,8 @@ Movie Database API provided by <a href="https://www.themoviedb.org">The Movie DB
 
 
 # Status
+Update (3/27/17). Currently removed from Google Play because the app contains posters. Part of Copyright infringment even though the API that contains the images has permission.
+
 Version 1.0.12. Available on Google Play.
 <a href="https://play.google.com/store/apps/details?id=com.fourthwardmobile.android.movingpictures"> Download Moving Pictures</a>
 
