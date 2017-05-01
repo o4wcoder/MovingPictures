@@ -36,6 +36,8 @@ import com.fourthwardmobile.android.movingpictures.activities.PersonDetailActivi
 import com.fourthwardmobile.android.movingpictures.activities.SearchableActivity;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -163,40 +165,60 @@ public class BaseDetailFragment extends Fragment implements Constants {
     }
 
 
+    protected void setPaletteColors(final String title) {
 
-    protected void setPaletteColors(String title) {
+        Bitmap bitmap = ((BitmapDrawable) mBackdropImageView.getDrawable()).getBitmap();
 
-        Bitmap bitmap = ((BitmapDrawable)mBackdropImageView.getDrawable()).getBitmap();
+        if (bitmap != null && getActivity() != null) {
 
-        if(bitmap != null && getActivity() != null) {
-            Palette p = Palette.generate(bitmap, 12);
+            Log.e(TAG, "Bitmap width =  " + bitmap.getWidth() + ", height = " + bitmap.getHeight() + ", density = " + bitmap.getDensity());
+            Palette.PaletteAsyncListener paletteAsyncListener = new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette p) {
+                    List<Palette.Swatch> swatches = p.getSwatches();
+                    for (int i = 0; i < swatches.size(); i++) {
+                        Log.e(TAG, "Swatch population = " + swatches.get(i).getPopulation());
+                    }
+                    //Set title and colors for collapsing toolbar
+                    mCollapsingToolbarLayout.setTitle(title);
+                    mCollapsingToolbarLayout.setExpandedTitleColor(
+
+                            getResources().getColor(android.R.color.transparent)
+
+                    );
+
+                    //Set content descriptioni for toolbar/title
+                    mCollapsingToolbarLayout.setContentDescription(title);
+
+                    //Set pallet colors when toolbar is collapsed
+                    int primaryColor = getResources().getColor(R.color.appPrimaryColor);
+                    int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
+                    int accentColor = getResources().getColor(R.color.appAccentColor);
+
+                    mPrimaryColor = p.getMutedColor(primaryColor);
+                    mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
+                    mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
+                    mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
+
+                    if (!(
+
+                            getActivity()
+
+                                    instanceof PersonDetailActivity))
+
+                    {
+                        mDetailLayout.setBackgroundColor(p.getMutedColor(primaryColor));
+                        mDetailCardView.setCardBackgroundColor(p.getMutedColor(primaryColor));
+                    }
+
+                    mFavoritesFAB.setBackgroundTintList(ColorStateList.valueOf(p.getVibrantColor(accentColor)));
+                }
+            };
 
 
-            //Set title and colors for collapsing toolbar
-            mCollapsingToolbarLayout.setTitle(title);
-            mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
-
-            //Set content descriptioni for toolbar/title
-            mCollapsingToolbarLayout.setContentDescription(title);
-
-            //Set pallet colors when toolbar is collapsed
-            int primaryColor = getResources().getColor(R.color.appPrimaryColor);
-            int primaryDarkColor = getResources().getColor(R.color.appDarkPrimaryColor);
-            int accentColor = getResources().getColor(R.color.appAccentColor);
-
-            mPrimaryColor = p.getMutedColor(primaryColor);
-            mDarkPrimaryColor = p.getDarkMutedColor(primaryDarkColor);
-            mCollapsingToolbarLayout.setContentScrimColor(p.getMutedColor(primaryColor));
-            mCollapsingToolbarLayout.setStatusBarScrimColor(p.getDarkMutedColor(primaryDarkColor));
-
-            if(!(getActivity() instanceof PersonDetailActivity)) {
-                mDetailLayout.setBackgroundColor(p.getMutedColor(primaryColor));
-                mDetailCardView.setCardBackgroundColor(p.getMutedColor(primaryColor));
+            if (bitmap != null && !bitmap.isRecycled()) {
+                Palette.from(bitmap).generate(paletteAsyncListener);
             }
-
-            mFavoritesFAB.setBackgroundTintList(ColorStateList.valueOf(p.getVibrantColor(accentColor)));
-
-
         }
     }
 

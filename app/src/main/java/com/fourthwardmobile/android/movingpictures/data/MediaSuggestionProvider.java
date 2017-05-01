@@ -16,6 +16,9 @@ import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.Target;
 import com.fourthwardmobile.android.movingpictures.MovingPicturesApplication;
 import com.fourthwardmobile.android.movingpictures.helpers.MovieDbAPI;
 import com.fourthwardmobile.android.movingpictures.interfaces.Constants;
@@ -23,11 +26,13 @@ import com.fourthwardmobile.android.movingpictures.models.MediaBasic;
 import com.fourthwardmobile.android.movingpictures.models.MediaList;
 import com.fourthwardmobile.android.movingpictures.network.NetworkService;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 
@@ -83,22 +88,27 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
         String text = "";
         String subText = "";
         String mediaType = media.getMediaType();
+        Uri imageIcon = null;
         if (mediaType.equals(MEDIA_TYPE_MOVIE)) {
             text = media.getTitle();
             subText = getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.search_subtext_movie) +
                     " (" + media.getReleaseYear() + ")";
+            imageIcon = getIconImage(MovieDbAPI.getFullPosterPath(media.getPosterPath()));
         }
         else if(mediaType.equals(MEDIA_TYPE_TV)) {
             text = media.getName();
             subText = getContext().getString(com.fourthwardmobile.android.movingpictures.R.string.search_subtext_tv_series) +
                     " (" + media.getFirstAirYear() + ")";
+            imageIcon = getIconImage(MovieDbAPI.getFullPosterPath(media.getPosterPath()));
         } else {
             text = media.getName();
+            imageIcon = getIconImage(MovieDbAPI.getFullPosterPath(media.getProfilePath()));
         }
 
 
         int mediaId = media.getId();
-        cursor.addRow(new Object[]{position, text,subText,mediaId,mediaType});
+
+        cursor.addRow(new Object[]{position, text,subText,mediaId,mediaType,imageIcon});
 
     }
 
@@ -117,7 +127,8 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
                         SearchManager.SUGGEST_COLUMN_TEXT_1,
                         SearchManager.SUGGEST_COLUMN_TEXT_2,
                         SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID,
-                        SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA
+                        SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA,
+                        SearchManager.SUGGEST_COLUMN_ICON_1
                 });
 
         if(sUriMatcher.match(uri) == ALL_SUGGESTION) {
@@ -188,5 +199,23 @@ public class MediaSuggestionProvider extends ContentProvider implements Constant
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    private Uri getIconImage(String imagePath) {
+
+        FutureTarget<File> futureTarget = Glide.with(getContext().getApplicationContext())
+                .load(imagePath)
+                .downloadOnly(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL);
+
+        try {
+            File cacheFile = futureTarget.get();
+            return Uri.fromFile(cacheFile);
+        } catch(InterruptedException e) {
+            Log.e(TAG,e.getMessage());
+            return null;
+        } catch(ExecutionException e) {
+            Log.e(TAG,e.getMessage());
+            return null;
+        }
     }
 }
